@@ -1,2 +1,3 @@
 # ShopBuddy
-Aplicação para gerenciamento de listas de compras compartilhadas
+
+Aplicação para gerenciamento de listas de compras compartilhadas entre usuários.
