@@ -1,0 +1,32 @@
+{
+  "name": "shopbuddy",
+  "version": "1.0.0",
+  "description": "Aplicação para gerenciamento de listas de compras compartilhadas entre usuários.",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon -L ./server/src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hopper-Grupo-2/ShopBuddy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hopper-Grupo-2/ShopBuddy/issues"
+  },
+  "homepage": "https://github.com/Hopper-Grupo-2/ShopBuddy#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.2.0",
+    "express": "^4.18.2",
+    "mongoose": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "nodemon": "^2.0.22",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.3"
+  }
+}
