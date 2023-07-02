@@ -1,10 +1,9 @@
-import Sidebar from "../../components/Sidebar";
+import LogIn from "../../components/Login";
 
-export default function Login() {
+export default function LoginPage() {
 	return (
 		<>
-			<Sidebar />
-			<h1>Welcome to the login page!</h1>
+			<LogIn />
 		</>
 	);
 }

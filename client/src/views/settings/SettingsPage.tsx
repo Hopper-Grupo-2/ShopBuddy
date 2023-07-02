@@ -1,12 +1,10 @@
 import PageStructure from "../../components/PageStructure";
 
-import "./Dashboard.css";
-
-export default function Dashboard() {
+export default function Settings() {
 	return (
 		<>
 			<PageStructure>
-				<h1>Welcome to the dashboard!</h1>
+				<h1>Welcome to the settings page!</h1>
 			</PageStructure>
 		</>
 	);

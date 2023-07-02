@@ -1,12 +1,10 @@
 import PageStructure from "../../components/PageStructure";
 
-import "./Dashboard.css";
-
-export default function Dashboard() {
+export default function List() {
 	return (
 		<>
 			<PageStructure>
-				<h1>Welcome to the dashboard!</h1>
+				<h1>This is a list :D</h1>
 			</PageStructure>
 		</>
 	);

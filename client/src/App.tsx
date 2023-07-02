@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./views/dashboard/Dashboard";
-import List from "./views/list/List";
-import Login from "./views/login/Login";
+import ListPage from "./views/list/ListPage";
+import LoginPage from "./views/login/Login";
 
 import "./App.css";
+import Settings from "./views/settings/SettingsPage";
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -13,11 +14,15 @@ export default function App() {
 		},
 		{
 			path: "/list",
-			element: <List />,
+			element: <ListPage />,
+		},
+		{
+			path: "/settings",
+			element: <Settings />,
 		},
 		{
 			path: "/login",
-			element: <Login />,
+			element: <LoginPage />,
 		},
 	]);
 
