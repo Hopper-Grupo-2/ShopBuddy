@@ -39,7 +39,7 @@ export default function Dashboard() {
 						date={list.date}
 						total={list.total}
 						action={() => {
-							navigate("/list");
+							navigate("/list/" + list.id.toString());
 						}}
 					/>
 				))}

@@ -13,7 +13,7 @@ export default function App() {
 			element: <Dashboard />,
 		},
 		{
-			path: "/list",
+			path: "/list/:listId",
 			element: <ListPage />,
 		},
 		{
