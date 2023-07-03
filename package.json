@@ -4,7 +4,9 @@
   "description": "Aplicação para gerenciamento de listas de compras compartilhadas entre usuários.",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon -L ./server/src/server.ts"
+    "start": "node dist/server.js",
+    "build": "tsc && cd client && yarn --cwd ./ build",
+    "dev": "nodemon -L ./server/server.ts"
   },
   "repository": {
     "type": "git",
