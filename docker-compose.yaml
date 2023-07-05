@@ -23,22 +23,22 @@ services:
         env_file:
             - .env
 
-    app:
-        build: .
-        container_name: app
-        restart: always
-        ports:
-            - "4444:4000" #backend
-            - "4445:4001" #fronted
-        volumes:
-            - ./server:/app/server #backend
-            - ./client:/app/client #frontend
-        # environment:
-        #   - REDIS_DB=redis
-        #   - MONGO_DB=mongo
-        depends_on:
-            # - redis
-            - mongo
+    # app:
+    #     build: .
+    #     container_name: app
+    #     restart: always
+    #     env_file:
+    #         - .env
+    #     ports:
+    #         - "${PORT}:#{PORT}"
+    #     volumes:
+    #         - .:/app/
+    #     # environment:
+    #     #   - REDIS_DB=redis
+    #     #   - MONGO_DB=mongo
+    #     depends_on:
+    #         # - redis
+    #         - mongo
 
 volumes:
     mongodb-data:
