@@ -1,16 +1,19 @@
 // server.js
 import express from "express";
 import http from "http";
+import handleAllErrors from "./middlewares/error-handler";
+import { listsRouter } from "./routers/lists";
 // import { Server } from "socket.io";
 // import WebsocketController from "./websocket/controller";
 
 export default class App {
-	private app: express.Application;
+	public app: express.Application;
 	public server: http.Server;
 
 	constructor() {
 		this.app = express();
 		this.middleware();
+		this.router();
 		this.server = http.createServer(this.app);
 		// this.websocket();
 	}
@@ -18,6 +21,11 @@ export default class App {
 	private middleware(): void {
 		this.app.use(express.json());
 		this.app.use("/", express.static("./client/dist"));
+	}
+
+	private router(): void {
+		this.app.use("/api/lists", listsRouter);
+		this.app.use(handleAllErrors);
 	}
 
 	// private websocket(): void {
