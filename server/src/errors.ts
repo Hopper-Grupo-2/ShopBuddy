@@ -13,6 +13,7 @@ const errorNameToHttpStatusCode = {
 	InternalServerError: 500,
 	InvalidInputError: 400,
 	ForbiddenError: 403,
+	BadRequest: 410,
 };
 
 export type ErrorNames = keyof typeof errorNameToHttpStatusCode;

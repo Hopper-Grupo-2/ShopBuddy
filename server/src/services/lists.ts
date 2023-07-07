@@ -1,3 +1,4 @@
+import Error from "../errors";
 import IList from "../interfaces/list";
 import ListsRepositories from "../repositories/lists";
 

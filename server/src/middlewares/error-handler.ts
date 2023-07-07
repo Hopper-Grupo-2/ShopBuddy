@@ -16,7 +16,7 @@ export default function handleAllErrors(
 		!Object.keys(Error.errorNameToHttpStatusCode).includes(err.name)
 	) {
 		res.status(500).json({
-			err: Error.createError(
+			error: Error.createError(
 				"InternalServerError",
 				`original error message is: ${err}`
 			),
@@ -29,7 +29,7 @@ export default function handleAllErrors(
 		Error.errorNameToHttpStatusCode[err.name as ErrorNames];
 
 	res.status(httpStatusCode).json({
-		err: err,
+		error: err,
 		data: null,
 	});
 }
