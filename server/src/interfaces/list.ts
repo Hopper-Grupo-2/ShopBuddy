@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
 export default interface IList {
+	_id: Schema.Types.ObjectId;
 	listName: String;
 	products: [
 		{
@@ -12,7 +13,8 @@ export default interface IList {
 			checked: Boolean;
 		}
 	];
-	members: [{ userId: mongoose.Types.ObjectId }];
+	owner: Schema.Types.ObjectId;
+	members: [{ userId: Schema.Types.ObjectId }];
 	createdAt: Date;
 	updatedAt: Date;
 }
