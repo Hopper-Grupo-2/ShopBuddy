@@ -25,8 +25,10 @@ services:
             - server/config/.env
 
     app:
-        build: .
-        container_name: app
+        build:
+            context: .
+            dockerfile: Dockerfile.${NODE_ENV}
+        container_name: appshop
         restart: always
         env_file:
             - server/config/.env

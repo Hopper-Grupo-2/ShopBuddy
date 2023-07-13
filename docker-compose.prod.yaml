@@ -24,7 +24,7 @@ services:
 
     app:
         build: .
-        container_name: app
+        container_name: appshop
         restart: always
         env_file:
             - server/config/.env

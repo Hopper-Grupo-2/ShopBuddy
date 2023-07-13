@@ -2,12 +2,13 @@ FROM node:lts-alpine3.17
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
+RUN npm install 
 
 COPY . .
 
-RUN npm run build
+# Adicione um arquivo de entrada personalizado (entrypoint.sh)
+##COPY entrypointprod.sh /app/entrypointprod.sh
+##RUN chmod +x /app/entrypointprod.sh
 
-EXPOSE 4021
-
-CMD ["npm", "run", "start"]
+# Atualize o comando CMD para usar o arquivo de entrada personalizado
+CMD ["npm","run","start"]
