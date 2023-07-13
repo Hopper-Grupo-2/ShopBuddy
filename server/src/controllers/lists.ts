@@ -14,4 +14,12 @@ export default class ListsController {
 			next(error);
 		}
 	}
+
+	public static async getListsByUserId(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		// GET /lists/:userId
+	}
 }

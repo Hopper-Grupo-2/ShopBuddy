@@ -1,8 +1,8 @@
-import Schemas from "../database/schemas";
+import Models from "../database/models";
 import IList from "../interfaces/list";
 
 export default class ListsRepositories {
-	private static Model = Schemas.getInstance().listModel;
+	private static Model = Models.getInstance().listModel;
 
 	public static async findAllLists(): Promise<IList[] | null> {
 		try {
