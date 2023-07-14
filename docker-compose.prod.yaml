@@ -17,17 +17,17 @@ services:
         container_name: mongo
         restart: always
         ports:
-            - "28:27017"
+            - "27:27017"
         volumes:
             - mongodb-data:/data/db
         env_file:
             - .env
             - server/config/.env
 
-    app:
+    appshop:
         build:
             context: .
-            dockerfile: Dockerfile.${NODE_ENV}
+            dockerfile: Dockerfile
         container_name: appshop
         restart: always
         env_file:
@@ -42,6 +42,7 @@ services:
         depends_on:
             # - redis
             - mongo
+        command: npm run start
 
 volumes:
     mongodb-data:
