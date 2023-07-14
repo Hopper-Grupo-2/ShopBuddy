@@ -23,6 +23,10 @@ jobs:
             - name: Install dependencies
               run: npm install --frozen-lockfile
 
+            - name: Install client dependencies
+              working-directory: ./client
+              run: yarn install
+
             - name: Build typescript project
               run: npm run build --if-present
 
@@ -63,6 +67,10 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - run: npm install
+
+            - name: Install client dependencies
+              working-directory: ./client
+              run: yarn install
 
             - name: Create .env file
               run: |
