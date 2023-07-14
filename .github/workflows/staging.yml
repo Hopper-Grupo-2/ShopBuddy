@@ -74,7 +74,23 @@ jobs:
 
             - name: Create .env file
               run: |
-                  echo "PORT=${{ vars.MY_PORT_STAGING }}" >> .env
+                  echo "PORT=${{ vars.MY_PORT_PRODUCTION }}" >> .env
+                  echo "MONGO_INITDB_ROOT_USERNAME="=${{ vars.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+                  echo "MONGO_INITDB_ROOT_PASSWORD="=${{ vars.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+                  echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
+                  echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
+                  echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
+                  cat .env
+
+            - name: Create .env to mongoDB
+              working-directory: ./server/config
+              run: |
+                  echo "PORT=${{ vars.MY_PORT_PRODUCTION }}" >> .env
+                  echo "MONGO_INITDB_ROOT_USERNAME="=${{ vars.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+                  echo "MONGO_INITDB_ROOT_PASSWORD="=${{ vars.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+                  echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
+                  echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
+                  echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
                   cat .env
               # Add other variables as needed
 
