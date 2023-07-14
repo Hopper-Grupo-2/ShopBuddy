@@ -45,7 +45,7 @@ jobs:
               run: npm run test && echo '✅ ✅ Tests passed!'
 
     deploy-staging:
-        runs-on: [self-hosted, labelstaging]
+        runs-on: [self-hosted, shopbuddy-staging]
         needs: [build, test]
         if: ${{ github.ref == 'refs/heads/staging' }}
 

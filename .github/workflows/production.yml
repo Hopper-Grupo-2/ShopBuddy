@@ -47,7 +47,7 @@ jobs:
               run: npm run test && echo '✅ ✅ Tests passed!'
 
     deploy-production:
-        runs-on: [self-hosted, labelproduction]
+        runs-on: [self-hosted, shopbuddy-production]
         needs: [build, test]
         if: ${{ github.ref == 'refs/heads/main' }}
 
