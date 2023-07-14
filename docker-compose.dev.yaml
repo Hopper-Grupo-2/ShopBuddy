@@ -42,7 +42,7 @@ services:
         depends_on:
             # - redis
             - mongo
-        command: npm run start
+        command: npm run dev
 
 volumes:
     mongodb-data:
