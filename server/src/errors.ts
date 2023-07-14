@@ -18,7 +18,7 @@ const errorNameToHttpStatusCode = {
 
 export type ErrorNames = keyof typeof errorNameToHttpStatusCode;
 
-export default class Error {
+export default class ErrorHandler {
 	public static errorNameToHttpStatusCode = errorNameToHttpStatusCode;
 
 	public static createError(name: ErrorNames, message: String) {

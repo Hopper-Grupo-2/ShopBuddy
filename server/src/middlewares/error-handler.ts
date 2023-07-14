@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import Error, { ErrorNames } from "../errors";
+import ErrorHandler, { ErrorNames } from "../errors";
 
 export default function handleAllErrors(
 	err: unknown,
@@ -13,10 +13,10 @@ export default function handleAllErrors(
 		err === null ||
 		!("name" in err) ||
 		typeof err.name !== "string" ||
-		!Object.keys(Error.errorNameToHttpStatusCode).includes(err.name)
+		!Object.keys(ErrorHandler.errorNameToHttpStatusCode).includes(err.name)
 	) {
 		res.status(500).json({
-			error: Error.createError(
+			error: ErrorHandler.createError(
 				"InternalServerError",
 				`original error message is: ${err}`
 			),
@@ -26,7 +26,7 @@ export default function handleAllErrors(
 	}
 
 	const httpStatusCode =
-		Error.errorNameToHttpStatusCode[err.name as ErrorNames];
+		ErrorHandler.errorNameToHttpStatusCode[err.name as ErrorNames];
 
 	res.status(httpStatusCode).json({
 		error: err,
