@@ -17,7 +17,7 @@ services:
         container_name: mongo
         restart: always
         ports:
-            - "28:27017"
+            - "29:27017"
         volumes:
             - mongodb-data:/data/db
         env_file:
