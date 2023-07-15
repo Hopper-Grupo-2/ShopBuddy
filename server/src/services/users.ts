@@ -15,7 +15,7 @@ export default class UsersServices {
 				email
 			);
 
-			if (user == null)
+			if (user === null)
 				throw ErrorHandler.createError(
 					"UnauthorizedError",
 					"Incorrect e-mail and/or password"
@@ -36,12 +36,22 @@ export default class UsersServices {
 
 	public static async signupUser(user: IUser) {
 		try {
-			const foundUser = await this.Repository.getUserByEmail(user.email);
-
-			if (foundUser != null)
+			const foundUserByEmail = await this.Repository.getUserByEmail(
+				user.email
+			);
+			if (foundUserByEmail !== null)
 				throw ErrorHandler.createError(
 					"UnauthorizedError",
 					"This e-mail is already in use"
+				);
+
+			const foundUserByUsername = await this.Repository.getUserByUsername(
+				user.username
+			);
+			if (foundUserByUsername !== null)
+				throw ErrorHandler.createError(
+					"UnauthorizedError",
+					"This username is already in use"
 				);
 
 			const passwordHash = await bcrypt.hash(user.password, 10);

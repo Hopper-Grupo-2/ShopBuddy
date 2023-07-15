@@ -18,6 +18,21 @@ export default class UsersRepositories {
 		}
 	}
 
+	public static async getUserByUsername(
+		username: string
+	): Promise<IUser | null> {
+		try {
+			const user = await this.Model.findOne({ username });
+			return user ? user.toJSON() : null;
+		} catch (error) {
+			console.error(this.name, "getUserByUsername error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+
 	public static async createNewUser(user: IUser): Promise<IUser> {
 		try {
 			const createdUser = await this.Model.create({
