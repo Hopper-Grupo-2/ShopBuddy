@@ -82,7 +82,7 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "NODE_ENV=${{ vars.NODE_END_PROD }}" >> .env
+                  echo "NODE_ENV=prod" >> .env
                   cat .env
 
             - name: Create .env to mongoDB
@@ -94,7 +94,7 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "NODE_ENV=${{ vars.NODE_END_PROD }}" >> .env
+                  echo "NODE_ENV=prod" >> .env
                   cat .env
               # Add other variables as needed
 
