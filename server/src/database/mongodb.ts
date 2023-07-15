@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-("mongodb://$MONGO_USER:$MONGO_PASSWORD@mongo:27017/$MONGO_DB");
 
 const MONGO_USER = process.env.MONGO_USER;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;

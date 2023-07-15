@@ -32,6 +32,7 @@ services:
             - "${PORT}:${PORT}"
         volumes:
             - .:/app/
+            - /app/node_modules
         # environment:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
