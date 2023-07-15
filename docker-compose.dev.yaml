@@ -24,10 +24,10 @@ services:
             - .env
             - server/config/.env
 
-    app:
+    appshop:
         build:
             context: .
-            dockerfile: Dockerfile.${NODE_ENV}
+            dockerfile: Dockerfile
         container_name: appshop
         restart: always
         env_file:
@@ -36,13 +36,13 @@ services:
             - "${PORT}:${PORT}"
         volumes:
             - .:/app/
-            - /app/node_modules
         # environment:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
         depends_on:
             # - redis
             - mongo
+        command: npm run dev
 
 volumes:
     mongodb-data:

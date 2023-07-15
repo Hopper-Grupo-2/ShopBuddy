@@ -1,5 +1,5 @@
 version: "3.8"
-name: "shopbuddy"
+name: "shopbuddystaging"
 
 services:
     #redis:
@@ -12,23 +12,23 @@ services:
     #    env_file:
     #        - .env
 
-    mongo:
+    mongostaging:
         build: ./server/src/database/
-        container_name: mongo
+        container_name: mongostaging
         restart: always
         ports:
-            - "28:27017"
+            - "26:27017"
         volumes:
             - mongodb-data:/data/db
         env_file:
             - .env
             - server/config/.env
 
-    app:
+    appshopstaging:
         build:
             context: .
-            dockerfile: Dockerfile.${NODE_ENV}
-        container_name: appshop
+            dockerfile: Dockerfile
+        container_name: appshopstaging
         restart: always
         env_file:
             - server/config/.env
@@ -36,13 +36,13 @@ services:
             - "${PORT}:${PORT}"
         volumes:
             - .:/app/
-            - /app/node_modules
         # environment:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
         depends_on:
             # - redis
-            - mongo
+            - mongostaging
+        command: npm run start
 
 volumes:
     mongodb-data:
