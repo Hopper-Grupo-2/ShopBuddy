@@ -69,7 +69,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
 
             - run: npm install
-            
+
             - name: Install client dependencies
               working-directory: ./client
               run: yarn install
@@ -82,7 +82,7 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "NODE_ENV=prod" >> .env
+                  echo "NODE_ENV=${{ vars.NODE_END_PROD }}" >> .env
                   cat .env
 
             - name: Create .env to mongoDB
@@ -94,12 +94,11 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "NODE_ENV=prod" >> .env
+                  echo "NODE_ENV=${{ vars.NODE_END_PROD }}" >> .env
                   cat .env
               # Add other variables as needed
 
             - run: npm run build --if-present
             - run: npm run test
             #- run: pm2 restart productionapp
-            - run: docker-compose -f docker-compose.prod.yaml up -d
-            
+            - run: docker-compose -f docker-compose.${{ vars.NODE_END_PROD }}.yaml up -d

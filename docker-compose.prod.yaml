@@ -14,7 +14,7 @@ services:
 
     mongo:
         build: ./server/src/database/
-        container_name: mongo
+        container_name: mongo${NODE_ENV}
         restart: always
         ports:
             - "27:27017"
@@ -41,7 +41,7 @@ services:
         #   - MONGO_DB=mongo
         depends_on:
             # - redis
-            - mongo
+            - mongo${NODE_ENV}
         command: npm run start
 
 volumes:
