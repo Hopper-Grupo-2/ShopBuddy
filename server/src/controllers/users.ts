@@ -25,7 +25,7 @@ export default class UsersController {
 			res.cookie("session", jwt);
 			res.status(200).json({
 				error: null,
-				data: "User logged in successfully!",
+				data: user,
 			});
 		} catch (error) {
 			next(error);
