@@ -20,7 +20,7 @@ export default class Models {
 	}
 
 	public get listModel(): mongoose.Model<IList> {
-		const listModel = model<IList>("List", this._schemas.messageSchema);
+		const listModel = model<IList>("List", this._schemas.listSchema);
 		return listModel;
 	}
 

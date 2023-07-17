@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ListsController from "../controllers/lists";
+import authenticate from "../middlewares/authentication";
 
 const listsRouter = Router();
 
@@ -10,6 +11,7 @@ listsRouter.get("/", ListsController.getLists);
 // GET /api/lists/:listId - get a list by list id
 
 // POST /api/lists - add a new list
+listsRouter.post("/", authenticate, ListsController.postList);
 
 // PATCH /api/lists/:listId/products - update the products on a list
 // PATCH /api/lists/:listId/members - update the members on a list

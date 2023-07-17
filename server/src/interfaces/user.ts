@@ -1,7 +1,7 @@
 import { Schema } from "mongoose";
 
 export default interface IUser {
-	_id?: Schema.Types.ObjectId;
+	_id?: Schema.Types.ObjectId | string;
 	username: string;
 	email: string;
 	password: string;

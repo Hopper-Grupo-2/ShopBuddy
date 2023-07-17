@@ -4,6 +4,12 @@
       "noEmitOnError": true,
       "noImplicitAny": true,
       "allowJs": true,
+      "declaration": true,
+      "emitDeclarationOnly": true,
+      "typeRoots": [
+        "./server/src/types",
+        "./node_modules/@types"
+      ],
       "strict": true,
       "lib": [
           "es6",

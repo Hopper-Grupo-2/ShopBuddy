@@ -2,6 +2,7 @@
 import express from "express";
 import http from "http";
 import handleAllErrors from "./middlewares/error-handler";
+import cookieParser from "cookie-parser";
 import { listsRouter } from "./routers/lists";
 import { usersRouter } from "./routers/users";
 import { messagesRouter } from "./routers/messages";
@@ -22,6 +23,7 @@ export default class App {
 
 	private middleware(): void {
 		this.app.use(express.json());
+		this.app.use(cookieParser());
 		this.app.use("/", express.static("./client/dist"));
 	}
 
