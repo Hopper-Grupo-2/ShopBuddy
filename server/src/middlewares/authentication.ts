@@ -1,25 +1,25 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../errors";
-import AuthRequest from "../interfaces/auth-request";
 
 export default function authenticate(
-	req: AuthRequest,
+	req: Request,
 	res: Response,
 	next: NextFunction
 ) {
-	const authHeader = req.headers.authorization;
-	if (!authHeader) {
-		return res.status(401).json({
-			error: ErrorHandler.createError(
-				"UnauthorizedError",
-				"token is missing or invalid"
-			),
-			data: null,
-		});
-	}
+	// const authHeader = req.headers.authorization;
+	// if (!authHeader) {
+	// 	console.log("first");
+	// 	return res.status(401).json({
+	// 		error: ErrorHandler.createError(
+	// 			"UnauthorizedError",
+	// 			"token is missing or invalid"
+	// 		),
+	// 		data: null,
+	// 	});
+	// }
 
-	const token = authHeader.split(" ")[1];
+	const token = req.cookies.session;
 	if (!token) {
 		return res.status(401).json({
 			error: ErrorHandler.createError(
@@ -33,10 +33,10 @@ export default function authenticate(
 	try {
 		const decoded = jwt.verify(
 			token,
-			process.env.JWT_SECRET || ""
+			process.env.JWTSECRET || ""
 		) as JwtPayload;
 		req.user = {
-			_id: decoded.id,
+			_id: decoded._id,
 			username: decoded.username as string,
 			password: decoded.password as string,
 			email: decoded.email as string,

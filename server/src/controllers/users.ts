@@ -25,7 +25,7 @@ export default class UsersController {
 			res.cookie("session", jwt);
 			res.status(200).json({
 				error: null,
-				data: "User logged in successfully!",
+				data: user,
 			});
 		} catch (error) {
 			next(error);
@@ -49,7 +49,18 @@ export default class UsersController {
 			next(error);
 		}
 	}
+	public static async getAllUsers(req: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		try {
+			const allusers = await UsersServices.getAllUsers();
+			res.status(200).json({error: null, data: allusers})
 
+		} catch (error) {
+			next(error);
+		}
+	}
 	// public static async getLists(
 	// 	req: Request,
 	// 	res: Response,

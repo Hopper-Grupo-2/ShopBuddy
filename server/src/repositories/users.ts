@@ -5,6 +5,19 @@ import IUser from "../interfaces/user";
 export default class UsersRepositories {
 	private static Model = Models.getInstance().userModel;
 
+	public static async getUserById(userId: string): Promise<IUser | null> {
+		try {
+			const user = await this.Model.findOne({ userId });
+			return user ? user.toJSON() : null;
+		} catch (error) {
+			console.error(this.name, "getUserById error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+
 	public static async getUserByEmail(email: string): Promise<IUser | null> {
 		try {
 			const user = await this.Model.findOne({ email });
@@ -35,7 +48,7 @@ export default class UsersRepositories {
 
 	public static async createNewUser(user: IUser): Promise<IUser> {
 		try {
-			const createdUser = await this.Model.create({
+			const response = await this.Model.create({
 				username: user.username,
 				email: user.email,
 				password: user.password,
@@ -44,7 +57,17 @@ export default class UsersRepositories {
 				createdAt: Date.now(),
 				updatedAt: Date.now(),
 			});
-			return createdUser.toJSON();
+			const createdUser: IUser = {
+				_id: response._id,
+				username: response.username,
+				email: response.email,
+				password: response.password,
+				firstName: response.firstName,
+				lastName: response.lastName,
+				createdAt: response.createdAt,
+				updatedAt: response.updatedAt,
+			};
+			return createdUser;
 		} catch (error) {
 			console.error(this.name, "createNewUser error: ", error);
 			throw ErrorHandler.createError(
@@ -53,6 +76,33 @@ export default class UsersRepositories {
 			);
 		}
 	}
+	public static async getAllUsers() {
+		try {
+			
+			const response = await this.Model.find()
+			const allUsers: IUser[] = []
+			response.forEach(user => {
+				allUsers.push({
+					_id: user._id,
+				username: user.username,
+				email: user.email,
+				password: user.password,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
+				})
+			})
+			return allUsers
+		} catch (error) {
+			console.error(this.name, "getAllUsers error", error)
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+	
 
 	// public static async findAllLists(): Promise<IList[] | null> {
 	// 	try {
