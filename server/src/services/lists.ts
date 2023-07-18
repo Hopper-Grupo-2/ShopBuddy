@@ -41,4 +41,14 @@ export default class ListsServices {
 			throw error;
 		}
 	}
+	public static async deleteList(
+		listId: string,
+		userId: string
+	  ): Promise<void> {
+		try {
+		  await this.Repository.deleteList(listId, userId);
+		} catch (error) {
+		  throw error;
+		}
+	  }
 }
