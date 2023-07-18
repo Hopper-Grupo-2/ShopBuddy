@@ -61,6 +61,16 @@ export default class UsersController {
 			next(error);
 		}
 	}
+	public static async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
+		try {
+		  const userId: string = req.params.userId;
+		  const userById: IUser | null = await UsersServices.getUserById(userId);
+			res.status(200).json({ error: null, data: userById });
+		  }
+		catch (error) {
+		  next(error);
+		}
+	  }
 	// public static async getLists(
 	// 	req: Request,
 	// 	res: Response,
