@@ -74,6 +74,15 @@ export default class UsersServices {
 			throw error
 		}
 	}
+	public static async getUserById(userId: string): Promise<IUser | null> {
+		try {
+		  const userById = await this.Repository.getUserById(userId);
+		  return userById;
+		} catch (error) {
+		  throw error;
+		}
+	  }
+	}
 
 	// public static async getAllLists(): Promise<IList[] | null> {
 	// 	try {
@@ -83,4 +92,3 @@ export default class UsersServices {
 	// 		throw error;
 	// 	}
 	// }
-}
