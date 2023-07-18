@@ -33,8 +33,21 @@ export default class UsersRepositories {
 
 	public static async getUserByEmail(email: string): Promise<IUser | null> {
 		try {
-			const user = await this.Model.findOne({ email });
-			return user ? user.toJSON() : null;
+			const response = await this.Model.findOne({ email });
+
+			if (response === null) return null;
+
+			const user: IUser = {
+				_id: response._id,
+				username: response.username,
+				email: response.email,
+				password: response.password,
+				firstName: response.firstName,
+				lastName: response.lastName,
+				createdAt: response.createdAt,
+				updatedAt: response.updatedAt,
+			};
+			return user;
 		} catch (error) {
 			console.error(this.name, "getUserByEmail error: ", error);
 			throw ErrorHandler.createError(
@@ -48,8 +61,21 @@ export default class UsersRepositories {
 		username: string
 	): Promise<IUser | null> {
 		try {
-			const user = await this.Model.findOne({ username });
-			return user ? user.toJSON() : null;
+			const response = await this.Model.findOne({ username });
+
+			if (response === null) return null;
+
+			const user: IUser = {
+				_id: response._id,
+				username: response.username,
+				email: response.email,
+				password: response.password,
+				firstName: response.firstName,
+				lastName: response.lastName,
+				createdAt: response.createdAt,
+				updatedAt: response.updatedAt,
+			};
+			return user;
 		} catch (error) {
 			console.error(this.name, "getUserByUsername error: ", error);
 			throw ErrorHandler.createError(
@@ -91,31 +117,29 @@ export default class UsersRepositories {
 	}
 	public static async getAllUsers() {
 		try {
-			
-			const response = await this.Model.find()
-			const allUsers: IUser[] = []
-			response.forEach(user => {
+			const response = await this.Model.find();
+			const allUsers: IUser[] = [];
+			response.forEach((user) => {
 				allUsers.push({
 					_id: user._id,
-				username: user.username,
-				email: user.email,
-				password: user.password,
-				firstName: user.firstName,
-				lastName: user.lastName,
-				createdAt: user.createdAt,
-				updatedAt: user.updatedAt,
-				})
-			})
-			return allUsers
+					username: user.username,
+					email: user.email,
+					password: user.password,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					createdAt: user.createdAt,
+					updatedAt: user.updatedAt,
+				});
+			});
+			return allUsers;
 		} catch (error) {
-			console.error(this.name, "getAllUsers error", error)
+			console.error(this.name, "getAllUsers error", error);
 			throw ErrorHandler.createError(
 				"InternalServerError",
 				"Internal server error"
 			);
 		}
 	}
-	
 
 	// public static async findAllLists(): Promise<IList[] | null> {
 	// 	try {
