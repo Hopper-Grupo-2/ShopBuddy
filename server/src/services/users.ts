@@ -66,6 +66,14 @@ export default class UsersServices {
 			throw error;
 		}
 	}
+	public static async getAllUsers(): Promise<IUser[]> {
+		try {
+			const allUsers = await this.Repository.getAllUsers();
+			return allUsers
+		} catch (error) {
+			throw error
+		}
+	}
 
 	// public static async getAllLists(): Promise<IList[] | null> {
 	// 	try {

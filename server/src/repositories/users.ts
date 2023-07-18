@@ -76,6 +76,33 @@ export default class UsersRepositories {
 			);
 		}
 	}
+	public static async getAllUsers() {
+		try {
+			
+			const response = await this.Model.find()
+			const allUsers: IUser[] = []
+			response.forEach(user => {
+				allUsers.push({
+					_id: user._id,
+				username: user.username,
+				email: user.email,
+				password: user.password,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				createdAt: user.createdAt,
+				updatedAt: user.updatedAt,
+				})
+			})
+			return allUsers
+		} catch (error) {
+			console.error(this.name, "getAllUsers error", error)
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+	
 
 	// public static async findAllLists(): Promise<IList[] | null> {
 	// 	try {

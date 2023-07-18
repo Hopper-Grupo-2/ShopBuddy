@@ -5,6 +5,7 @@ import UsersController from "../controllers/users";
 const usersRouter = Router();
 
 // GET /api/users/ - get all users (not useful)
+usersRouter.get("/", UsersController.getAllUsers)
 // GET /api/user/:userId - get a user by its id
 
 // PATCH /api/users/:userId - update a user's information
