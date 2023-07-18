@@ -15,6 +15,32 @@ export default class ListsRepositories {
 		}
 	}
 
+	public static async getListById(listId: string): Promise<IList | null> {
+		try {
+			const response = await this.Model.findOne({ _id: listId });
+
+			if (response === null) return null;
+
+			const list: IList = {
+				_id: response._id,
+				listName: response.listName,
+				products: response.products,
+				owner: response.owner,
+				members: response.members,
+				createdAt: response.createdAt,
+				updatedAt: response.updatedAt,
+			};
+
+			return list;
+		} catch (error) {
+			console.error(this.name, "getListById error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+
 	public static async createNewList(
 		listName: string,
 		userId: string
@@ -43,6 +69,25 @@ export default class ListsRepositories {
 			throw ErrorHandler.createError(
 				"InternalServerError",
 				"Error creating new list"
+			);
+		}
+	}
+
+	public static async isMember(
+		userId: string,
+		listId: string
+	): Promise<boolean> {
+		try {
+			const response = await this.Model.findOne({
+				_id: listId,
+				members: { $elemMatch: { userId } },
+			});
+			return response === null ? false : true;
+		} catch (error) {
+			console.error(this.name, "isMember error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Error verifying if the user is a member from the list"
 			);
 		}
 	}

@@ -7,8 +7,21 @@ export default class UsersRepositories {
 
 	public static async getUserById(userId: string): Promise<IUser | null> {
 		try {
-			const user = await this.Model.findOne({ userId });
-			return user ? user.toJSON() : null;
+			const response = await this.Model.findOne({ _id: userId });
+
+			if (response === null) return null;
+
+			const user: IUser = {
+				_id: response._id,
+				username: response.username,
+				email: response.email,
+				password: response.password,
+				firstName: response.firstName,
+				lastName: response.lastName,
+				createdAt: response.createdAt,
+				updatedAt: response.updatedAt,
+			};
+			return user;
 		} catch (error) {
 			console.error(this.name, "getUserById error: ", error);
 			throw ErrorHandler.createError(
