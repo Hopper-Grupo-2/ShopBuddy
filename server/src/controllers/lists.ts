@@ -72,4 +72,26 @@ export default class ListsController {
 			next(error);
 		}
 	}
-}
+	
+	public static async deleteList(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	  ): Promise<void> {
+		try {
+		  const user = req.user;
+		  const listId: string = req.params.listId;
+	
+		  if (!user)
+			throw ErrorHandler.createError(
+			  "UnauthorizedError",
+			  "Token does not contain the user's data"
+			);
+	
+		  await ListsServices.deleteList(listId, user._id as string);
+		  res.status(200).json({ error: null, message: 'List deleted successfully' });
+		} catch (error) {
+		  next(error);
+		}
+	  }
+	}

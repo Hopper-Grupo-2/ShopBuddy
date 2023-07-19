@@ -25,13 +25,58 @@ export default class MessagesRepositories {
 				createdAt: response.createdAt,
 			};
 
-			// should return all messages (do it later)
+			// should return all messages from the list (do it later)
 			return createdMessage;
 		} catch (error) {
-			console.error(this.name, "createNewUser error: ", error);
+			console.error(this.name, "createMessage error: ", error);
 			throw ErrorHandler.createError(
 				"InternalServerError",
 				"Error creating new message"
+			);
+		}
+	}
+
+	public static async getAllMessages() {
+		try {
+			const response = await this.Model.find();
+			const allMessages: IMessage[] = [];
+			response.forEach((message) => {
+				allMessages.push({
+					_id: message._id,
+					textContent: message.textContent,
+					userId: message.userId,
+					listId: message.listId,
+					createdAt: message.createdAt,
+				});
+			});
+			return allMessages;
+		} catch (error) {
+			console.error(this.name, "findAllMessages error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Error getting all messages"
+			);
+		}
+	}
+
+	public static async getMessageByListId(listId: string) {
+		try {
+			const response = await this.Model.find({ listId: listId });
+			const listMessages: IMessage[] = [];
+			response.forEach((message) => {
+				listMessages.push({
+					_id: message._id,
+					textContent: message.textContent,
+					userId: message.userId,
+					listId: message.listId,
+					createdAt: message.createdAt,
+				});
+			});
+			return listMessages;
+		} catch (error) {
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Error getting messages from the list"
 			);
 		}
 	}
