@@ -161,4 +161,28 @@ export default class ListsRepositories {
       );
     }
   }
+
+  public static async deleteMemberFromList(
+    listId: string,
+    memberId: string
+  ): Promise<IList | null> {
+    try {
+      await this.Model.updateOne(
+        { _id: listId },
+        {
+          $pull: { members: { userId: memberId } },
+          $set: { updatedAt: new Date() },
+        }
+      );
+
+      const updatedList = await this.getListById(listId);
+      return updatedList;
+    } catch (error) {
+      console.error(this.name, "deleteMemberFromList error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error deleting member with id ${memberId} from list with id: ${listId}`
+      );
+    }
+  }
 }

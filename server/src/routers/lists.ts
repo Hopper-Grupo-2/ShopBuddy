@@ -29,7 +29,11 @@ listsRouter.patch(
 // DELETE /api/lists/:listId - delete a list from a user by list id
 listsRouter.delete("/:listId", authenticate, ListsController.deleteList);
 
-// DELETE /api/lists/:listId/members - delete a member from a list
-// listsRouter.delete("/:listId/members", authenticate, ListsController.deleteMember);
+// DELETE /api/lists/:listId/members/:memberId - delete a member from a list
+listsRouter.delete(
+  "/:listId/members/:memberId",
+  authenticate,
+  ListsController.deleteMember
+);
 
 export { listsRouter };

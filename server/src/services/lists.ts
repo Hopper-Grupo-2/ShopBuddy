@@ -67,7 +67,7 @@ export default class ListsServices {
 
       if (!userExistsInList)
         throw ErrorHandler.createError(
-          "UnauthorizedError",
+          "NotFoundError",
           `User doesn't belong to list with Id ${listId}`
         );
 
@@ -121,6 +121,62 @@ export default class ListsServices {
         );
 
       const updatedList = await this.Repository.addNewMember(listId, memberId);
+
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async deleteMemberFromList(
+    listId: string,
+    memberId: string,
+    ownerId: string
+  ): Promise<IList | null> {
+    try {
+      const listBody: IList | null = await ListsRepositories.getListById(
+        listId
+      );
+
+      if (listBody === null)
+        throw ErrorHandler.createError("NotFoundError", "List not found");
+
+      if (String(listBody.owner) !== ownerId) {
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "User is not the owner of the list"
+        );
+      }
+
+      if (ownerId === memberId) {
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Owner can not be deleted from their list"
+        );
+      }
+
+      const user: IUser | null = await UsersRepositories.getUserById(memberId);
+
+      if (user === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Member user not found"
+        );
+
+      const userExistsInList = listBody.members.some(
+        (member) => String(member.userId) === memberId
+      );
+
+      if (!userExistsInList)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `User doesn't belong to list with Id ${listId}`
+        );
+
+      const updatedList = await this.Repository.deleteMemberFromList(
+        listId,
+        memberId
+      );
 
       return updatedList;
     } catch (error) {
