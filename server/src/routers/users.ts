@@ -2,8 +2,9 @@ import { Router } from "express";
 import UsersController from "../controllers/users";
 import authenticate from "../middlewares/authentication";
 //import UsersController from "../controllers/users";
-import userValidator from "../validators/userValidator";
-
+import userUpdateValidator from "../validators/userUpdateValidator";
+import userIdValidator from "../validators/userIdValidator";
+import handleValidation from "../validators/handle-validation";
 const usersRouter = Router();
 
 // GET /api/users/ - get all users (not useful)
@@ -14,11 +15,19 @@ usersRouter.get("/:userId", authenticate, UsersController.getUserById);
 usersRouter.patch(
     "/:userId",
     authenticate,
-    userValidator,
+    userIdValidator(),
+    userUpdateValidator(),
+    handleValidation,
     UsersController.updateUser
 );
 // DELETE /api/users/:userId - delete a user by user id
-usersRouter.delete("/:userId", authenticate, UsersController.deleteUser);
+usersRouter.delete(
+    "/:userId",
+    authenticate,
+    userIdValidator(),
+    handleValidation,
+    UsersController.deleteUser
+);
 // ------ Authentication Routes -------
 // POST /api/users/signup - create a new authenticated user
 usersRouter.post("/signup", UsersController.registerNewUser);

@@ -1,28 +1,22 @@
 {
-  "compilerOptions": {
-      "target": "es5",
-      "noEmitOnError": true,
-      "noImplicitAny": true,
-      "allowJs": true,
-      "declaration": true,
-      "emitDeclarationOnly": true,
-      "typeRoots": [
-        "./server/src/types",
-        "./node_modules/@types"
-      ],
-      "strict": true,
-      "lib": [
-          "es6",
-          "DOM"
-      ],
-      "outDir": "dist/",
-      "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true,
-      "moduleResolution": "node",
-      "baseUrl": ".",
-      "paths": {
-      "*": ["node_modules/*", "src/*"]
-      }
-  },
-  "include" : ["server/**/*", "server.ts"]
+    "compilerOptions": {
+        "target": "es5",
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "allowJs": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "typeRoots": ["./server/src/types", "./node_modules/@types"],
+        "strict": true,
+        "lib": ["es6", "DOM"],
+        "outDir": "dist/",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "*": ["node_modules/*", "src/*"]
+        }
+    },
+    "include": ["server/**/*", "server.ts"]
 }
