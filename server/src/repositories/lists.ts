@@ -118,8 +118,8 @@ export default class ListsRepositories {
 			if (!list) {
 				throw ErrorHandler.createError("BadRequest", "List not found");
 			}
-	
-			if (list.owner !== ownerId) {
+
+			if (list.owner.toString() !== ownerId) {
 				throw ErrorHandler.createError(
 					"UnauthorizedError",
 					"forbiddenError"
