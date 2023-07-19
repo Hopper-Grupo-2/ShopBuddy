@@ -91,4 +91,29 @@ export default class ListsRepositories {
 			);
 		}
 	}
+
+	public static async deleteList(listId: string, ownerId: string): Promise<void> {
+		try {
+			const list = await this.Model.findOne({ _id: listId });
+			if (!list) {
+				throw ErrorHandler.createError("BadRequest", "List not found");
+			}
+	
+			if (list.owner !== ownerId) {
+				throw ErrorHandler.createError(
+					"UnauthorizedError",
+					"forbiddenError"
+				);
+			}
+	
+			await this.Model.deleteOne({ _id: listId });
+		} catch (error) {
+			console.error(this.name, "deleteList error: ", error);
+			throw ErrorHandler.createError(
+				"InternalServerError",
+				"Internal server error"
+			);
+		}
+	}
+	
 }
