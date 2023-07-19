@@ -14,9 +14,14 @@ listsRouter.get("/", ListsController.getLists);
 listsRouter.post("/", authenticate, ListsController.postList);
 
 // PATCH /api/lists/:listId/products - update the products on a list
+listsRouter.patch(
+  "/:listId/products",
+  authenticate,
+  ListsController.patchProduct
+);
 // PATCH /api/lists/:listId/members - update the members on a list
 
 // DELETE /api/lists/:listId - delete a list from a user by list id
-listsRouter.delete("/:listId",authenticate, ListsController.deleteList)
+listsRouter.delete("/:listId", authenticate, ListsController.deleteList);
 
 export { listsRouter };
