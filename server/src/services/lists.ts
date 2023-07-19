@@ -16,6 +16,24 @@ export default class ListsServices {
 		}
 	}
 
+	public static async getListsByUserId(userId: string): Promise<IList[] | null> {
+		try {
+			const lists = await this.Repository.findAllListsByUserId(userId);
+			return lists || null;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	public static async getListsByListId(listId: string): Promise<IList[] | null> {
+		try {
+			const lists = await this.Repository.findAllListsByListId(listId);
+			return lists || null;
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	public static async createNewList(
 		listName: string,
 		userId: string

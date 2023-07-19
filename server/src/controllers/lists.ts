@@ -23,7 +23,29 @@ export default class ListsController {
 		res: Response,
 		next: NextFunction
 	): Promise<void> {
-		// GET /lists/:userId
+		const userId = req.params.userId
+
+		try {
+			const listsByUser = await ListsServices.getListsByUserId(userId);
+			res.status(200).json({ error: null, data: listsByUser });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public static async getListsByListId(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	): Promise<void> {
+		const listId = req.params.listId
+
+		try {
+			const listById = await ListsServices.getListsByListId(listId);
+			res.status(200).json({ error: null, data: listById });
+		} catch (error) {
+			next(error);
+		}
 	}
 
 	public static async postList(
@@ -50,6 +72,7 @@ export default class ListsController {
 			next(error);
 		}
 	}
+	
 	public static async deleteList(
 		req: Request,
 		res: Response,
