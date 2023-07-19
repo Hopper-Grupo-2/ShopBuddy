@@ -96,6 +96,11 @@ export default class UsersController {
             } = req.body;
 
             // validar dados de entrada depois se são vazios, o tipo etc
+            const errors: string[] = (req.query.errors as string[]) || [];
+
+            if (errors.length > 0) {
+                throw ErrorHandler.createError("UnprocessableEntity", errors);
+            }
 
             const user = {
                 username,
