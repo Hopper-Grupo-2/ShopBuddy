@@ -102,4 +102,32 @@ export default class ListsController {
       next(error);
     }
   }
+
+  public static async patchMembers(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId: string = req.params.listId;
+      const memberId: string = req.body.memberId;
+
+      const updatedList: IList | null = await ListsServices.addNewMember(
+        listId,
+        memberId,
+        user._id as string
+      );
+      res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

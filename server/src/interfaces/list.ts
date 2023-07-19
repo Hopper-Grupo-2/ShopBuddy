@@ -5,12 +5,12 @@ export default interface IList {
   listName: string;
   products: [
     {
-      productId: Schema.Types.ObjectId | string;
       name: string;
       quantity: Number;
       unit: string;
       price: Number;
       checked: Boolean;
+      _id: Schema.Types.ObjectId | string;
     }
   ];
   owner: Schema.Types.ObjectId | string;

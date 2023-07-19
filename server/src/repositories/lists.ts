@@ -137,4 +137,28 @@ export default class ListsRepositories {
       );
     }
   }
+
+  public static async addNewMember(
+    listId: string,
+    memberId: string
+  ): Promise<IList | null> {
+    try {
+      await this.Model.updateOne(
+        { _id: listId },
+        {
+          $push: { members: { userId: memberId } },
+          $set: { updatedAt: new Date() },
+        }
+      );
+
+      const updatedList = await this.getListById(listId);
+      return updatedList;
+    } catch (error) {
+      console.error(this.name, "addNewMember error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error inserting member with id ${memberId} into list with id: ${listId}`
+      );
+    }
+  }
 }

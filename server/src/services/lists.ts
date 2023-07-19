@@ -81,4 +81,50 @@ export default class ListsServices {
       throw error;
     }
   }
+
+  public static async addNewMember(
+    listId: string,
+    memberId: string,
+    ownerId: string
+  ): Promise<IList | null> {
+    try {
+      const listBody: IList | null = await ListsRepositories.getListById(
+        listId
+      );
+
+      if (listBody === null)
+        throw ErrorHandler.createError("NotFoundError", "List not found");
+
+      if (String(listBody.owner) !== ownerId) {
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "User is not the owner of the list"
+        );
+      }
+
+      const user: IUser | null = await UsersRepositories.getUserById(memberId);
+
+      if (user === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Member user not found"
+        );
+
+      const userExistsInList = listBody.members.some(
+        (member) => String(member.userId) === memberId
+      );
+
+      if (userExistsInList)
+        throw ErrorHandler.createError(
+          "Conflict",
+          `User already belong to list with Id ${listId}`
+        );
+
+      const updatedList = await this.Repository.addNewMember(listId, memberId);
+
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
