@@ -14,6 +14,7 @@ const errorNameToHttpStatusCode = {
   InvalidInputError: 400,
   ForbiddenError: 403,
   BadRequest: 410,
+  UnprocessableEntity: 422,
   Conflict: 409,
 };
 
@@ -22,7 +23,7 @@ export type ErrorNames = keyof typeof errorNameToHttpStatusCode;
 export default class ErrorHandler {
   public static errorNameToHttpStatusCode = errorNameToHttpStatusCode;
 
-  public static createError(name: ErrorNames, message: String) {
+  public static createError(name: ErrorNames, message: String | String[]) {
     return { name, message };
   }
 }

@@ -7,8 +7,11 @@ const listsRouter = Router();
 // GET /api/lists/ - get all lists from all users (not useful)
 listsRouter.get("/", ListsController.getLists);
 
-// GET /api/lists/:userId - get all lists from a user by user id
-// GET /api/lists/:listId - get a list by list id
+// GET /api/lists/:userId - get all lists from a user by user id    #FAZER
+listsRouter.get("/:userId", ListsController.getListsByUserId);
+
+// GET /api/lists/:listId - get a list by list id    #FAZER
+listsRouter.get("/:listId", ListsController.getListsByListId);
 
 // POST /api/lists - add a new list
 listsRouter.post("/", authenticate, ListsController.postList);
@@ -19,6 +22,7 @@ listsRouter.patch(
   authenticate,
   ListsController.patchProduct
 );
+
 // PATCH /api/lists/:listId/members - update the members on a list
 listsRouter.patch(
   "/:listId/members",

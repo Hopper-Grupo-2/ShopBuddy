@@ -16,6 +16,30 @@ export default class ListsRepositories {
     }
   }
 
+  public static async findAllListsByUserId(
+    userId: string
+  ): Promise<IList[] | null> {
+    try {
+      const lists = await this.Model.find({ owner: userId });
+      return lists || null;
+    } catch (error) {
+      console.error(this.name, "getListsByUserId error:", error);
+      throw error;
+    }
+  }
+
+  public static async findAllListsByListId(
+    listId: string
+  ): Promise<IList[] | null> {
+    try {
+      const lists = await this.Model.find({ _id: listId });
+      return lists || null;
+    } catch (error) {
+      console.error(this.name, "getListsByListId error:", error);
+      throw error;
+    }
+  }
+
   public static async getListById(listId: string): Promise<IList | null> {
     try {
       const response = await this.Model.findOne({ _id: listId });
