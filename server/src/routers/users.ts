@@ -6,13 +6,13 @@ import authenticate from "../middlewares/authentication";
 const usersRouter = Router();
 
 // GET /api/users/ - get all users (not useful)
-usersRouter.get("/", UsersController.getAllUsers)
+usersRouter.get("/", UsersController.getAllUsers);
 // GET /api/users/:userId - get a user by its id
-usersRouter.get("/:userId",authenticate, UsersController.getUserById)
+usersRouter.get("/:userId", authenticate, UsersController.getUserById);
 // PATCH /api/users/:userId - update a user's information
-
-// DELETE /api/lists/:listId - delete a list from a user by list id
-
+usersRouter.patch("/:userId", authenticate, UsersController.updateUser);
+// DELETE /api/users/:userId - delete a user by user id
+usersRouter.delete("/:userId", authenticate, UsersController.deleteUser);
 // ------ Authentication Routes -------
 // POST /api/users/signup - create a new authenticated user
 usersRouter.post("/signup", UsersController.registerNewUser);
