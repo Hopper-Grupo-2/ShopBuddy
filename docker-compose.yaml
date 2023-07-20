@@ -22,7 +22,6 @@ services:
             - mongodb-data:/data/db
         env_file:
             - .env
-            - server/config/.env
 
     app:
         build:
@@ -31,7 +30,7 @@ services:
         container_name: appshop
         restart: always
         env_file:
-            - server/config/.env
+            - .env
         ports:
             - "${PORT}:${PORT}"
         volumes:

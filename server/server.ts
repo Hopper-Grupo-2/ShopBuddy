@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: "./server/config/.env" });
+dotenv.config({ path: ".env" });
 
 // server.js
 import App from "./src/app";
@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "localhost";
 
 connectDB();
-
 
 app.server.listen(PORT, () => {
 	console.log(`Servidor rodando em http://${HOST}:${PORT}`);
