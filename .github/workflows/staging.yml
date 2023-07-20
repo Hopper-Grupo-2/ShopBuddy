@@ -80,6 +80,7 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
+                  echo "JWTSCRET=MYSECRET" >> .env
                   echo "NODE_ENV=staging" >> .env
                   cat .env
 
@@ -92,6 +93,7 @@ jobs:
                   echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
                   echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
                   echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
+                  echo "JWTSCRET=MYSECRET" >> .env
                   echo "NODE_ENV=staging" >> .env
                   cat .env
               # Add other variables as needed
