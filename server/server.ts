@@ -6,12 +6,17 @@ import App from "./src/app";
 import connectDB from "./src/database/mongodb";
 const app = new App();
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 443; // https
 const HOST = process.env.HOST || "localhost";
 
 connectDB();
 
+const PORT_HTTP = 80;
 
-app.server.listen(PORT, () => {
-	console.log(`Servidor rodando em http://${HOST}:${PORT}`);
+app.serverhttps.listen(PORT, HOST, () => {
+    console.log(`HTTPS Server is running on https://${HOST}:${PORT}`);
+});
+
+app.server.listen(PORT_HTTP, () => {
+    console.log(`HTTP Server is running on http://${HOST}:${PORT_HTTP}`);
 });
