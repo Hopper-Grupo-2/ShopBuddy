@@ -4,6 +4,7 @@ import ErrorHandler from "../errors";
 import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
 export default class ListsRepositories {
+  
   private static Model = Models.getInstance().listModel;
 
   public static async findAllLists(): Promise<IList[] | null> {
@@ -209,4 +210,3 @@ export default class ListsRepositories {
       );
     }
   }
-}

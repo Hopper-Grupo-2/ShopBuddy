@@ -10,7 +10,7 @@ const usersRouter = Router();
 // GET /api/users/ - get all users (not useful)
 usersRouter.get("/", UsersController.getAllUsers);
 // GET /api/users/:userId - get a user by its id
-usersRouter.get("/:userId", authenticate, UsersController.getUserById);
+usersRouter.get("/:userId", authenticate,userIdValidator, UsersController.getUserById);
 // PATCH /api/users/:userId - update a user's information
 usersRouter.patch(
     "/:userId",
