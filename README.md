@@ -11,4 +11,4 @@ Para inicializar o projeto, basta criar os arquivos .env, baseado no .env-exampl
 -   Estrutura inicial
 -   Runners self-hosted adicionados
 -   cicd is working
--   Primeiros endpoints criados
+-   Primeiros endpoints criados api/users api/lists
