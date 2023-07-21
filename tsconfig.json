@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "allowJs": true,
         "declaration": true,
-        "emitDeclarationOnly": true,
+        "emitDeclarationOnly": false,
         "typeRoots": ["./server/src/types", "./node_modules/@types"],
         "strict": true,
         "lib": ["es6", "DOM"],
