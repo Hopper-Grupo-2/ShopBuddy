@@ -20,6 +20,7 @@ import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 import { Link } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 const drawerWidth = 240;
 
@@ -36,13 +37,14 @@ export default function ResponsiveDrawer(props: Props) {
 	const { window } = props;
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 
+	const context = React.useContext(UserContext);
+
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
 
-	//get this info from the cookie:
 	const user = {
-		username: "Username",
+		username: context?.user?.username || "",
 	};
 
 	const links = [
