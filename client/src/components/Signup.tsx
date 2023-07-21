@@ -40,37 +40,56 @@ function Copyright(props: any) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function LogIn() {
+export default function SignUp() {
 	const context = React.useContext(UserContext);
 	const navigate = useNavigate();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		/* console.log({
+		console.log({
 			email: data.get("email"),
 			password: data.get("password"),
-		}); */
+		});
 		const credentials = {
 			email: data.get("email"),
 			password: data.get("password"),
+			username: data.get("username"),
+			firstName: data.get("firstName"),
+			lastName: data.get("lastName"),
 		};
 
-		if (credentials.email === null) {
-			return alert("Por favor, insira um e-mail");
-		}
+		const validation = validateCredentials(credentials);
+		if (validation !== null) return alert(validation);
 
-		if (credentials.password === null) {
-			return alert("Por favor, insira uma senha");
-		}
-
-		// i want to call login here
-		const loggedIn = await context?.login(
-			credentials.email.toString(),
-			credentials.password.toString()
+		const signedUp = await context?.signup(
+			credentials.email!.toString(),
+			credentials.password!.toString(),
+			credentials.username!.toString(),
+			credentials.firstName!.toString(),
+			credentials.lastName!.toString()
 		);
 
-		if (loggedIn) navigate("/");
+		if (signedUp) navigate("/login");
+	};
+
+	const validateCredentials = (credentials: any) => {
+		if (credentials.email === null) {
+			return "Por favor, insira um e-mail";
+		}
+		if (credentials.password === null) {
+			return "Por favor, insira uma senha";
+		}
+		if (credentials.username === null) {
+			return "Por favor, insira um nome de usuário";
+		}
+		if (credentials.firstName === null) {
+			return "Por favor, insira seu nome";
+		}
+		if (credentials.lastName === null) {
+			return "Por favor, insira seu sobrenome";
+		}
+		return null;
 	};
 
 	return (
@@ -89,7 +108,7 @@ export default function LogIn() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5">
-						Bem vindo ao ShopBuddy!
+						Cadastre-se no ShopBuddy!
 					</Typography>
 					<Box
 						component="form"
@@ -117,6 +136,33 @@ export default function LogIn() {
 							id="password"
 							autoComplete="current-password"
 						/>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							name="username"
+							label="Nome de usuário"
+							type="text"
+							id="username"
+						/>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							name="firstName"
+							label="Primeiro nome"
+							type="text"
+							id="firstName"
+						/>
+						<TextField
+							margin="normal"
+							required
+							fullWidth
+							name="lastName"
+							label="Sobrenome"
+							type="text"
+							id="lastName"
+						/>
 						<FormControlLabel
 							control={
 								<Checkbox value="remember" color="primary" />
@@ -129,12 +175,12 @@ export default function LogIn() {
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
 						>
-							entrar
+							cadastrar
 						</Button>
 						<Grid container justifyContent="center">
 							<Grid item>
-								<Link to="/signup">
-									{"Ainda não tem uma conta? Cadastre-se"}
+								<Link to="/login">
+									{"Já tem uma conta? Entre"}
 								</Link>
 							</Grid>
 						</Grid>

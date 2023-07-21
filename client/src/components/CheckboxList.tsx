@@ -10,8 +10,8 @@ import IItem from "../interfaces/iItem";
 
 interface CheckboxListProps {
 	items: Array<IItem>;
-	onCheck: (itemId: number) => void;
-	onRemove: (itemId: number) => void;
+	onCheck: (itemId: string) => void;
+	onRemove: (itemId: string) => void;
 }
 
 export default function CheckboxList(props: CheckboxListProps) {
@@ -20,17 +20,17 @@ export default function CheckboxList(props: CheckboxListProps) {
 			sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
 		>
 			{props.items.map((item) => {
-				const labelId = `checkbox-list-label-${item.id}`;
+				const labelId = `checkbox-list-label-${item._id}`;
 
 				return (
 					<ListItem
-						key={item.id}
+						key={item._id}
 						secondaryAction={
 							<IconButton
 								edge="end"
 								aria-label="delete"
 								onClick={() => {
-									props.onRemove(item.id);
+									props.onRemove(item._id);
 								}}
 							>
 								<DeleteIcon />
@@ -41,7 +41,7 @@ export default function CheckboxList(props: CheckboxListProps) {
 						<ListItemButton
 							role={undefined}
 							onClick={() => {
-								props.onCheck(item.id);
+								props.onCheck(item._id);
 							}}
 							dense
 						>
@@ -63,7 +63,7 @@ export default function CheckboxList(props: CheckboxListProps) {
 								id={labelId}
 								primary={`${item.name} ${item.quantity} ${
 									item.unit
-								} R$${(item.unitPrice * item.quantity)
+								} R$${(item.price * item.quantity)
 									.toFixed(2)
 									.replace(".", ",")}`}
 							/>
