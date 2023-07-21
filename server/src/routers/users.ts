@@ -7,6 +7,9 @@ import userIdValidator from "../validators/userIdValidator";
 import handleValidation from "../validators/handle-validation";
 const usersRouter = Router();
 
+// GET /api/users/me - get the authenticated user
+usersRouter.get("/me", authenticate, UsersController.getMe);
+
 // GET /api/users/ - get all users (not useful)
 usersRouter.get("/", UsersController.getAllUsers);
 // GET /api/users/:userId - get a user by its id

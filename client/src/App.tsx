@@ -1,4 +1,5 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RequireAuth } from "./components/RequireAuth";
 import Dashboard from "./views/dashboard/Dashboard";
 import ListPage from "./views/list/ListPage";
 import LoginPage from "./views/login/Login";
@@ -10,7 +11,11 @@ export default function App() {
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <Dashboard />,
+			element: (
+				<RequireAuth>
+					<Dashboard />
+				</RequireAuth>
+			),
 		},
 		{
 			path: "/list/:listId",
