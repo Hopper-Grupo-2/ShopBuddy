@@ -1,5 +1,5 @@
 version: "3.8"
-name: "shopbuddy"
+name: "shopbuddyprod"
 
 services:
     #redis:
@@ -19,33 +19,30 @@ services:
         ports:
             - "27:27017"
         volumes:
-            - mongodb-data:/data/db
+            - mongodb-data-prod:/data/db
         env_file:
             - .env
-            - server/config/.env
 
-    appshop:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: appshop
+    app:
+        build: .
+        container_name: appshop-prod
         restart: always
         env_file:
-            - server/config/.env
+            - .env
         ports:
             - "${PORT}:${PORT}"
         volumes:
-            - .:/app/
+            - /app
         # environment:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
         depends_on:
             # - redis
-            - mongo${NODE_ENV}
+            - mongo
         command: npm run start
 
 volumes:
-    mongodb-data:
+    mongodb-data-prod:
 
 networks:
     shop_buddy:

@@ -6,7 +6,8 @@ Aplicação para gerenciamento de listas de compras compartilhadas entre usuári
 
 Para inicializar o projeto, basta criar os arquivos .env, baseado no .env-example, dar um 'npm install', e depois 'docker-compose up'.
 
-# Testando
+# Etapas
 
--   trying to add runners
--   another tryyyyyyyyyyyyyy
+-   Estrutura inicial
+-   Runners self-hosted adicionados
+-   Primeiros endpoints criados /api/users /api/lists

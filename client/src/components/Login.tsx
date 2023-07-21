@@ -13,6 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { UserContext } from "../contexts/UserContext";
 
 function Copyright(props: any) {
 	return (
@@ -36,16 +37,37 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function LogIn() {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const context = React.useContext(UserContext);
+	const navigate = useNavigate();
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		console.log({
 			email: data.get("email"),
 			password: data.get("password"),
 		});
-	};
+		const credentials = {
+			email: data.get("email"),
+			password: data.get("password"),
+		};
 
-	const navigate = useNavigate();
+		if (credentials.email === null) {
+			return alert("Por favor, insira um e-mail");
+		}
+
+		if (credentials.password === null) {
+			return alert("Por favor, insira uma senha");
+		}
+
+		// i want to call login here
+		await context?.login(
+			credentials.email.toString(),
+			credentials.password.toString()
+		);
+
+		navigate("/");
+	};
 
 	return (
 		<ThemeProvider theme={defaultTheme}>
@@ -102,9 +124,6 @@ export default function LogIn() {
 							fullWidth
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
-							onClick={() => {
-								navigate("/");
-							}}
 						>
 							Log In
 						</Button>
