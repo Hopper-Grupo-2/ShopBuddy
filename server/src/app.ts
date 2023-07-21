@@ -1,5 +1,6 @@
 // server.js
 import express from "express";
+import path from "path";
 import http from "http";
 import handleAllErrors from "./middlewares/error-handler";
 import cookieParser from "cookie-parser";
@@ -17,6 +18,7 @@ export default class App {
 		this.app = express();
 		this.middleware();
 		this.router();
+		this.fallback();
 		this.server = http.createServer(this.app);
 		// this.websocket();
 	}
@@ -32,6 +34,14 @@ export default class App {
 		this.app.use("/api/users", usersRouter);
 		this.app.use("/api/messages", messagesRouter);
 		this.app.use(handleAllErrors);
+	}
+
+	private fallback(): void {
+		this.app.get("*", (req, res) => {
+			res.sendFile(
+				path.resolve(__dirname, "../../client/dist", "index.html")
+			);
+		});
 	}
 
 	// private websocket(): void {
