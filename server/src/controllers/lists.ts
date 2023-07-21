@@ -212,4 +212,33 @@ export default class ListsController {
       next(error);
     }
   }
+
+  public static async putProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId: string = req.params.listId;
+      const productId: string = req.params.productId;
+
+      const updatedList: IList | null = await ListsServices.invertProductCheck(
+        listId,
+        productId,
+        user._id as string
+      );
+
+      res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

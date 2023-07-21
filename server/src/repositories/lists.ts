@@ -237,6 +237,29 @@ export default class ListsRepositories {
     }
   }
 
+  public static async invertProductCheck(
+    listId: string,
+    productId: string,
+    newCheckValue: Boolean
+  ): Promise<IList | null> {
+    try {
+      await this.Model.updateOne(
+        { _id: listId, "products._id": productId },
+        {
+          $set: { "products.$.checked": newCheckValue, updatedAt: new Date() },
+        }
+      );
+
+      const updatedList = await this.getListById(listId);
+      return updatedList;
+    } catch (error) {
+      console.error(this.name, "invertProductCheck error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error inverting "checked" field of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
   //
   // last bracket from class
   //

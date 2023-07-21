@@ -47,4 +47,11 @@ listsRouter.delete(
   ListsController.deleteProduct
 );
 
+// PUT /api/lists/:listId/products/:productId - Altera o status de checked para true
+listsRouter.put(
+  "/:listId/products/:productId",
+  authenticate,
+  ListsController.putProduct
+);
+
 export { listsRouter };
