@@ -140,6 +140,28 @@ export default class ListsRepositories {
       );
     }
   }
+  public static async changeListOwner(
+    listId: string,
+    currentOwnerId: string,
+    newOwnerId: string
+): Promise<void> {
+    try {
+        const list = await this.Model.findOne({
+            _id: listId,
+            owner: currentOwnerId,
+        });
+        await this.Model.updateOne(
+            { _id: listId },
+            { $set: { owner: newOwnerId } }
+        );
+    } catch (error) {
+        console.error(this.name, "changeListOwner error: ", error);
+        throw ErrorHandler.createError(
+            "InternalServerError",
+            `Erro ao trocar o proprietário da lista com ID: ${listId}`
+        );
+    }
+}
 
   public static async addNewProduct(
     listId: string,
