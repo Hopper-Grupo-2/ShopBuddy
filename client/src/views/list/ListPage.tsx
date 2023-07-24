@@ -139,10 +139,8 @@ export default function List() {
 		}
 	};
 
-	// this function has to return a boolean for handling the button state later
-	// trust me we: will need this
 	const handleDeleteProduct = async (productId: string) => {
-		if (!confirm(`Do you want to remove the product ${productId}?`)) return;
+		//if (!confirm(`Do you want to remove the product ${productId}?`)) return;
 		try {
 			const response = await fetch(
 				`/api/lists/${list?._id}/products/${productId}`,
@@ -157,14 +155,37 @@ export default function List() {
 			const responseObj = await response.json();
 			if (response.ok) {
 				removeItem(productId);
-				return true;
 			} else {
 				throw responseObj.error;
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
 			alert("Failed to remove item: " + error.message);
-			return false;
+		}
+	};
+
+	const handleCheckProduct = async (productId: string) => {
+		//if (!confirm(`Do you want to check the product ${productId}?`)) return;
+		try {
+			const response = await fetch(
+				`/api/lists/${list?._id}/products/${productId}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				checkItem(productId);
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to toggle item: " + error.message);
 		}
 	};
 
@@ -199,7 +220,7 @@ export default function List() {
 						) : (
 							<CheckboxList
 								items={items}
-								onCheck={checkItem}
+								onCheck={handleCheckProduct}
 								onRemove={handleDeleteProduct}
 							/>
 						)}
