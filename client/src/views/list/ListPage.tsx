@@ -7,6 +7,40 @@ import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
 import { FormDialog } from "../../components/FormDialog";
+import ChatBox from "../../components/ChatBox";
+import styled from "@emotion/styled";
+
+const ContentContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex-wrap: wrap;
+
+	@media (max-width: 350px) {
+		flex-direction: column;
+	}
+`;
+
+const HeaderContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 10px;
+
+	@media (max-width: 600px) {
+		flex-direction: column;
+	}
+`;
+
+const ButtonContainer = styled.div`
+	display: flex;
+	gap: 10px;
+
+	@media (max-width: 600px) {
+		margin-bottom: 10px;
+	}
+`;
 
 // import "./ListPage.css";
 
@@ -105,6 +139,35 @@ export default function List() {
 		}
 	};
 
+	// this function has to return a boolean for handling the button state later
+	// trust me we: will need this
+	const handleDeleteProduct = async (productId: string) => {
+		if (!confirm(`Do you want to remove the product ${productId}?`)) return;
+		try {
+			const response = await fetch(
+				`/api/lists/${list?._id}/products/${productId}`,
+				{
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				removeItem(productId);
+				return true;
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to remove item: " + error.message);
+			return false;
+		}
+	};
+
 	function checkItem(itemId: string) {
 		const currentItem = items.filter((item) => item._id === itemId)[0];
 		const currentIndex = items.indexOf(currentItem);
@@ -120,30 +183,39 @@ export default function List() {
 	return (
 		<>
 			<PageStructure>
-				<h1>{list?.listName}</h1>
-				<SimplePaper>
-					{list?.products.length === 0 || !list ? (
-						<p style={{ textAlign: "center" }}>
-							A lista está vazia...
-						</p>
-					) : (
-						<CheckboxList
-							items={items}
-							onCheck={checkItem}
-							onRemove={removeItem}
-						/>
-					)}
-					<Button
-						sx={{
-							margin: "0px auto 15px auto",
-							display: "block",
-						}}
-						variant="contained"
-						onClick={handleOpenItemForm}
-					>
-						Adicionar item
-					</Button>
-				</SimplePaper>
+				<HeaderContainer>
+					<h1>{list?.listName}</h1>
+					<ButtonContainer>
+						<Button variant="contained">Members</Button>
+						<Button variant="contained">+ Add member</Button>
+					</ButtonContainer>
+				</HeaderContainer>
+				<ContentContainer>
+					<SimplePaper>
+						{list?.products.length === 0 || !list ? (
+							<p style={{ textAlign: "center" }}>
+								A lista está vazia...
+							</p>
+						) : (
+							<CheckboxList
+								items={items}
+								onCheck={checkItem}
+								onRemove={handleDeleteProduct}
+							/>
+						)}
+						<Button
+							sx={{
+								margin: "0px auto 15px auto",
+								display: "block",
+							}}
+							variant="contained"
+							onClick={handleOpenItemForm}
+						>
+							Adicionar item
+						</Button>
+					</SimplePaper>
+					<ChatBox />
+				</ContentContainer>
 			</PageStructure>
 			<FormDialog
 				title="Adicionar novo item"

@@ -17,7 +17,12 @@ interface CheckboxListProps {
 export default function CheckboxList(props: CheckboxListProps) {
 	return (
 		<List
-			sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+			sx={{
+				width: "100%",
+				height: "calc(70vh - 120px)",
+				bgcolor: "background.paper",
+				overflowY: "auto",
+			}}
 		>
 			{props.items.map((item) => {
 				const labelId = `checkbox-list-label-${item._id}`;
