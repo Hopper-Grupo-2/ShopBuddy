@@ -86,7 +86,7 @@ export default function List() {
 
 			if (response.ok) {
 				const listData = await response.json();
-				console.log(listData);
+				//console.log(listData);
 				setList(listData.data);
 				setItems(listData.data.products);
 			}
@@ -125,9 +125,6 @@ export default function List() {
 			if (response.ok) {
 				const products = responseObj.data.products;
 				setItems(products);
-				//alert("Item adicionado com sucesso!");
-				console.log(responseObj);
-				//setFetchTrigger(!fetchTrigger);
 				return true;
 			} else {
 				throw responseObj.error;
@@ -213,7 +210,7 @@ export default function List() {
 				</HeaderContainer>
 				<ContentContainer>
 					<SimplePaper>
-						{list?.products.length === 0 || !list ? (
+						{items.length === 0 ? (
 							<p style={{ textAlign: "center" }}>
 								A lista está vazia...
 							</p>
