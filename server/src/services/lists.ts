@@ -28,11 +28,9 @@ export default class ListsServices {
     }
   }
 
-  public static async getListsByListId(
-    listId: string
-  ): Promise<IList[] | null> {
+  public static async getListByListId(listId: string): Promise<IList | null> {
     try {
-      const lists = await this.Repository.findAllListsByListId(listId);
+      const lists = await this.Repository.getListById(listId);
       return lists || null;
     } catch (error) {
       throw error;
@@ -198,6 +196,96 @@ export default class ListsServices {
       const updatedList = await this.Repository.deleteMemberFromList(
         listId,
         memberId
+      );
+
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async deleteProductFromList(
+    listId: string,
+    productId: string,
+    userId: string
+  ): Promise<IList | null> {
+    try {
+      const listBody: IList | null = await ListsRepositories.getListById(
+        listId
+      );
+
+      if (listBody === null)
+        throw ErrorHandler.createError("NotFoundError", "List not found");
+
+      const userExistsInList = listBody.members.some(
+        (member) => String(member.userId) === userId
+      );
+
+      if (!userExistsInList)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `User doesn't belong to list with Id ${listId}`
+        );
+
+      const productExistsInList = listBody.products.some(
+        (product) => String(product._id) === productId
+      );
+
+      if (!productExistsInList)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `Product doesn't exist in list with Id ${listId}`
+        );
+
+      const updatedList = await this.Repository.deleteProductFromList(
+        listId,
+        productId
+      );
+
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async invertProductCheck(
+    listId: string,
+    productId: string,
+    userId: string
+  ): Promise<IList | null> {
+    try {
+      const listBody: IList | null = await ListsRepositories.getListById(
+        listId
+      );
+
+      if (listBody === null)
+        throw ErrorHandler.createError("NotFoundError", "List not found");
+
+      const userExistsInList = listBody.members.some(
+        (member) => String(member.userId) === userId
+      );
+
+      if (!userExistsInList)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `User doesn't belong to list with Id ${listId}`
+        );
+
+      const product = listBody.products.find(
+        (product) => String(product._id) === productId
+      );
+
+      if (!product)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `Product doesn't exist in list with Id ${listId}`
+        );
+      const newCheckValue = !product.checked;
+
+      const updatedList = await this.Repository.invertProductCheck(
+        listId,
+        productId,
+        newCheckValue
       );
 
       return updatedList;

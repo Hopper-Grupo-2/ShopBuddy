@@ -34,7 +34,7 @@ export default class ListsController {
     }
   }
 
-  public static async getListsByListId(
+  public static async getListByListId(
     req: Request,
     res: Response,
     next: NextFunction
@@ -42,7 +42,7 @@ export default class ListsController {
     const listId = req.params.listId;
 
     try {
-      const listById = await ListsServices.getListsByListId(listId);
+      const listById = await ListsServices.getListByListId(listId);
       res.status(200).json({ error: null, data: listById });
     } catch (error) {
       next(error);
@@ -89,9 +89,10 @@ export default class ListsController {
         );
 
       await ListsServices.deleteList(listId, user._id as string);
-      res
-        .status(200)
-        .json({ error: null, message: "List deleted successfully" });
+      res.status(200).json({
+        error: null,
+        message: "List deleted successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -176,6 +177,65 @@ export default class ListsController {
           memberId,
           user._id as string
         );
+      res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async deleteProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId: string = req.params.listId;
+      const productId: string = req.params.productId;
+
+      const updatedList: IList | null =
+        await ListsServices.deleteProductFromList(
+          listId,
+          productId,
+          user._id as string
+        );
+
+      res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async putProduct(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId: string = req.params.listId;
+      const productId: string = req.params.productId;
+
+      const updatedList: IList | null = await ListsServices.invertProductCheck(
+        listId,
+        productId,
+        user._id as string
+      );
+
       res.status(200).json({ error: null, data: updatedList });
     } catch (error) {
       next(error);

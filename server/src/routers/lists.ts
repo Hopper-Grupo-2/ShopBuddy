@@ -8,10 +8,10 @@ const listsRouter = Router();
 listsRouter.get("/", ListsController.getLists);
 
 // GET /api/lists/:userId - get all lists from a user by user id    #FAZER
-listsRouter.get("/:userId", ListsController.getListsByUserId);
+listsRouter.get("/user/:userId", ListsController.getListsByUserId);
 
 // GET /api/lists/:listId - get a list by list id    #FAZER
-listsRouter.get("/:listId", ListsController.getListsByListId);
+listsRouter.get("/:listId", ListsController.getListByListId);
 
 // POST /api/lists - add a new list
 listsRouter.post("/", authenticate, ListsController.postList);
@@ -38,6 +38,20 @@ listsRouter.delete(
   "/:listId/members/:memberId",
   authenticate,
   ListsController.deleteMember
+);
+
+// DELETE /api/lists/:listId/products/:productId - delete a product from a list
+listsRouter.delete(
+  "/:listId/products/:productId",
+  authenticate,
+  ListsController.deleteProduct
+);
+
+// PUT /api/lists/:listId/products/:productId - Altera o status de checked para true
+listsRouter.put(
+  "/:listId/products/:productId",
+  authenticate,
+  ListsController.putProduct
 );
 
 export { listsRouter };

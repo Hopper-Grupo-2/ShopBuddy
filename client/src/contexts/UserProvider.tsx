@@ -18,7 +18,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			if (response.ok) {
 				const userData = await response.json();
-				setUser(userData);
+				setUser(userData.data);
 			}
 			setLoading(false);
 		};
@@ -39,12 +39,97 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			const responseObj = await response.json();
 			if (response.ok) {
 				setUser(responseObj.data);
+				return true;
 			} else {
-				throw new Error(responseObj.error);
+				throw responseObj.error;
 			}
-		} catch (error) {
-			console.error("Error logging in", error);
-			alert("Failed to log in, please try again.");
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to log in: " + error.message);
+			return false;
+		}
+	};
+
+	const signup = async (
+		email: string,
+		password: string,
+		username: string,
+		firstName: string,
+		lastName: string
+	) => {
+		try {
+			const response = await fetch("/api/users/signup", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email,
+					password,
+					username,
+					firstName,
+					lastName,
+				}),
+			});
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				alert("Usuário cadastrado com sucesso!");
+				return true;
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to create user: " + error.message);
+			return false;
+		}
+	};
+
+	const editUser = async (
+		userId: string,
+		email: string,
+		username: string,
+		oldPassword: string,
+		newPassword: string,
+		firstName: string,
+		lastName: string
+	) => {
+		try {
+			console.log({
+				email,
+				username,
+				oldPassword,
+				newPassword,
+				firstName,
+				lastName,
+			});
+			const response = await fetch(`/api/users/${userId}`, {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email,
+					username,
+					oldPassword,
+					newPassword,
+					firstName,
+					lastName,
+				}),
+			});
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				alert("Usuário atualizado com sucesso!");
+				return true;
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to edit user: " + error.message);
+			return false;
 		}
 	};
 
@@ -65,7 +150,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 	}
 
 	return (
-		<UserContext.Provider value={{ user, setUser, login }}>
+		<UserContext.Provider
+			value={{ user, setUser, login, signup, editUser }}
+		>
 			{children}
 		</UserContext.Provider>
 	);
