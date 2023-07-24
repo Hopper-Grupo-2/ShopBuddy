@@ -89,5 +89,5 @@ jobs:
             #- run: pm2 restart productionapp
             - run: docker-compose down
             - run: docker rm -f appshop-staging
-            #- run: docker rmi shopbuddystaging-app
+            - run: docker rmi shopbuddystaging-app
             - run: docker-compose -f docker-compose.staging.yaml up -d
