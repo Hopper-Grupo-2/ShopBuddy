@@ -39,7 +39,7 @@ services:
         depends_on:
             # - redis
             - mongo
-        command: npm run start
+        command: sh -c "npm run prestart && npm run start"
 
 volumes:
     mongodb-data-staging:
