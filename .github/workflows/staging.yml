@@ -87,4 +87,6 @@ jobs:
             - run: npm run build --if-present
             #- run: npm run test
             #- run: pm2 restart productionapp
+            - run: docker-compose down
+            - run: docker rmi shopbuddystaging-app
             - run: docker-compose -f docker-compose.staging.yaml up -d
