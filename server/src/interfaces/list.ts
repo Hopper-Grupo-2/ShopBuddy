@@ -14,7 +14,11 @@ export default interface IList {
     }
   ];
   owner: Schema.Types.ObjectId | string;
-  members: [{ userId: Schema.Types.ObjectId | string }];
+  members: IMember[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IMember{
+  userId: Schema.Types.ObjectId | string 
 }
