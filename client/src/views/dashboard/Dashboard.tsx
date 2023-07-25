@@ -98,7 +98,7 @@ export default function Dashboard() {
 	return (
 		<>
 			<PageStructure>
-				<h1>Bem vinde ao ShopBuddy -lets adicionou pre start!</h1>
+				<h1>Bem vindo(a) ao ShopBuddy!</h1>
 				<Button
 					sx={{ marginBottom: "30px" }}
 					variant="contained"
