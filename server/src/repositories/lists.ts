@@ -20,7 +20,7 @@ export default class ListsRepositories {
     userId: string
   ): Promise<IList[] | null> {
     try {
-      const lists = await this.Model.find({ owner: userId });
+      const lists = await this.Model.find({ "members.userId": userId });
       return lists || null;
     } catch (error) {
       console.error(this.name, "getListsByUserId error:", error);
@@ -144,24 +144,24 @@ export default class ListsRepositories {
     listId: string,
     currentOwnerId: string,
     newOwnerId: string
-): Promise<void> {
+  ): Promise<void> {
     try {
-        const list = await this.Model.findOne({
-            _id: listId,
-            owner: currentOwnerId,
-        });
-        await this.Model.updateOne(
-            { _id: listId },
-            { $set: { owner: newOwnerId } }
-        );
+      const list = await this.Model.findOne({
+        _id: listId,
+        owner: currentOwnerId,
+      });
+      await this.Model.updateOne(
+        { _id: listId },
+        { $set: { owner: newOwnerId } }
+      );
     } catch (error) {
-        console.error(this.name, "changeListOwner error: ", error);
-        throw ErrorHandler.createError(
-            "InternalServerError",
-            `Erro ao trocar o proprietário da lista com ID: ${listId}`
-        );
+      console.error(this.name, "changeListOwner error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Erro ao trocar o proprietário da lista com ID: ${listId}`
+      );
     }
-}
+  }
 
   public static async addNewProduct(
     listId: string,
