@@ -9,6 +9,8 @@ import IList from "../../interfaces/iList";
 import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
+import { MembersModal } from "../../components/MembersModal";
+import IUser from "../../interfaces/iUser";
 
 const ContentContainer = styled.div`
 	display: flex;
@@ -76,6 +78,12 @@ export default function List() {
 	const [list, setList] = useState<IList>();
 	const [items, setItems] = useState<Array<IItem>>([]);
 	const [openItemForm, setOpenItemForm] = useState(false);
+	const [openMemberForm, setOpenMemberForm] = useState(false);
+
+	// create use state to save members
+	const [members, setMembers] = useState<Array<IUser>>([]);
+	// members
+	const [showMembers, setShowMembers] = useState(false);
 
 	useEffect(() => {
 		const fetchList = async () => {
@@ -93,13 +101,50 @@ export default function List() {
 		};
 
 		fetchList();
+
+		// fazer um fetch que pega os membros baseado no id
+
+		const fetchMembers = async () => {
+			console.log("esse é o list id:", params.listId);
+			const response = await fetch(
+				`/api/lists/${params.listId}/members`,
+				{
+					method: "GET",
+					credentials: "include", // Ensure credentials are sent
+				}
+			);
+
+			if (response.ok) {
+				const membersData = await response.json();
+				console.log("members:", membersData);
+				setMembers(membersData.data as IUser[]);
+			}
+		};
+
+		fetchMembers();
 	}, []);
 
 	const handleOpenItemForm = () => {
 		setOpenItemForm(true);
 	};
-	const handleCloseListForm = () => {
+	const handleCloseItemForm = () => {
 		setOpenItemForm(false);
+	};
+
+	const handleOpenMemberForm = () => {
+		setOpenMemberForm(true);
+	};
+	const handleCloseMemberForm = () => {
+		setOpenMemberForm(false);
+	};
+
+	//show/hide members
+	const handleShowMembers = () => {
+		setShowMembers(true);
+	};
+
+	const handleHideMembers = () => {
+		setShowMembers(false);
 	};
 
 	const createNewItem = async (formData: Record<string, string>) => {
@@ -132,6 +177,39 @@ export default function List() {
 		} catch (error: any) {
 			console.error(error.name, error.message);
 			alert("Failed to add item: " + error.message);
+			return false;
+		}
+	};
+
+	const addMember = async (formData: Record<string, string>) => {
+		try {
+			const response = await fetch(
+				`/api/lists/${params.listId}/members`,
+				{
+					method: "PATCH",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						username: formData["username"],
+					}),
+				}
+			);
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				alert(
+					"Membro adicionado com sucesso! Recarregue a página (por enquanto)"
+				);
+				//const products = responseObj.data.products;
+				//setItems(products);
+				return true;
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to add member: " + error.message);
 			return false;
 		}
 	};
@@ -204,8 +282,15 @@ export default function List() {
 				<HeaderContainer>
 					<h1>{list?.listName}</h1>
 					<ButtonContainer>
-						<Button variant="contained">Members</Button>
-						<Button variant="contained">+ Add member</Button>
+						<Button variant="contained" onClick={handleShowMembers}>
+							Members
+						</Button>
+						<Button
+							variant="contained"
+							onClick={handleOpenMemberForm}
+						>
+							+ Add member
+						</Button>
 					</ButtonContainer>
 				</HeaderContainer>
 				<ContentContainer>
@@ -232,7 +317,7 @@ export default function List() {
 							Adicionar item
 						</Button>
 					</SimplePaper>
-					<ChatBox />
+					{list ? <ChatBox listId={list._id} /> : null}
 				</ContentContainer>
 			</PageStructure>
 			<FormDialog
@@ -244,8 +329,23 @@ export default function List() {
 					{ id: "price", label: "Preço/unidade", type: "text" },
 				]}
 				open={openItemForm}
-				handleClose={handleCloseListForm}
+				handleClose={handleCloseItemForm}
 				handleSubmit={createNewItem}
+			/>
+			<FormDialog
+				title="Adicionar membro"
+				fields={[
+					{ id: "username", label: "Nome do usuário", type: "text" },
+				]}
+				open={openMemberForm}
+				handleClose={handleCloseMemberForm}
+				handleSubmit={addMember}
+			/>
+			<MembersModal
+				title="Todos os membros da lista"
+				members={members}
+				open={showMembers}
+				handleClose={handleHideMembers}
 			/>
 		</>
 	);

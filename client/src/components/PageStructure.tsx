@@ -43,6 +43,12 @@ export default function ResponsiveDrawer(props: Props) {
 		setMobileOpen(!mobileOpen);
 	};
 
+	const handleLogout = async () => {
+		await fetch("/api/users/logout", {
+			method: "DELETE",
+		});
+	};
+
 	const user = {
 		username: context?.user?.username || "",
 	};
@@ -82,7 +88,7 @@ export default function ResponsiveDrawer(props: Props) {
 						component={Link}
 						to={page.route}
 					>
-						<ListItemButton>
+						<ListItemButton onClick={handleLogout}>
 							<ListItemIcon>{page.icon}</ListItemIcon>
 							<ListItemText primary={page.text} />
 						</ListItemButton>
