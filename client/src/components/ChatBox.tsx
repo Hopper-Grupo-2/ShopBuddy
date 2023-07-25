@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { TextField, IconButton, Typography, Paper } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import styled from "@emotion/styled";
-
-interface Message {
-	id: number;
-	text: string;
-	sender: string;
-}
+import { UserContext } from "../contexts/UserContext";
+import IMessage from "../interfaces/iMessage";
 
 const ChatContainer = styled.div`
 	display: flex;
@@ -44,6 +40,7 @@ const MessageBox = styled(Paper)<{ sender: string }>`
 	background-color: ${(props) =>
 		props.sender === "user" ? "#4caf50" : "#f1f1f1"};
 	color: ${(props) => (props.sender === "user" ? "white" : "black")};
+	word-wrap: break-word;
 `;
 
 const MessageForm = styled.form`
@@ -52,10 +49,32 @@ const MessageForm = styled.form`
 	align-items: center;
 `;
 
-const Chat: React.FC = () => {
-	const [messages, setMessages] = useState<Message[]>([]);
+interface ChatProps {
+	listId: string;
+}
+
+export default function ChatBox(props: ChatProps) {
+	const context = useContext(UserContext);
+	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [currentMessage, setCurrentMessage] = useState("");
 	const chatRef = useRef<HTMLDivElement | null>(null);
+
+	useEffect(() => {
+		const fetchMessages = async () => {
+			const response = await fetch(`/api/messages/${props.listId}`, {
+				method: "GET",
+				credentials: "include", // Ensure credentials are sent
+			});
+
+			if (response.ok) {
+				const messages = await response.json();
+				//console.log(listData);
+				setMessages(messages.data);
+			}
+		};
+
+		fetchMessages();
+	}, []);
 
 	useEffect(() => {
 		if (chatRef.current) {
@@ -67,17 +86,39 @@ const Chat: React.FC = () => {
 		setCurrentMessage(e.target.value);
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (currentMessage.trim() === "") return;
 
-		const newMessage: Message = {
-			id: messages.length + 1,
+		/* const newMessage: Message = {
+			//id: messages.length + 1,
 			text: currentMessage,
 			sender: "user", // just for demonstration, replace 'user' with actual user id or name
-		};
+		}; */
 
-		setMessages((prev) => [...prev, newMessage]);
+		try {
+			const response = await fetch(`/api/messages/${props.listId}`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					textContent: currentMessage,
+				}),
+			});
+
+			const responseObj = await response.json();
+			if (response.ok) {
+				const newMessage = responseObj.data;
+				setMessages((prev) => [...prev, newMessage]);
+			} else {
+				throw responseObj.error;
+			}
+		} catch (error: any) {
+			console.error(error.name, error.message);
+			alert("Failed to send message: " + error.message);
+		}
+		//setMessages((prev) => [...prev, newMessage]);
 		setCurrentMessage("");
 	};
 
@@ -86,14 +127,20 @@ const Chat: React.FC = () => {
 			<ChatSection ref={chatRef}>
 				{messages.map((message) => (
 					<MessageBox
-						key={message.id}
-						sender={message.sender}
+						key={message._id}
+						sender={
+							message.userId === context?.user?._id
+								? "user"
+								: message.userId //change to username later
+						}
 						elevation={3}
 					>
 						<Typography variant="caption">
-							{message.sender}
+							{message.userId}
 						</Typography>
-						<Typography variant="body1">{message.text}</Typography>
+						<Typography variant="body1">
+							{message.textContent}
+						</Typography>
 					</MessageBox>
 				))}
 			</ChatSection>
@@ -112,6 +159,4 @@ const Chat: React.FC = () => {
 			</MessageForm>
 		</ChatContainer>
 	);
-};
-
-export default Chat;
+}
