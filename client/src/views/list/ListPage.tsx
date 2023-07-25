@@ -191,7 +191,7 @@ export default function List() {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						memberId: formData["memberId"],
+						username: formData["username"],
 					}),
 				}
 			);
@@ -335,7 +335,7 @@ export default function List() {
 			<FormDialog
 				title="Adicionar membro"
 				fields={[
-					{ id: "name", label: "Endereço de e-mail", type: "email" },
+					{ id: "username", label: "Nome do usuário", type: "text" },
 				]}
 				open={openMemberForm}
 				handleClose={handleCloseMemberForm}

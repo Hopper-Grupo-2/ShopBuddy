@@ -143,7 +143,7 @@ export default class ListsServices {
 
 	public static async addNewMember(
 		listId: string,
-		memberId: string,
+		username: string,
 		ownerId: string
 	): Promise<IList | null> {
 		try {
@@ -164,9 +164,8 @@ export default class ListsServices {
 				);
 			}
 
-			const user: IUser | null = await UsersRepositories.getUserById(
-				memberId
-			);
+			const user: IUser | null =
+				await UsersRepositories.getUserByUsername(username);
 
 			if (user === null)
 				throw ErrorHandler.createError(
@@ -175,18 +174,18 @@ export default class ListsServices {
 				);
 
 			const userExistsInList = listBody.members.some(
-				(member) => String(member.userId) === memberId
+				(member) => String(member.userId) === String(user._id)
 			);
 
 			if (userExistsInList)
 				throw ErrorHandler.createError(
 					"Conflict",
-					`User already belong to list with Id ${listId}`
+					`User already belongs to list with Id ${listId}`
 				);
 
 			const updatedList = await this.Repository.addNewMember(
 				listId,
-				memberId
+				String(user._id)
 			);
 
 			return updatedList;
