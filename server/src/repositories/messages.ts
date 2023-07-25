@@ -72,6 +72,9 @@ export default class MessagesRepositories {
 					createdAt: message.createdAt,
 				});
 			});
+			listMessages.sort(
+				(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+			);
 			return listMessages;
 		} catch (error) {
 			throw ErrorHandler.createError(
