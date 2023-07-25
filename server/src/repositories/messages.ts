@@ -73,7 +73,7 @@ export default class MessagesRepositories {
 				});
 			});
 			listMessages.sort(
-				(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+				(a, b) => a.createdAt.getTime() - b.createdAt.getTime()
 			);
 			return listMessages;
 		} catch (error) {
