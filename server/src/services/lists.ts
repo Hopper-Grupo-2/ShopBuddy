@@ -28,10 +28,41 @@ export default class ListsServices {
 		}
 	}
 
-	public static async getListByListId(listId: string): Promise<IList | null> {
+	public static async getListByListId(listId: string): Promise<IList> {
 		try {
-			const lists = await this.Repository.getListById(listId);
-			return lists || null;
+			const list = await this.Repository.getListById(listId);
+			if (list === null)
+				throw ErrorHandler.createError(
+					"NotFoundError",
+					"List does not exist"
+				);
+
+			return list;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	public static async getMembersByListId(listId: string): Promise<IUser[]> {
+		try {
+			const list = await this.Repository.getListById(listId);
+
+			if (list === null)
+				throw ErrorHandler.createError(
+					"NotFoundError",
+					"List does not exist"
+				);
+
+			let members: IUser[] = [];
+
+			for (const element of list.members) {
+				const userId = element.userId.toString();
+				const member = await UsersRepositories.getUserById(userId);
+
+				if (member !== null) members.push(member);
+			}
+
+			return members;
 		} catch (error) {
 			throw error;
 		}

@@ -9,6 +9,8 @@ import IList from "../../interfaces/iList";
 import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
+import { MembersModal } from "../../components/MembersModal";
+import IUser from "../../interfaces/iUser";
 
 const ContentContainer = styled.div`
 	display: flex;
@@ -78,6 +80,11 @@ export default function List() {
 	const [openItemForm, setOpenItemForm] = useState(false);
 	const [openMemberForm, setOpenMemberForm] = useState(false);
 
+	// create use state to save members
+	const [members, setMembers] = useState<Array<IUser>>([]);
+	// members
+	const [showMembers, setShowMembers] = useState(false);
+
 	useEffect(() => {
 		const fetchList = async () => {
 			const response = await fetch(`/api/lists/${params.listId}`, {
@@ -94,6 +101,27 @@ export default function List() {
 		};
 
 		fetchList();
+
+		// fazer um fetch que pega os membros baseado no id
+
+		const fetchMembers = async () => {
+			console.log("esse é o list id:", params.listId);
+			const response = await fetch(
+				`/api/lists/${params.listId}/members`,
+				{
+					method: "GET",
+					credentials: "include", // Ensure credentials are sent
+				}
+			);
+
+			if (response.ok) {
+				const membersData = await response.json();
+				console.log("members:", membersData);
+				setMembers(membersData.data as IUser[]);
+			}
+		};
+
+		fetchMembers();
 	}, []);
 
 	const handleOpenItemForm = () => {
@@ -108,6 +136,15 @@ export default function List() {
 	};
 	const handleCloseMemberForm = () => {
 		setOpenMemberForm(false);
+	};
+
+	//show/hide members
+	const handleShowMembers = () => {
+		setShowMembers(true);
+	};
+
+	const handleHideMembers = () => {
+		setShowMembers(false);
 	};
 
 	const createNewItem = async (formData: Record<string, string>) => {
@@ -245,7 +282,9 @@ export default function List() {
 				<HeaderContainer>
 					<h1>{list?.listName}</h1>
 					<ButtonContainer>
-						<Button variant="contained">Members</Button>
+						<Button variant="contained" onClick={handleShowMembers}>
+							Members
+						</Button>
 						<Button
 							variant="contained"
 							onClick={handleOpenMemberForm}
@@ -301,6 +340,12 @@ export default function List() {
 				open={openMemberForm}
 				handleClose={handleCloseMemberForm}
 				handleSubmit={addMember}
+			/>
+			<MembersModal
+				title="Todos os membros da lista"
+				members={members}
+				open={showMembers}
+				handleClose={handleHideMembers}
 			/>
 		</>
 	);
