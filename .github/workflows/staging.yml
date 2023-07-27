@@ -91,3 +91,5 @@ jobs:
             - run: docker rm -f appshop-staging
             - run: docker rmi shopbuddystaging-app
             - run: docker-compose -f docker-compose.staging.yaml up -d
+            - run: yes | docker system prune -a
+            - run: rm -rf ~/.cache/*

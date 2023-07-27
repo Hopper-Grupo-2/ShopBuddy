@@ -12,12 +12,12 @@ services:
     #    env_file:
     #        - .env
 
-    mongo:
+    mongotest:
         build: ./server/src/database/
-        container_name: mongo${NODE_ENV}
-        restart: always
+        container_name: mongotest
+        #restart: always
         ports:
-            - "28:27017"
+            - "30:27017"
         volumes:
             - mongodb-data-test:/data/db
         env_file:
@@ -26,11 +26,10 @@ services:
     app:
         build: .
         container_name: appshop-test
-        restart: always
         env_file:
             - .env
         ports:
-            - "${PORT}:${PORT}"
+            - "4019:4019"
         volumes:
             - /app
         # environment:
@@ -38,7 +37,7 @@ services:
         #   - MONGO_DB=mongo
         depends_on:
             # - redis
-            - mongo
+            - mongotest
         command: npm run test
 
 volumes:
