@@ -114,11 +114,10 @@ export default function Dashboard() {
 							key={list._id}
 							title={list.listName}
 							date={new Date(list.createdAt)}
-							total={list.products.reduce(
-								(acc, product) =>
-									acc + product.price * product.quantity,
+							total = {list.products.reduce(
+								(acc, product) => acc + product.price * product.quantity,
 								0
-							)}
+							  )}
 							action={() => {
 								navigate("/list/" + list._id);
 							}}
