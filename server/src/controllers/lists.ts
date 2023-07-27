@@ -4,6 +4,7 @@ import IUser from "../interfaces/user";
 import IList from "../interfaces/list";
 import ErrorHandler from "../errors";
 import IProduct from "../interfaces/product";
+import Websocket from "../websocket";
 
 export default class ListsController {
 	public static async getLists(
@@ -58,7 +59,7 @@ export default class ListsController {
 		try {
 			const membersById = await ListsServices.getMembersByListId(listId);
 
-			console.log("PEGUEI TUDO:", membersById);
+			//console.log("PEGUEI TUDO:", membersById);
 			res.status(200).json({ error: null, data: membersById });
 		} catch (error) {
 			next(error);
@@ -136,6 +137,16 @@ export default class ListsController {
 				productBody,
 				user._id as string
 			);
+
+			//websocket
+			const websocket = Websocket.getIstance();
+			websocket.broadcastToList(
+				listId,
+				user._id as string,
+				"addProduct",
+				updatedList?.products
+			);
+
 			res.status(200).json({ error: null, data: updatedList });
 		} catch (error) {
 			next(error);
@@ -223,6 +234,14 @@ export default class ListsController {
 					user._id as string
 				);
 
+			const websocket = Websocket.getIstance();
+			websocket.broadcastToList(
+				listId,
+				user._id as string,
+				"deleteProduct",
+				productId
+			);
+
 			res.status(200).json({ error: null, data: updatedList });
 		} catch (error) {
 			next(error);
@@ -252,6 +271,15 @@ export default class ListsController {
 					productId,
 					user._id as string
 				);
+
+			//websocket
+			const websocket = Websocket.getIstance();
+			websocket.broadcastToList(
+				listId,
+				user._id as string,
+				"checkProduct",
+				productId
+			);
 
 			res.status(200).json({ error: null, data: updatedList });
 		} catch (error) {
