@@ -37,16 +37,19 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v3
 
-            - name: Setup node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 16
+            #- name: Setup node.js
+            #  uses: actions/setup-node@v3
+            #  with:
+            #      node-version: 16
 
-            - name: Install dependencies
-              run: npm install
-
+            #- name: Install dependencies
+            #  run: npm install
             - name: Testing app with Jest
-              run: npm run test && echo '✅ ✅ Tests passed!'
+              run: |
+                  docker compose -f docker-compose.test.yaml up -d
+                  docker compose -f docker-compose.test.yaml logs -f app
+            - name: Tests passed
+              run: echo '✅ ✅ Tests passed!'
 
     deploy-staging:
         runs-on: [self-hosted, shopbuddy-staging]
