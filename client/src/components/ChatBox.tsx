@@ -4,6 +4,8 @@ import SendIcon from "@mui/icons-material/Send";
 import styled from "@emotion/styled";
 import { UserContext } from "../contexts/UserContext";
 import IMessage from "../interfaces/iMessage";
+//import io, { Socket } from "socket.io-client";
+import { SocketContext } from "../contexts/SocketContext";
 
 const ChatContainer = styled.div`
 	display: flex;
@@ -54,10 +56,12 @@ interface ChatProps {
 }
 
 export default function ChatBox(props: ChatProps) {
-	const context = useContext(UserContext);
+	const userContext = useContext(UserContext);
+	const socketContext = useContext(SocketContext);
 	const [messages, setMessages] = useState<IMessage[]>([]);
 	const [currentMessage, setCurrentMessage] = useState("");
 	const chatRef = useRef<HTMLDivElement | null>(null);
+	//const socket = useRef<Socket | null>(null);
 
 	useEffect(() => {
 		const fetchMessages = async () => {
@@ -81,6 +85,29 @@ export default function ChatBox(props: ChatProps) {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight;
 		}
 	}, [messages]);
+
+	// useEffect(() => {
+	// 	if (socket.current) {
+	// 		socket.current.emit("enterList", props.listId, userContext?.user?._id);
+	// 	}
+
+	// 	return () => {
+	// 		if (socket.current) socket.current?.close();
+	// 	};
+	// }, []);
+
+	useEffect(() => {
+		if (!socketContext?.socket) return;
+
+		socketContext.socket.on("chatMessage", (message: IMessage) => {
+			console.log("received a message!");
+			setMessages((prev) => [...prev, message]);
+		});
+
+		return () => {
+			socketContext.socket?.off("chatMessage");
+		};
+	}, []);
 
 	const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCurrentMessage(e.target.value);
@@ -129,7 +156,7 @@ export default function ChatBox(props: ChatProps) {
 					<MessageBox
 						key={message._id}
 						sender={
-							message.userId === context?.user?._id
+							message.userId === userContext?.user?._id
 								? "user"
 								: message.userId //change to username later
 						}

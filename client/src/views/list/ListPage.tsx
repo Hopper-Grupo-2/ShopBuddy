@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import SimplePaper from "../../components/Paper";
 import CheckboxList from "../../components/CheckboxList";
 import IItem from "../../interfaces/iItem";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
 import { FormDialog } from "../../components/FormDialog";
@@ -11,6 +11,8 @@ import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
 import { MembersModal } from "../../components/MembersModal";
 import IUser from "../../interfaces/iUser";
+import { SocketContext } from "../../contexts/SocketContext";
+import { UserContext } from "../../contexts/UserContext";
 
 const ContentContainer = styled.div`
 	display: flex;
@@ -79,6 +81,8 @@ export default function List() {
 	const [items, setItems] = useState<Array<IItem>>([]);
 	const [openItemForm, setOpenItemForm] = useState(false);
 	const [openMemberForm, setOpenMemberForm] = useState(false);
+	const userContext = useContext(UserContext);
+	const socketContext = useContext(SocketContext);
 
 	// create use state to save members
 	const [members, setMembers] = useState<Array<IUser>>([]);
@@ -95,6 +99,7 @@ export default function List() {
 			if (response.ok) {
 				const listData = await response.json();
 				//console.log(listData);
+				console.log(listData.data.products);
 				setList(listData.data);
 				setItems(listData.data.products);
 			}
@@ -123,6 +128,21 @@ export default function List() {
 
 		fetchMembers();
 	}, []);
+
+	useEffect(() => {
+		if (!socketContext?.socket) return;
+
+		socketContext.socket.emit(
+			"enterList",
+			params.listId,
+			userContext?.user?._id
+		);
+		console.log("enter list was emitted");
+		return () => {
+			if (socketContext.socket)
+				socketContext.socket.emit("exitList", userContext?.user?._id);
+		};
+	}, [socketContext?.socket]);
 
 	const handleOpenItemForm = () => {
 		setOpenItemForm(true);
@@ -264,9 +284,43 @@ export default function List() {
 		}
 	};
 
+	useEffect(() => {
+		if (!socketContext?.socket) return;
+
+		socketContext.socket.on("addProduct", (products: IItem[]) => {
+			setItems(products);
+		});
+
+		socketContext.socket.on("checkProduct", (productId: string) => {
+			checkItem(productId);
+		});
+
+		socketContext.socket.on("deleteProduct", (productId: string) => {
+			removeItem(productId);
+		});
+
+		return () => {
+			socketContext.socket?.off("checkProduct");
+			socketContext.socket?.off("addProduct");
+		};
+	}, [socketContext?.socket, items]);
+
+	/* useEffect(() => {
+		if (!socketContext?.socket) return;
+
+		socketContext.socket.on("addProduct", (list: IList) => {
+			setItems(list.products);
+		});
+
+		return () => {
+			socketContext.socket?.off("addProduct");
+		};
+	}, [socketContext?.socket, items]); */
+
 	function checkItem(itemId: string) {
 		const currentItem = items.filter((item) => item._id === itemId)[0];
 		const currentIndex = items.indexOf(currentItem);
+		console.log(items);
 		items[currentIndex].checked = !items[currentIndex].checked;
 		setItems([...items]);
 	}
