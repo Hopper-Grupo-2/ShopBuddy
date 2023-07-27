@@ -44,6 +44,18 @@ jobs:
 
             #- name: Install dependencies
             #  run: npm install
+            - name: Create .env file
+              run: |
+                  echo "PORT=${{ vars.MY_PORT_STAGING }}" >> .env
+                  echo "MONGO_INITDB_ROOT_USERNAME=${{ vars.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+                  echo "MONGO_INITDB_ROOT_PASSWORD=${{ vars.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+                  echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
+                  echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
+                  echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
+                  echo "JWTSCRET=MYSECRET" >> .env
+                  echo "NODE_ENV=staging" >> .env
+                  cat .env
+                  
             - name: Testing app with Jest
               run: |
                   docker compose -f docker-compose.test.yaml up -d
