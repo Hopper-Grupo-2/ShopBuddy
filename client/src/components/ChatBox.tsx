@@ -99,16 +99,6 @@ export default function ChatBox(props: ChatProps) {
 	useEffect(() => {
 		if (!socketContext?.socket) return;
 
-		socketContext.socket.emit(
-			"enterList",
-			props.listId,
-			userContext?.user?._id
-		);
-
-		// socket.current.on("connect_error", (error) => {
-		// 	console.log(`Connection Error: ${error.message}`);
-		// });
-
 		socketContext.socket.on("chatMessage", (message: IMessage) => {
 			console.log("received a message!");
 			setMessages((prev) => [...prev, message]);
@@ -116,7 +106,6 @@ export default function ChatBox(props: ChatProps) {
 
 		return () => {
 			socketContext.socket?.off("chatMessage");
-			//socketContext.socket = null;
 		};
 	}, []);
 

@@ -41,6 +41,15 @@ export default class Websocket {
 			}
 		});
 
+		socket.on("exitList", (listId: string, userId: string) => {
+			try {
+				this.leaveListRoom(userId);
+				console.log("Client left list " + listId);
+			} catch (error) {
+				console.error("Error leaving list room: " + error);
+			}
+		});
+
 		socket.on("disconnect", () => {
 			this.removeConnection(socket);
 			console.log("Client disconnected");
@@ -55,6 +64,13 @@ export default class Websocket {
 			connection.userId = userId;
 		} else {
 			this.connections.push({ connection: socket, listId, userId });
+		}
+	}
+
+	private leaveListRoom(userId: string) {
+		const connection = this.getConnection(userId);
+		if (connection) {
+			connection.listId = null; // Unassign the list
 		}
 	}
 
