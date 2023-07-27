@@ -58,7 +58,7 @@ export default class ListsController {
 		try {
 			const membersById = await ListsServices.getMembersByListId(listId);
 
-			console.log("PEGUEI TUDO:", membersById);
+			//console.log("PEGUEI TUDO:", membersById);
 			res.status(200).json({ error: null, data: membersById });
 		} catch (error) {
 			next(error);

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import MessagesServices from "../services/messages";
 import ErrorHandler from "../errors";
 import IMessage from "../interfaces/message";
+import Websocket from "../websocket";
 
 export default class MessagesController {
 	public static async postMessage(
@@ -26,6 +27,18 @@ export default class MessagesController {
 					listId,
 					user._id as string
 				);
+
+			//websocket
+			const websocket = Websocket.getIstance();
+			websocket.broadcastToList(
+				listId,
+				user._id as string,
+				"chatMessage",
+				createdMessage
+			);
+
+			console.log("controller: passei do envio da mensagem");
+
 			res.status(200).json({ error: null, data: createdMessage });
 		} catch (error) {
 			next(error);

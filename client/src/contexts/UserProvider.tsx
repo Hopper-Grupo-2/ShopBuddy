@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import IUser from "../interfaces/iUser";
 import { Box, CircularProgress } from "@mui/material";
+import { Socket, io } from "socket.io-client";
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<IUser | null>(null);
+	const [socket, setSocket] = useState<Socket | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -24,6 +26,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 
 		fetchCurrentUser();
+	}, []);
+
+	useEffect(() => {
+		if (!socket) setSocket(io());
+		return () => {
+			if (socket !== null) socket.close();
+		};
 	}, []);
 
 	const login = async (email: string, password: string) => {
