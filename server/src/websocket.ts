@@ -32,6 +32,15 @@ export default class Websocket {
 		//     connection: socket,
 		// }
 
+		socket.on("login", (userId: string) => {
+			try {
+				this.setConnection(socket, userId);
+				console.log("Client logged in");
+			} catch (error) {
+				console.error("Error setting connection: " + error);
+			}
+		});
+
 		socket.on("enterList", (listId: string, userId: string) => {
 			try {
 				this.joinListRoom(socket, listId, userId);
@@ -74,6 +83,10 @@ export default class Websocket {
 		}
 	}
 
+	private setConnection(socket: Socket, userId: string): void {
+		this.connections.push({ connection: socket, userId: userId });
+	}
+
 	private getConnection(userId: string): IConnection | undefined {
 		return this.connections.find((conn) => conn.userId === userId);
 	}
@@ -95,18 +108,23 @@ export default class Websocket {
 		//const socketsInRoom = this.io.sockets.adapter.rooms.get(listId);
 		this.connections.forEach((conn: IConnection) => {
 			if (conn.listId === listId && conn.userId !== senderUserId) {
-				console.log("websocket: sending a message...");
+				console.log("websocket: sending a list message...");
 				conn.connection.emit(eventName, data);
 			}
 		});
+	}
 
-		// if (socketsInRoom) {
-		// 	socketsInRoom.forEach((socketId: string) => {
-		// 		if (socketId !== senderUserId && this.io !== null) {
-		// 			console.log("websocket: mandei a mensagem...");
-		// 			this.io.to(socketId).emit(eventName, data);
-		// 		}
-		// 	});
-		// }
+	public broadcastToUser(
+		listId: string,
+		userId: string,
+		eventName: string,
+		data: any
+	) {
+		if (!this.io) return;
+		this.connections.forEach((conn: IConnection) => {
+			if (conn.userId === userId && conn.listId !== listId) {
+				conn.connection.emit(eventName, data);
+			}
+		});
 	}
 }

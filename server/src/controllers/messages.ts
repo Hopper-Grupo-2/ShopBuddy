@@ -3,6 +3,8 @@ import MessagesServices from "../services/messages";
 import ErrorHandler from "../errors";
 import IMessage from "../interfaces/message";
 import Websocket from "../websocket";
+import NotificationsController from "./notifications";
+import { NotificationTypes } from "../interfaces/notification";
 
 export default class MessagesController {
 	public static async postMessage(
@@ -19,25 +21,32 @@ export default class MessagesController {
 					"Token does not contain the user's data"
 				);
 
+			const userId = user._id as string;
+
 			const listId = req.params.listId;
 			const messageBody = req.body;
 			const createdMessage: IMessage =
 				await MessagesServices.createMessage(
 					messageBody.textContent,
 					listId,
-					user._id as string
+					userId
 				);
 
 			//websocket
 			const websocket = Websocket.getIstance();
 			websocket.broadcastToList(
 				listId,
-				user._id as string,
+				userId,
 				"chatMessage",
 				createdMessage
 			);
 
-			console.log("controller: passei do envio da mensagem");
+			NotificationsController.sendNewListNotification(
+				listId,
+				userId,
+				NotificationTypes.MESSAGE_FROM_LIST,
+				createdMessage.textContent
+			);
 
 			res.status(200).json({ error: null, data: createdMessage });
 		} catch (error) {
