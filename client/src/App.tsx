@@ -1,11 +1,11 @@
+import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { RequireAuth } from "./components/RequireAuth";
 import Dashboard from "./views/dashboard/Dashboard";
 import ListPage from "./views/list/ListPage";
 import LoginPage from "./views/login/Login";
-
-import "./App.css";
 import Settings from "./views/settings/SettingsPage";
+import SignupPage from "./views/signup/Signup";
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -19,15 +19,27 @@ export default function App() {
 		},
 		{
 			path: "/list/:listId",
-			element: <ListPage />,
+			element: (
+				<RequireAuth>
+					<ListPage />
+				</RequireAuth>
+			),
 		},
 		{
 			path: "/settings",
-			element: <Settings />,
+			element: (
+				<RequireAuth>
+					<Settings />
+				</RequireAuth>
+			),
 		},
 		{
 			path: "/login",
 			element: <LoginPage />,
+		},
+		{
+			path: "/signup",
+			element: <SignupPage />,
 		},
 	]);
 

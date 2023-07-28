@@ -115,6 +115,7 @@ export default class UsersRepositories {
             );
         }
     }
+
     public static async getAllUsers() {
         try {
             const response = await this.Model.find();
@@ -180,7 +181,7 @@ export default class UsersRepositories {
                 "User was not updated"
             );
         } catch (error) {
-            console.error(this.name, "updateUser error: ", error);
+            //console.error(this.name, "updateUser error: ", error);
             throw ErrorHandler.createError(
                 "InternalServerError",
                 "Internal server error"

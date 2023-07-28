@@ -68,7 +68,6 @@ export default class ListsServices {
 			const user: IUser | null = await UsersRepositories.getUserById(
 				userId
 			);
-			console.log(user);
 
 			if (user === null)
 				throw ErrorHandler.createError(
