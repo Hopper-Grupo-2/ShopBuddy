@@ -15,6 +15,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
+import { useState } from "react";
+import AlertDialog from "./AlertDialog"
 
 function Copyright(props: any) {
 	return (
@@ -44,6 +46,9 @@ export default function LogIn() {
 	const context = React.useContext(UserContext);
 	const navigate = useNavigate();
 
+	const [openDialog, setOpenDialog] = useState(false);
+  	const [dialogMessage, setDialogMessage] = useState("");
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -56,12 +61,16 @@ export default function LogIn() {
 			password: data.get("password"),
 		};
 
-		if (credentials.email === null) {
-			return alert("Por favor, insira um e-mail");
+		if (credentials.email === null || credentials.email === "") {
+			setDialogMessage("Por favor, insira um e-mail");
+			setOpenDialog(true);
+			return;
 		}
 
-		if (credentials.password === null) {
-			return alert("Por favor, insira uma senha");
+		if (credentials.password === null || credentials.password === "") {
+			setDialogMessage("Por favor, insira uma senha");
+			setOpenDialog(true);
+			return;
 		}
 
 		// i want to call login here
@@ -71,6 +80,10 @@ export default function LogIn() {
 		);
 
 		if (loggedIn) navigate("/");
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -141,6 +154,13 @@ export default function LogIn() {
 					</Box>
 				</Box>
 				<Copyright sx={{ mt: 8, mb: 4 }} />
+
+				<AlertDialog
+					open={openDialog}
+					onClose={handleCloseDialog}
+					contentText={dialogMessage}
+					buttonText="Fechar"
+				/>
 			</Container>
 		</ThemeProvider>
 	);

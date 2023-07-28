@@ -13,6 +13,7 @@ import { MembersModal } from "../../components/MembersModal";
 import IUser from "../../interfaces/iUser";
 import { SocketContext } from "../../contexts/SocketContext";
 import { UserContext } from "../../contexts/UserContext";
+import AlertDialog from "../../components/AlertDialog"
 
 const ContentContainer = styled.div`
 	display: flex;
@@ -83,6 +84,9 @@ export default function List() {
 	const [openMemberForm, setOpenMemberForm] = useState(false);
 	const userContext = useContext(UserContext);
 	const socketContext = useContext(SocketContext);
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
 
 	// create use state to save members
 	const [members, setMembers] = useState<Array<IUser>>([]);
@@ -196,7 +200,8 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to add item: " + error.message);
+			setDialogMessage("Failed to add item: " + error.message);
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -218,9 +223,8 @@ export default function List() {
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert(
-					"Membro adicionado com sucesso! Recarregue a página (por enquanto)"
-				);
+				setDialogMessage("Membro adicionado com sucesso! Recarregue a página (por enquanto)");
+    			setOpenDialog(true);
 				//const products = responseObj.data.products;
 				//setItems(products);
 				return true;
@@ -229,7 +233,8 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to add member: " + error.message);
+			setDialogMessage("Failed to add member: " + error.message);
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -255,7 +260,8 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to remove item: " + error.message);
+			setDialogMessage("Failed to remove item: " + error.message);
+    		setOpenDialog(true);
 		}
 	};
 
@@ -280,7 +286,8 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to toggle item: " + error.message);
+			setDialogMessage("Failed to toggle item: " + error.message);
+    		setOpenDialog(true);
 		}
 	};
 
@@ -329,6 +336,10 @@ export default function List() {
 		const filteredItems = items.filter((item) => item._id !== itemId);
 		setItems([...filteredItems]);
 	}
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
+	};
 
 	return (
 		<>
@@ -400,6 +411,13 @@ export default function List() {
 				members={members}
 				open={showMembers}
 				handleClose={handleHideMembers}
+			/>
+
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
 			/>
 		</>
 	);

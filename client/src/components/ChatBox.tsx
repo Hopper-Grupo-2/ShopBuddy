@@ -6,6 +6,7 @@ import { UserContext } from "../contexts/UserContext";
 import IMessage from "../interfaces/iMessage";
 //import io, { Socket } from "socket.io-client";
 import { SocketContext } from "../contexts/SocketContext";
+import AlertDialog from "./AlertDialog"
 
 const ChatContainer = styled.div`
 	display: flex;
@@ -62,6 +63,9 @@ export default function ChatBox(props: ChatProps) {
 	const [currentMessage, setCurrentMessage] = useState("");
 	const chatRef = useRef<HTMLDivElement | null>(null);
 	//const socket = useRef<Socket | null>(null);
+
+	const [openDialog, setOpenDialog] = useState(false);
+  	const [dialogMessage, setDialogMessage] = useState("");
 
 	useEffect(() => {
 		const fetchMessages = async () => {
@@ -143,10 +147,16 @@ export default function ChatBox(props: ChatProps) {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to send message: " + error.message);
+			setDialogMessage("Failed to send message: " + error.message);
+			setOpenDialog(true);
+			return;
 		}
 		//setMessages((prev) => [...prev, newMessage]);
 		setCurrentMessage("");
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -184,6 +194,13 @@ export default function ChatBox(props: ChatProps) {
 					<SendIcon />
 				</IconButton>
 			</MessageForm>
+
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
 		</ChatContainer>
 	);
 }

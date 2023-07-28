@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import IUser from "../interfaces/iUser";
 import { Box, CircularProgress } from "@mui/material";
+import AlertDialog from "../components/AlertDialog"
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<IUser | null>(null);
 	const [loading, setLoading] = useState(true);
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
 
 	useEffect(() => {
 		const fetchCurrentUser = async () => {
@@ -45,7 +49,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to log in: " + error.message);
+			setDialogMessage("Failed to log in: " + error.message);
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -74,14 +79,16 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert("Usuário cadastrado com sucesso!");
+				setDialogMessage("Usuário cadastrado com sucesso!");
+    			setOpenDialog(true);
 				return true;
 			} else {
 				throw responseObj.error;
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to create user: " + error.message);
+			setDialogMessage("Failed to create user: " + error.message);;
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -121,16 +128,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert("Usuário atualizado com sucesso!");
+				setDialogMessage("Usuário atualizado com sucesso!");
+    			setOpenDialog(true);
 				return true;
 			} else {
 				throw responseObj.error;
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to edit user: " + error.message);
+			setDialogMessage("Failed to edit user: " + error.message);
+    		setOpenDialog(true);
 			return false;
 		}
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	if (loading) {
@@ -154,6 +167,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			value={{ user, setUser, login, signup, editUser }}
 		>
 			{children}
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
 		</UserContext.Provider>
 	);
 };
