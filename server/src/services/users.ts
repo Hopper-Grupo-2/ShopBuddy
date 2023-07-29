@@ -112,7 +112,7 @@ export default class UsersServices {
             if (loggedUserId !== userId) {
                 throw ErrorHandler.createError(
                     "ForbiddenError",
-                    `User ${userId} does not have access`
+                    `User ${loggedUserId} does not have access`
                 );
             }
 
