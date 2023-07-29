@@ -39,7 +39,7 @@ describe("GET /api/users/:userId", () => {
 
     it("should return status 404 if doesnt exist a user with id informed", async () => {
         const userInfo: IUser = {
-            username: "lets",
+            username: "letstest",
             password: "123",
             email: "letstest@alpha.com",
             firstName: "lets",
@@ -62,7 +62,7 @@ describe("GET /api/users/:userId", () => {
 
     it("should return status 200 and user  infos", async () => {
         const userInfo: IUser = {
-            username: "lets",
+            username: "letsuserold",
             password: "123",
             email: "letstest@alpha.com",
             firstName: "lets",
