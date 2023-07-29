@@ -49,21 +49,21 @@ jobs:
                   echo "NODE_ENV=staging" >> .env
                   cat .env
                   
-            - name: Testing app with Jest
+            - name: Testing app with Jest inside the container
               run: |
                   docker compose -f docker-compose.test.yaml up -d
                   docker compose -f docker-compose.test.yaml logs -f app
                   TEST_EXIT_CODE=$?
                   echo "Test exit code: $TEST_EXIT_CODE"
-                  if [ $TEST_EXIT_CODE -eq 1 ]; then
-                    echo "Tests passed!"
+                  if [ $TEST_EXIT_CODE -eq 0 ]; then
+                    echo "✅ ✅ Tests passed!"
                   else
-                    echo "Tests failed!"
+                    echo "❌❌ Tests failed!"
                    exit 1
                   fi
           
             - name: Tests passed
-              run: echo '✅ ✅ Tests passed!'
+              run: echo '✅ ✅ Tests passed! ✅ ✅'
 
     deploy-staging:
         runs-on: [self-hosted, shopbuddy-staging]
