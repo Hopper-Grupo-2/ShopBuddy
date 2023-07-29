@@ -545,7 +545,7 @@ describe("PATCH /api/users/:userId", () => {
                 lastName: "updated",
             });
 
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(900);
         expect(response.body.data).toBe(
             `User with id ${userExample._id} updated successfully!`
         );
