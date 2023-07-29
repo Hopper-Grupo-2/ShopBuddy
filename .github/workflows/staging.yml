@@ -58,7 +58,7 @@ jobs:
               id: test-status
               run: |
                 docker compose ps # Verifique o nome do contêiner com os testes
-                TEST_EXIT_CODE=$(docker-compose logs appshop-test | grep -q "exited with code 0"; echo $?)
+                TEST_EXIT_CODE=$(docker compose -f docker-compose.test.yaml ps -q appshop-test | xargs docker inspect -f '{{ .State.ExitCode }}')
                 echo "Test exit code: $TEST_EXIT_CODE"
                 if [ $TEST_EXIT_CODE -eq 1 ]; then
                   echo "Tests passed!"
