@@ -12,5 +12,5 @@ const HOST = process.env.HOST || "localhost";
 connectDB();
 
 app.server.listen(PORT, () => {
-	console.log(`Servidor rodando em http://${HOST}:${PORT}`);
+    console.log(`Servidor rodando em http://${HOST}:${PORT}`);
 });

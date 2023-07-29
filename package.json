@@ -8,8 +8,8 @@
         "start": "node dist/server.js",
         "build": "tsc && cd client && yarn --cwd ./ build",
         "dev": "nodemon -L ./server/server.ts",
-        "test": "jest --runInBand --detectOpenHandles --verbose",
-        "test:usersServices": "jest __tests__/unit/users/usersServices.test.ts"
+        "test": "jest --runInBand --detectOpenHandles --verbose __tests__/integration",
+        "test:services": "jest __tests__/unit/services"
     },
     "repository": {
         "type": "git",
