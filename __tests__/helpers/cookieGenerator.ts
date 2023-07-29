@@ -1,5 +1,7 @@
 import jwtLib from "jsonwebtoken";
 import IUser from "../../server/src/interfaces/user";
+import dotenv from "dotenv";
+dotenv.config();
 
 export function generateCookieForUser(user: IUser) {
     // use jwt library to make a jwt with payload {id: user_id}
