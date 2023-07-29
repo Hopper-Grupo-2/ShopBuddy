@@ -53,19 +53,15 @@ jobs:
               run: |
                   docker compose -f docker-compose.test.yaml up -d
                   docker compose -f docker-compose.test.yaml logs -f app
-           # Etapa para verificar o status do contêiner e armazenar o código de saída em uma variável
-            - name: Check test status
-              id: test-status
-              run: |
-                docker compose ps # Verifique o nome do contêiner com os testes
-                docker compose -f docker-compose.test.yaml logs appshop-test
-                TEST_EXIT_CODE=$?echo "Test exit code: $TEST_EXIT_CODE"
-                if [ $TEST_EXIT_CODE -eq 1 ]; then
-                  echo "Tests passed!"
-                else
-                  echo "Tests failed!"
-                  exit 1
-                fi
+                  TEST_EXIT_CODE=$?
+                  echo "Test exit code: $TEST_EXIT_CODE"
+                  if [ $TEST_EXIT_CODE -eq 1 ]; then
+                    echo "Tests passed!"
+                  else
+                    echo "Tests failed!"
+                   exit 1
+                  fi
+          
             - name: Tests passed
               run: echo '✅ ✅ Tests passed!'
 
