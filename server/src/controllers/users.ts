@@ -1,9 +1,9 @@
 import ErrorHandler from "../errors";
 import UsersServices from "../services/users";
 import jwtLib, { JwtPayload } from "jsonwebtoken";
-import RedisCaching from "../database/caching/redisCaching";
 import IUser, { IUserUpdate } from "../interfaces/user";
 import { NextFunction, Request, Response } from "express";
+import RedisCaching from "../database/caching/redisCaching";
 
 export default class UsersController {
     public static async getUserAuthentication(
@@ -65,7 +65,7 @@ export default class UsersController {
             );
 
             if (usersFromCache.length > 0) {
-                res.status(200).json({ erorr: null, data: usersFromCache });
+                res.status(200).json({ error: null, data: usersFromCache });
                 return;
             }
 
