@@ -103,10 +103,10 @@ export default class UsersRepositories {
             let createdAt = new Date(response.createdAt?.toString() || "");
             let updatedAt = new Date(response.updatedAt?.toString() || "");
 
-            if (createdAt && updatedAt) {
-                //createdAt = new Date(createdAt).toISOString(); //new Date(createdAt.toString());
-                //updatedAt = new Date(createdAt).toISOString(); //new Date(updatedAt.toString());
-            }
+            // if (createdAt && updatedAt) {
+            //createdAt = new Date(createdAt).toISOString(); //new Date(createdAt.toString());
+            //updatedAt = new Date(createdAt).toISOString(); //new Date(updatedAt.toString());
+            // }
 
             const createdUser: IUser = {
                 _id: response._id?.toString(),
@@ -125,6 +125,21 @@ export default class UsersRepositories {
             throw ErrorHandler.createError(
                 "InternalServerError",
                 "Internal server error"
+            );
+        }
+    }
+
+    public static async getUsernameById(
+        userId: string
+    ): Promise<string | null> {
+        try {
+            const user = await UsersRepositories.getUserById(userId);
+            return user?.username || null;
+        } catch (error) {
+            console.error(this.name, "getUsernameById error: ", error);
+            throw ErrorHandler.createError(
+                "InternalServerError",
+                "Error getting username by ID"
             );
         }
     }

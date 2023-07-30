@@ -11,6 +11,15 @@ services:
     #        - "6379:6379"
     #    env_file:
     #        - .env
+    svcredis:
+        image: bitnami/redis
+        expose:
+            - 6379
+        ports:
+            - 6370:6379
+        environment:
+            - TZ=America/Sao_Paulo
+            - ALLOW_EMPTY_PASSWORD=yes
 
     mongo:
         build: ./server/src/database/
