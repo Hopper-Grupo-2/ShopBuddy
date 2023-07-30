@@ -129,10 +129,10 @@ export default function Dashboard() {
 							title={list.listName}
 							date={new Date(list.createdAt)}
 							total={list.products.reduce((acc, product) => {
-								if (product.unit === "Kg" || product.unit === "L") {
+								if (product.unit === "Kg" || product.unit === "L" || product.unit === "Ml" || product.unit === "und") {
 								  return acc + product.price * product.quantity;
 								} else {
-								  return product.price;
+								  return acc + product.price;
 								}
 							  }, 0)}
 							action={() => {
