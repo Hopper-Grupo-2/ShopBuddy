@@ -17,7 +17,7 @@ interface MembersModalProps {
 	members: IUser[];
 	open: boolean;
 	handleClose: () => void;
-	handleMember: (user: string) => Promise<void>;
+	handleMember: (user: string) => Promise<false | undefined>;
 }
 
 const MembersModal: React.FC<MembersModalProps> = (
@@ -32,7 +32,7 @@ const MembersModal: React.FC<MembersModalProps> = (
 						{props.members.map((user) => (
 							<ListItem key={user._id.toString()}>
 								<ListItemText primary={user.username} />
-								<DeleteIcon onClick = {async () => await props.handleMember(user._id.toString())}/>
+								<DeleteIcon onClick = {() => props.handleMember(user._id.toString())}/>
 							</ListItem>
 						))}
 					</List>

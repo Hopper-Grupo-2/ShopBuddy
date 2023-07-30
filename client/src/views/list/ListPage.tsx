@@ -93,10 +93,6 @@ export default function List() {
   // members
   const [showMembers, setShowMembers] = useState(false);
 
-    //region const handleRemoveMember = (memberToRemove: any) => {
-    //    setMembers(members.filter(member => member !== memberToRemove));
-    //};
-
   useEffect(() => {
     const fetchList = async () => {
       const response = await fetch(`/api/lists/${params.listId}`, {
@@ -134,18 +130,29 @@ export default function List() {
     fetchMembers();
   }, []);
 
-    const handleRemoveMember = async (memberId: String) => {
-        const response = await fetch(`/api/lists/${params.listId}/members/${memberId}`, {
-            method: "DELETE",
-            credentials: "include", // Ensure credentials are sent
-        });
+  const handleRemoveMember = async (memberId: String) => {
+    try{
+      const response = await fetch(`/api/lists/${params.listId}/members/${memberId}`, {
+        method: "DELETE",
+        credentials: "include", // Ensure credentials are sent
+      });
 
-        if (response.ok) {
-            const userData = await response.json();
-            console.log("members after delete:", userData.data);
-            setMembers(userData.data as IUser[]);
-        }
-    };
+      const userData = await response.json();
+      if (response.ok) {
+        //console.log("members after delete:", userData.data);
+        setMembers(userData.data as IUser[]);
+
+      } else {
+        throw userData.error;
+      }
+
+    }catch (error: any) {
+      console.error(error.name, error.message);
+      setDialogMessage("Erro na remoção do usuário, tente novamente!");
+      setOpenDialog(true);
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (!socketContext?.socket) return;
@@ -212,7 +219,7 @@ export default function List() {
     } catch (error: any) {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao adicionar o item. Tente novamente!");
-	  setOpenDialog(true);
+	    setOpenDialog(true);
       return false;
     }
   };
@@ -446,12 +453,12 @@ export default function List() {
         handleClose={handleHideMembers}
         handleMember={handleRemoveMember}
       />
-        <AlertDialog
-            open={openDialog}
-            onClose={handleCloseDialog}
-            contentText={dialogMessage}
-            buttonText="Fechar"
-        />
+      <AlertDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        contentText={dialogMessage}
+        buttonText="Fechar"
+      />
     </>
   );
 }
