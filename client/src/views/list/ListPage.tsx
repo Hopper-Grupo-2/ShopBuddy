@@ -407,7 +407,7 @@ export default function List() {
         title="Adicionar novo item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
-          { id: "unit", label: "Unidade de medida", type: "text" }, //will be a select
+          { id: "unit", label: "Unidade de medida", type: "select" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
         ]}
