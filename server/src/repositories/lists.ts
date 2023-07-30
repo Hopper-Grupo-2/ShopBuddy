@@ -300,7 +300,6 @@ export default class ListsRepositories {
             "products.$.quantity": newProductInfo.quantity,
             "products.$.unit": newProductInfo.unit,
             "products.$.price": newProductInfo.price,
-            "products.$.checked": newProductInfo.checked,
             updatedAt: new Date(),
           },
         },
