@@ -400,7 +400,7 @@ export default function List() {
               Adicionar item
             </Button>
           </SimplePaper>
-          {list ? <ChatBox listId={list._id} members={members} /> : null}
+          {list ? <ChatBox listId={list._id} /> : null}
         </ContentContainer>
       </PageStructure>
       <FormDialog
