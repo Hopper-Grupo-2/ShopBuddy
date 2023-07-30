@@ -3,7 +3,7 @@ import UsersServices from "../services/users";
 import IUser, { IUserUpdate } from "../interfaces/user";
 import jwtLib, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../errors";
-
+import { getDataFromRedisCacheByKeyname } from "../database/caching/redis";
 export default class UsersController {
     public static async getUserAuthentication(
         req: Request,
@@ -56,6 +56,13 @@ export default class UsersController {
         next: NextFunction
     ): Promise<void> {
         try {
+            const usersList = await getDataFromRedisCacheByKeyname("users");
+
+            if (usersList.length > 0) {
+                res.status(200).json({ erorr: null, data: usersList });
+                return;
+            }
+
             const allusers = await UsersServices.getAllUsers();
             res.status(200).json({ error: null, data: allusers });
         } catch (error) {

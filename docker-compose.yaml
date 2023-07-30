@@ -47,7 +47,7 @@ services:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
         depends_on:
-            # - redis
+            - svcredis
             - mongo
         command: npm run dev
 
