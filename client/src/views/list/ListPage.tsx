@@ -13,6 +13,7 @@ import { MembersModal } from "../../components/MembersModal";
 import IUser from "../../interfaces/iUser";
 import { SocketContext } from "../../contexts/SocketContext";
 import { UserContext } from "../../contexts/UserContext";
+import AlertDialog from "../../components/AlertDialog"
 
 const ContentContainer = styled.div`
   display: flex;
@@ -83,6 +84,9 @@ export default function List() {
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   // create use state to save members
   const [members, setMembers] = useState<Array<IUser>>([]);
@@ -190,7 +194,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to add item: " + error.message);
+      setDialogMessage("Erro ao adicionar o item. Tente novamente!");
+	  setOpenDialog(true);
       return false;
     }
   };
@@ -209,9 +214,8 @@ export default function List() {
 
       const responseObj = await response.json();
       if (response.ok) {
-        alert(
-          "Membro adicionado com sucesso! Recarregue a página (por enquanto)"
-        );
+        setDialogMessage("Membro adicionado com sucesso! Recarregue a página (por enquanto)");
+    	setOpenDialog(true);
         //const products = responseObj.data.products;
         //setItems(products);
         return true;
@@ -220,7 +224,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to add member: " + error.message);
+      setDialogMessage("Usuário inexistente. Tente novamente!");
+	  setOpenDialog(true);
       return false;
     }
   };
@@ -246,7 +251,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to remove item: " + error.message);
+      setDialogMessage("Erro ao excluir o item. Tente novamente!");
+	  setOpenDialog(true);
     }
   };
 
@@ -271,7 +277,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to toggle item: " + error.message);
+      setDialogMessage("Erro ao marcar o item. Tente novamente!");
+	  setOpenDialog(true);
     }
   };
 
@@ -353,6 +360,10 @@ export default function List() {
     setItems([...filteredItems]);
   }
 
+  const handleCloseDialog = () => {
+	setOpenDialog(false);
+};
+
   return (
     <>
       <PageStructure>
@@ -417,6 +428,12 @@ export default function List() {
         open={showMembers}
         handleClose={handleHideMembers}
       />
+	  <AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
     </>
   );
 }

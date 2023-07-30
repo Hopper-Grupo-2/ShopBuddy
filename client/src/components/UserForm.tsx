@@ -1,13 +1,17 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { UserContext } from "../contexts/UserContext";
+import AlertDialog from "./AlertDialog"
 
 export default function UserForm() {
 	const context = useContext(UserContext);
 	const navigate = useNavigate();
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -22,7 +26,11 @@ export default function UserForm() {
 		};
 
 		const validation = validateCredentials(credentials);
-		if (validation !== null) return alert(validation);
+		if (validation !== null){
+			setDialogMessage(validation);
+    		setOpenDialog(true);
+    		return;
+		}
 
 		const edited = await context?.editUser(
 			context.user?._id!,
@@ -57,6 +65,10 @@ export default function UserForm() {
 			return "Por favor, insira seu sobrenome";
 		}
 		return null;
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -131,6 +143,13 @@ export default function UserForm() {
 			>
 				salvar alterações
 			</Button>
+
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
 		</Box>
 	);
 }

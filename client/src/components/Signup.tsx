@@ -15,6 +15,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
+import { useState } from "react";
+import AlertDialog from "./AlertDialog"
 
 function Copyright(props: any) {
 	return (
@@ -44,6 +46,9 @@ export default function SignUp() {
 	const context = React.useContext(UserContext);
 	const navigate = useNavigate();
 
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
@@ -60,7 +65,11 @@ export default function SignUp() {
 		};
 
 		const validation = validateCredentials(credentials);
-		if (validation !== null) return alert(validation);
+		if (validation !== null){
+			setDialogMessage(validation);
+			setOpenDialog(true);
+			return
+		}
 
 		const signedUp = await context?.signup(
 			credentials.email!.toString(),
@@ -90,6 +99,10 @@ export default function SignUp() {
 			return "Por favor, insira seu sobrenome";
 		}
 		return null;
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -187,6 +200,13 @@ export default function SignUp() {
 					</Box>
 				</Box>
 				<Copyright sx={{ mt: 8, mb: 4 }} />
+
+				<AlertDialog
+					open={openDialog}
+					onClose={handleCloseDialog}
+					contentText={dialogMessage}
+					buttonText="Fechar"
+				/>
 			</Container>
 		</ThemeProvider>
 	);
