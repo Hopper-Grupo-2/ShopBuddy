@@ -14,11 +14,15 @@ import {
 
 // Defina o array de unidades de medida
 const unitsOfMeasure = [
-  { value: "Kg", label: "Kilo(Kg)" },
-  { value: "Ml", label: "Mililitro(Ml)" },
-  { value: "g", label: "Grama(g)" },
-  { value: "L", label: "Litro(L)" },
+  { value: "Kg", label: "Quilograma (Kg)" },
+  { value: "Ml", label: "Mililitro (Ml)" },
+  { value: "g", label: "Grama (g)" },
+  { value: "L", label: "Litro (L)" },
+  { value: "m", label: "Metro (m)" },
+  { value: "cm", label: "Centímetro (cm)" },
+  { value: "und", label: "Unidade (und)" },
 ];
+
 
 interface FormField {
   id: string;

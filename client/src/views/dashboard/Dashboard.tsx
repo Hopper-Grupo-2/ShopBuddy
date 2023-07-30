@@ -114,16 +114,13 @@ export default function Dashboard() {
 							key={list._id}
 							title={list.listName}
 							date={new Date(list.createdAt)}
-							total={list.products.reduce(
-								(acc, product) => {
-								  if (product.unit === "Kg" || product.unit === "L") {
-									return acc + product.price * product.quantity;
-								  } else {
-									return acc + product.price;
-								  }
-								},
-								0
-							  )}
+							total={list.products.reduce((acc, product) => {
+								if (product.unit === "Kg" || product.unit === "L") {
+								  return acc + product.price * product.quantity;
+								} else {
+								  return product.price;
+								}
+							  }, 0)}
 							action={() => {
 								navigate("/list/" + list._id);
 							}}
