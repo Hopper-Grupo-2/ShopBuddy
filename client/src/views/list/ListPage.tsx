@@ -93,6 +93,10 @@ export default function List() {
   // members
   const [showMembers, setShowMembers] = useState(false);
 
+    //region const handleRemoveMember = (memberToRemove: any) => {
+    //    setMembers(members.filter(member => member !== memberToRemove));
+    //};
+
   useEffect(() => {
     const fetchList = async () => {
       const response = await fetch(`/api/lists/${params.listId}`, {
@@ -129,6 +133,19 @@ export default function List() {
 
     fetchMembers();
   }, []);
+
+    const handleRemoveMember = async (memberId: String) => {
+        const response = await fetch(`/api/lists/${params.listId}/members/${memberId}`, {
+            method: "DELETE",
+            credentials: "include", // Ensure credentials are sent
+        });
+
+        if (response.ok) {
+            const userData = await response.json();
+            console.log("members after delete:", userData.data);
+            setMembers(userData.data as IUser[]);
+        }
+    };
 
   useEffect(() => {
     if (!socketContext?.socket) return;
@@ -427,13 +444,14 @@ export default function List() {
         members={members}
         open={showMembers}
         handleClose={handleHideMembers}
+        handleMember={handleRemoveMember}
       />
-	  <AlertDialog
-				open={openDialog}
-				onClose={handleCloseDialog}
-				contentText={dialogMessage}
-				buttonText="Fechar"
-			/>
+        <AlertDialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            contentText={dialogMessage}
+            buttonText="Fechar"
+        />
     </>
   );
 }
