@@ -69,7 +69,7 @@ export default function Dashboard() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to create list: " + error.message);
+			setDialogMessage("Erro ao criar a lista, tente novamente!");
 			setOpenDialog(true);
 			return false;
 		}
@@ -99,7 +99,7 @@ export default function Dashboard() {
 
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to delete list: " + error.message);
+			setDialogMessage("Desculpe, apenas administradores da lista podem deleta-la.");
 			setOpenDialog(true);
 			//return false;
 		}

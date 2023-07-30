@@ -200,7 +200,7 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to add item: " + error.message);
+			setDialogMessage("Erro ao adicionar o item. Tente novamente!");
     		setOpenDialog(true);
 			return false;
 		}
@@ -233,7 +233,7 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to add member: " + error.message);
+			setDialogMessage("Usuário inexistente. Tente novamente!");
     		setOpenDialog(true);
 			return false;
 		}
@@ -260,7 +260,7 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to remove item: " + error.message);
+			setDialogMessage("Erro ao excluir o item. Tente novamente!");
     		setOpenDialog(true);
 		}
 	};
@@ -286,7 +286,7 @@ export default function List() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to toggle item: " + error.message);
+			setDialogMessage("Erro ao marcar o item. Tente novamente!");
     		setOpenDialog(true);
 		}
 	};

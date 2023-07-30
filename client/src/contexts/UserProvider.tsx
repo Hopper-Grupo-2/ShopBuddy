@@ -49,7 +49,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to log in: " + error.message);
+			setDialogMessage("Erro no login: Email e/ou senha incorreta.");
     		setOpenDialog(true);
 			return false;
 		}
@@ -87,7 +87,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to create user: " + error.message);;
+			if (error.message === "This e-mail is already in use") {
+				setDialogMessage("Erro na criação de usuário: Email já cadastrado.");
+			} else if (error.message === "This username is already in use"){
+				setDialogMessage("Erro na criação de usuário: Nome de usuário já cadastrado.");
+			} else {
+				setDialogMessage("Erro na criação de usuário.");
+			}
     		setOpenDialog(true);
 			return false;
 		}
@@ -136,7 +142,24 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			setDialogMessage("Failed to edit user: " + error.message);
+			if (error.message === "There is no user with the given id") {
+				setDialogMessage("Falha na edição do usuário: Usuário inexistente.");
+
+			} else if (error.message.includes("User does not have access")){
+				setDialogMessage("Falha na edição do usuário: Você não tem acesso a essa função.");
+
+			} else if (error.message === "This e-mail is already in use"){
+				setDialogMessage("Falha na edição do usuário: Este email já está em uso.");
+
+			} else if (error.message === "This username is already in use"){
+				setDialogMessage("Falha na edição do usuário: Este nome de usuário já está em uso.");
+
+			} else if (error.message === "Old password is wrong"){
+				setDialogMessage("Falha na edição do usuário: Senha atual incorreta.");
+
+			} else {
+				setDialogMessage("Falha na edição do usuário.");
+			}
     		setOpenDialog(true);
 			return false;
 		}
