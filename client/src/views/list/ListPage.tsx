@@ -48,35 +48,6 @@ const ButtonContainer = styled.div`
   }
 `;
 
-// import "./ListPage.css";
-
-/* const dummyItemsList: Array<IItem> = [
-	{
-		id: 5,
-		name: "Abacate",
-		quantity: 5,
-		unit: "und",
-		unitPrice: 1,
-		checked: false,
-	},
-	{
-		id: 2,
-		name: "Pão",
-		quantity: 5,
-		unit: "und",
-		unitPrice: 1,
-		checked: false,
-	},
-	{
-		id: 3,
-		name: "Carne de sol",
-		quantity: 5,
-		unit: "und",
-		unitPrice: 1,
-		checked: false,
-	},
-]; */
-
 export default function List() {
   const params = useParams();
   const [list, setList] = useState<IList>();
@@ -95,38 +66,37 @@ export default function List() {
   // members
   const [showMembers, setShowMembers] = useState(false);
 
+  const fetchMembers = async () => {
+    console.log("esse é o list id:", params.listId);
+    const response = await fetch(`/api/lists/${params.listId}/members`, {
+      method: "GET",
+      credentials: "include", // Ensure credentials are sent
+    });
+
+    if (response.ok) {
+      const membersData = await response.json();
+      console.log("members:", membersData);
+      setMembers(membersData.data as IUser[]);
+    }
+  };
+
+  const fetchList = async () => {
+    const response = await fetch(`/api/lists/${params.listId}`, {
+      method: "GET",
+      credentials: "include", // Ensure credentials are sent
+    });
+
+    if (response.ok) {
+      const listData = await response.json();
+      //console.log(listData);
+      console.log(listData.data.products);
+      setList(listData.data);
+      setItems(listData.data.products);
+    }
+  };
+
   useEffect(() => {
-    const fetchList = async () => {
-      const response = await fetch(`/api/lists/${params.listId}`, {
-        method: "GET",
-        credentials: "include", // Ensure credentials are sent
-      });
-
-      if (response.ok) {
-        const listData = await response.json();
-        //console.log(listData);
-        console.log(listData.data.products);
-        setList(listData.data);
-        setItems(listData.data.products);
-      }
-    };
-
     fetchList();
-
-    const fetchMembers = async () => {
-      console.log("esse é o list id:", params.listId);
-      const response = await fetch(`/api/lists/${params.listId}/members`, {
-        method: "GET",
-        credentials: "include", // Ensure credentials are sent
-      });
-
-      if (response.ok) {
-        const membersData = await response.json();
-        console.log("members:", membersData);
-        setMembers(membersData.data as IUser[]);
-      }
-    };
-
     fetchMembers();
 
     if (params.listId)
@@ -222,12 +192,7 @@ export default function List() {
 
       const responseObj = await response.json();
       if (response.ok) {
-        setDialogMessage(
-          "Membro adicionado com sucesso! Recarregue a página (por enquanto)"
-        );
-        setOpenDialog(true);
-        //const products = responseObj.data.products;
-        //setItems(products);
+        fetchMembers();
         return true;
       } else {
         throw responseObj.error;
@@ -292,38 +257,6 @@ export default function List() {
     }
   };
 
-  /* const editItem = async (formData: Record<string, string>) => {
-		try {
-			const response = await fetch(
-				`/api/lists/${params.listId}/products/${params.productId}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						name: formData["name"],
-						quantity: formData["quantity"],
-						unit: formData["unit"],
-						price: formData["price"],
-					}),
-				}
-			);
-
-			const responseObj = await response.json();
-			if (response.ok) {
-				
-				return true;
-			} else {
-				throw responseObj.error;
-			}
-		} catch (error: any) {
-			console.error(error.name, error.message);
-			alert("Failed to edit item: " + error.message);
-			return false;
-		}
-	} */
-
   useEffect(() => {
     if (!socketContext?.socket) return;
 
@@ -344,18 +277,6 @@ export default function List() {
       socketContext.socket?.off("addProduct");
     };
   }, [socketContext?.socket, items]);
-
-  /* useEffect(() => {
-		if (!socketContext?.socket) return;
-
-		socketContext.socket.on("addProduct", (list: IList) => {
-			setItems(list.products);
-		});
-
-		return () => {
-			socketContext.socket?.off("addProduct");
-		};
-	}, [socketContext?.socket, items]); */
 
   function checkItem(itemId: string) {
     const currentItem = items.filter((item) => item._id === itemId)[0];
