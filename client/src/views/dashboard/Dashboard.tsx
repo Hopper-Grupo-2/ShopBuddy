@@ -7,6 +7,7 @@ import { useState, useEffect, useContext } from "react";
 import { FormDialog } from "../../components/FormDialog";
 import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
+import AlertDialog from "../../components/AlertDialog"
 
 export default function Dashboard() {
 	const navigate = useNavigate();
@@ -15,6 +16,9 @@ export default function Dashboard() {
 	const [fetchTrigger, setFetchTrigger] = useState(false);
 	const [openListForm, setOpenListForm] = useState(false);
 	const context = useContext(UserContext);
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
 
 	useEffect(() => {
 		const fetchLists = async () => {
@@ -56,7 +60,8 @@ export default function Dashboard() {
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert("Lista criada com sucesso!");
+				setDialogMessage("Lista criada com sucesso!");
+				setOpenDialog(true);
 				setFetchTrigger(!fetchTrigger);
 				return true;
 			} else {
@@ -64,14 +69,15 @@ export default function Dashboard() {
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to create list: " + error.message);
+			setDialogMessage("Erro ao criar a lista, tente novamente!");
+			setOpenDialog(true);
 			return false;
 		}
 	};
 
 	const deleteList = async (listId: string, listName: string) => {
 		if (!confirm(`Deseja realmente apagar a lista ${listName}?`)) return;
-
+		
 		try {
 			const response = await fetch(`/api/lists/${listId}`, {
 				method: "DELETE",
@@ -83,16 +89,24 @@ export default function Dashboard() {
 			const responseObj = await response.json();
 			if (response.ok) {
 				setFetchTrigger(!fetchTrigger);
-				alert("Lista apagada com sucesso!");
+				setDialogMessage("Lista apagada com sucesso!");
+				setOpenDialog(true);
 				//return true;
+
 			} else {
 				throw responseObj.error;
 			}
+
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to delete list: " + error.message);
+			setDialogMessage("Desculpe, apenas administradores da lista podem deleta-la.");
+			setOpenDialog(true);
 			//return false;
 		}
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -139,6 +153,13 @@ export default function Dashboard() {
 				handleClose={handleCloseListForm}
 				handleSubmit={createNewList}
 			></FormDialog>
+
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
 		</>
 	);
 }
