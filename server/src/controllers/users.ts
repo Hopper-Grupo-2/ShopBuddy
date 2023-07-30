@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import UsersServices from "../services/users";
-import IUser, { IUserUpdate } from "../interfaces/user";
-import jwtLib, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../errors";
-import { RedisCaching } from "../database/caching/redis";
+import UsersServices from "../services/users";
+import jwtLib, { JwtPayload } from "jsonwebtoken";
+import RedisCaching from "../database/caching/redisCaching";
+import IUser, { IUserUpdate } from "../interfaces/user";
+import { NextFunction, Request, Response } from "express";
+
 export default class UsersController {
     public static async getUserAuthentication(
         req: Request,
@@ -47,7 +48,7 @@ export default class UsersController {
                 data: `User with id ${createdUser._id} registered successfully!`,
             });
 
-            // clear cached data about books
+            // clear cached data about USERS
             await RedisCaching.clearCache("users");
         } catch (error) {
             next(error);
@@ -59,18 +60,20 @@ export default class UsersController {
         next: NextFunction
     ): Promise<void> {
         try {
-            const usersList = await RedisCaching.getCacheByKeyname("users");
+            const usersFromCache = await RedisCaching.getCacheByKeyname(
+                "users"
+            );
 
-            if (usersList.length > 0) {
-                res.status(200).json({ erorr: null, data: usersList });
+            if (usersFromCache.length > 0) {
+                res.status(200).json({ erorr: null, data: usersFromCache });
                 return;
             }
 
-            const allusers = await UsersServices.getAllUsers();
-            res.status(200).json({ error: null, data: allusers });
+            const allUsers = await UsersServices.getAllUsers();
+            res.status(200).json({ error: null, data: allUsers });
 
-            if (allusers && allusers.length > 0) {
-                await RedisCaching.setCache("users", allusers);
+            if (allUsers && allUsers.length > 0) {
+                await RedisCaching.setCache("users", allUsers);
             }
         } catch (error) {
             next(error);
@@ -137,6 +140,9 @@ export default class UsersController {
                 error: null,
                 data: `User with id ${updatedUser._id} updated successfully!`,
             });
+
+            // clear cached data about USERS
+            await RedisCaching.clearCache("users");
         } catch (error) {
             next(error);
         }
@@ -166,7 +172,7 @@ export default class UsersController {
                 data: `User with id ${userId} deleted successfully!`,
             });
 
-            // clear cached data about books
+            // clear cached data about USERS
             await RedisCaching.clearCache("users");
         } catch (error) {
             next(error);
@@ -215,16 +221,6 @@ export default class UsersController {
         }
     }
 
-    // public static async getLists(
-    // 	req: Request,
-    // 	res: Response,
-    // 	next: NextFunction
-    // ): Promise<void> {
-    // 	try {
-    // 		const allLists = await ListsServices.getAllLists();
-    // 		res.status(200).json({ error: null, data: allLists });
-    // 	} catch (error) {
-    // 		next(error);
-    // 	}
-    // }
+    //
+    //
 }
