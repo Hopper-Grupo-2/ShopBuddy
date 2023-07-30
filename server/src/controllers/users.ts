@@ -3,7 +3,7 @@ import UsersServices from "../services/users";
 import IUser, { IUserUpdate } from "../interfaces/user";
 import jwtLib, { JwtPayload } from "jsonwebtoken";
 import ErrorHandler from "../errors";
-import { getDataFromRedisCacheByKeyname } from "../database/caching/redis";
+import { RedisCaching } from "../database/caching/redis";
 export default class UsersController {
     public static async getUserAuthentication(
         req: Request,
@@ -46,6 +46,9 @@ export default class UsersController {
                 error: null,
                 data: `User with id ${createdUser._id} registered successfully!`,
             });
+
+            // clear cached data about books
+            await RedisCaching.clearCache("users");
         } catch (error) {
             next(error);
         }
@@ -56,7 +59,7 @@ export default class UsersController {
         next: NextFunction
     ): Promise<void> {
         try {
-            const usersList = await getDataFromRedisCacheByKeyname("users");
+            const usersList = await RedisCaching.getCacheByKeyname("users");
 
             if (usersList.length > 0) {
                 res.status(200).json({ erorr: null, data: usersList });
@@ -65,6 +68,10 @@ export default class UsersController {
 
             const allusers = await UsersServices.getAllUsers();
             res.status(200).json({ error: null, data: allusers });
+
+            if (allusers && allusers.length > 0) {
+                await RedisCaching.setCache("users", allusers);
+            }
         } catch (error) {
             next(error);
         }
@@ -158,6 +165,9 @@ export default class UsersController {
                 error: null,
                 data: `User with id ${userId} deleted successfully!`,
             });
+
+            // clear cached data about books
+            await RedisCaching.clearCache("users");
         } catch (error) {
             next(error);
         }

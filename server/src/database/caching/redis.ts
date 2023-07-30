@@ -17,53 +17,52 @@ export default class RedisDatabase {
     }
 }
 
-export async function clearRedisCacheByEndpoint(keyName: string) {
-    console.log(`Call function to clear redis cache ${keyName}`);
-    //const connectionString = process.env.REDIS_CONNECTION_STRING || "";
+export class RedisCaching {
+    private constructor() {}
 
-    const redis = RedisDatabase.getInstance();
+    public static async clearCache(keyName: string) {
+        console.log(`Cleaning cache: ${keyName}`);
 
-    try {
-        await redis.del(keyName);
-        console.log("Clear completed!");
-    } catch (error) {
-        console.error("Error about clear cache redis:", error);
-    }
-}
+        try {
+            const redis = RedisDatabase.getInstance();
 
-export async function saveDataInRedisCacheByEndpoint(
-    keyName: string,
-    value: any
-) {
-    console.log(`Save in redis cache  - ${keyName}`);
-    const TTL = 30; //time to live in seconds
-    const redis = RedisDatabase.getInstance();
-
-    try {
-        await redis.set(keyName, JSON.stringify(value), "EX", TTL);
-        console.log("Save completed!");
-    } catch (error) {
-        console.error("Error about clear cache redis:", error);
-    }
-}
-
-export async function getDataFromRedisCacheByKeyname(
-    keyName: string
-): Promise<any> {
-    try {
-        const redis = RedisDatabase.getInstance();
-
-        const cachedResultString = await redis.get(keyName);
-
-        if (cachedResultString) {
-            console.log("Data get from cache");
-            const cachedData: any = JSON.parse(cachedResultString);
-            return cachedData;
+            await redis.del(keyName);
+            console.log("Clear completed!");
+        } catch (error) {
+            console.error("Error during clear cache:", error);
         }
+    }
 
-        return [] as any[];
-    } catch (error) {
-        console.error("Something happened to Redis", error);
-        return [] as any[];
+    public static async setCache(keyName: string, value: any) {
+        console.log(`Saving in redis cache: ${keyName}`);
+        const TTL = 60 * 60 * 24; //time to live in seconds
+
+        try {
+            const redis = RedisDatabase.getInstance();
+
+            await redis.set(keyName, JSON.stringify(value), "EX", TTL);
+            console.log("Save completed!");
+        } catch (error) {
+            console.error("Error about clear cache redis:", error);
+        }
+    }
+
+    public static async getCacheByKeyname(keyName: string): Promise<any> {
+        try {
+            const redis = RedisDatabase.getInstance();
+
+            const cachedResultString = await redis.get(keyName);
+
+            if (cachedResultString) {
+                console.log(`Get data from cache: ${keyName}`);
+                const cachedData: any = JSON.parse(cachedResultString);
+                return cachedData;
+            }
+
+            return [] as any[];
+        } catch (error) {
+            console.error("Something happened to Redis", error);
+            return [] as any[];
+        }
     }
 }
