@@ -198,7 +198,7 @@ export default class ListsServices {
 		listId: string,
 		memberId: string,
 		ownerId: string
-	): Promise<IList | null> {
+	): Promise<IUser[] | null> {
 		try {
 			const listBody: IList | null = await ListsRepositories.getListById(
 				listId
