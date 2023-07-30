@@ -11,4 +11,10 @@ notificationsRouter.get(
   NotificationsController.getListNotifications
 );
 
+notificationsRouter.put(
+  "/list/:listId",
+  authenticate,
+  NotificationsController.readListNotifications
+);
+
 export { notificationsRouter };

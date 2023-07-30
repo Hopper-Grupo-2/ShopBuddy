@@ -50,4 +50,40 @@ export default class NotificationsController {
       console.error(error);
     }
   }
+
+  public static async readNotification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+      const notificationId = req.params.notificationId;
+
+      const notificationReadStatus = NotificationsServices.readNotification(
+        userId ?? "",
+        notificationId
+      );
+      res.status(200).json({ error: null, data: notificationReadStatus });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async readListNotifications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+      const listId = req.params.listId;
+
+      const notificationReadStatus =
+        NotificationsServices.readListNotifications(userId ?? "", listId);
+      res.status(200).json({ error: null, data: notificationReadStatus });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

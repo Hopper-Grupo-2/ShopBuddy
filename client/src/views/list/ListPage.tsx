@@ -13,7 +13,8 @@ import { MembersModal } from "../../components/MembersModal";
 import IUser from "../../interfaces/iUser";
 import { SocketContext } from "../../contexts/SocketContext";
 import { UserContext } from "../../contexts/UserContext";
-import AlertDialog from "../../components/AlertDialog"
+import AlertDialog from "../../components/AlertDialog";
+import { NotificationsContext } from "../../contexts/NotificationsContext";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -84,6 +85,7 @@ export default function List() {
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
+  const notificationsContext = useContext(NotificationsContext);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
@@ -111,8 +113,6 @@ export default function List() {
 
     fetchList();
 
-    // fazer um fetch que pega os membros baseado no id
-
     const fetchMembers = async () => {
       console.log("esse é o list id:", params.listId);
       const response = await fetch(`/api/lists/${params.listId}/members`, {
@@ -128,6 +128,9 @@ export default function List() {
     };
 
     fetchMembers();
+
+    if (params.listId)
+      notificationsContext?.readListNotifications(params.listId);
   }, []);
 
   useEffect(() => {
@@ -141,7 +144,12 @@ export default function List() {
     console.log("enter list was emitted");
     return () => {
       if (socketContext.socket)
-        socketContext.socket.emit("exitList", userContext?.user?._id);
+        socketContext.socket.emit(
+          "exitList",
+          params.listId,
+          userContext?.user?._id
+        );
+      console.log("exit list was emitted");
     };
   }, [socketContext?.socket]);
 
@@ -195,7 +203,7 @@ export default function List() {
     } catch (error: any) {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao adicionar o item. Tente novamente!");
-	  setOpenDialog(true);
+      setOpenDialog(true);
       return false;
     }
   };
@@ -214,8 +222,10 @@ export default function List() {
 
       const responseObj = await response.json();
       if (response.ok) {
-        setDialogMessage("Membro adicionado com sucesso! Recarregue a página (por enquanto)");
-    	setOpenDialog(true);
+        setDialogMessage(
+          "Membro adicionado com sucesso! Recarregue a página (por enquanto)"
+        );
+        setOpenDialog(true);
         //const products = responseObj.data.products;
         //setItems(products);
         return true;
@@ -225,7 +235,7 @@ export default function List() {
     } catch (error: any) {
       console.error(error.name, error.message);
       setDialogMessage("Usuário inexistente. Tente novamente!");
-	  setOpenDialog(true);
+      setOpenDialog(true);
       return false;
     }
   };
@@ -252,7 +262,7 @@ export default function List() {
     } catch (error: any) {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao excluir o item. Tente novamente!");
-	  setOpenDialog(true);
+      setOpenDialog(true);
     }
   };
 
@@ -278,7 +288,7 @@ export default function List() {
     } catch (error: any) {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao marcar o item. Tente novamente!");
-	  setOpenDialog(true);
+      setOpenDialog(true);
     }
   };
 
@@ -361,8 +371,8 @@ export default function List() {
   }
 
   const handleCloseDialog = () => {
-	setOpenDialog(false);
-};
+    setOpenDialog(false);
+  };
 
   return (
     <>
@@ -428,12 +438,12 @@ export default function List() {
         open={showMembers}
         handleClose={handleHideMembers}
       />
-	  <AlertDialog
-				open={openDialog}
-				onClose={handleCloseDialog}
-				contentText={dialogMessage}
-				buttonText="Fechar"
-			/>
+      <AlertDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        contentText={dialogMessage}
+        buttonText="Fechar"
+      />
     </>
   );
 }

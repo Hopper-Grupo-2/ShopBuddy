@@ -2,38 +2,33 @@ import React, { useContext, useEffect, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import { SocketContext } from "./SocketContext";
 import { UserContext } from "./UserContext";
-import INotification from "../interfaces/iNotification";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
+  children,
 }) => {
-	const userContext = useContext(UserContext);
-	const [socket, setSocket] = useState<Socket | null>(null);
+  const userContext = useContext(UserContext);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-	useEffect(() => {
-		if (socket) return;
-		const newSocket = io();
+  useEffect(() => {
+    if (socket) return;
+    const newSocket = io();
 
-		if (userContext?.user) {
-			newSocket.emit("login", userContext?.user?._id);
-			newSocket.on("listNotification", (notification: INotification) => {
-				alert(`${notification.type}: ${notification.textContent}`);
-			});
-		}
+    if (userContext?.user) {
+      newSocket.emit("login", userContext?.user?._id);
+    }
 
-		setSocket(newSocket);
+    setSocket(newSocket);
 
-		return () => {
-			if (newSocket) {
-				newSocket.off("listNotification");
-				newSocket.close();
-			}
-		};
-	}, []);
+    return () => {
+      if (newSocket) {
+        newSocket.close();
+      }
+    };
+  }, []);
 
-	return (
-		<SocketContext.Provider value={{ socket }}>
-			{children}
-		</SocketContext.Provider>
-	);
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };

@@ -21,8 +21,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
-import INotification from "../interfaces/iNotification";
-import { SocketContext } from "../contexts/SocketContext";
+import { NotificationsContext } from "../contexts/NotificationsContext";
 
 const drawerWidth = 240;
 
@@ -38,39 +37,8 @@ interface Props {
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [notifications, setNotifications] = React.useState<INotification[]>([]);
-
   const userContext = React.useContext(UserContext);
-  const socketContext = React.useContext(SocketContext);
-
-  const fetchNotifications = async () => {
-    const response = await fetch(`/api/notifications`, {
-      method: "GET",
-      credentials: "include", // Ensure credentials are sent
-    });
-
-    if (response.ok) {
-      const notificationsData = await response.json();
-      setNotifications(notificationsData.data);
-      console.log(notificationsData);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  React.useEffect(() => {
-    if (!socketContext?.socket) return;
-
-    socketContext.socket.on("listNotification", () => {
-      fetchNotifications();
-    });
-
-    return () => {
-      socketContext.socket?.off("listNotification");
-    };
-  }, [notifications]);
+  const notificationsContext = React.useContext(NotificationsContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -94,18 +62,8 @@ export default function ResponsiveDrawer(props: Props) {
     },
     {
       text: "Notificações",
-      route: "/",
-      icon: (
-        <Badge
-          badgeContent={
-            notifications.filter((notification) => notification.read === false)
-              .length
-          }
-          color="primary"
-        >
-          <NotificationsIcon />
-        </Badge>
-      ),
+      route: "/notifications",
+      icon: <NotificationsIcon />,
     },
     {
       text: "Configurações",
@@ -139,7 +97,22 @@ export default function ResponsiveDrawer(props: Props) {
             <ListItemButton
               onClick={() => (page.text === "Sair" ? handleLogout() : null)}
             >
-              <ListItemIcon>{page.icon}</ListItemIcon>
+              <ListItemIcon>
+                {page.text === "Notificações" ? (
+                  <Badge
+                    badgeContent={
+                      notificationsContext?.notifications?.filter(
+                        (notification) => notification.read === false
+                      ).length
+                    }
+                    color="primary"
+                  >
+                    {page.icon}
+                  </Badge>
+                ) : (
+                  page.icon
+                )}
+              </ListItemIcon>
               <ListItemText primary={page.text} />
             </ListItemButton>
           </ListItem>
