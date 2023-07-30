@@ -6,7 +6,6 @@ import { UserContext } from "../contexts/UserContext";
 import IMessage from "../interfaces/iMessage";
 //import io, { Socket } from "socket.io-client";
 import { SocketContext } from "../contexts/SocketContext";
-import IUser from "../interfaces/iUser";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -54,7 +53,6 @@ const MessageForm = styled.form`
 
 interface ChatProps {
   listId: string;
-  members: IUser[];
 }
 
 export default function ChatBox(props: ChatProps) {
@@ -102,14 +100,8 @@ export default function ChatBox(props: ChatProps) {
     if (!socketContext?.socket) return;
 
     socketContext.socket.on("chatMessage", (message: IMessage) => {
-      const senderMember = props.members.find(
-        (member) => member._id === message.userId
-      );
-
-      const username = senderMember?.username || "Unknown User";
-
       console.log("received a message!");
-      setMessages((prev) => [...prev, { ...message, username }]);
+      setMessages((prev) => [...prev, message]);
     });
 
     return () => {
@@ -145,7 +137,6 @@ export default function ChatBox(props: ChatProps) {
       const responseObj = await response.json();
       if (response.ok) {
         const newMessage = responseObj.data;
-        newMessage.username = userContext?.user?.username;
         setMessages((prev) => [...prev, newMessage]);
       } else {
         throw responseObj.error;

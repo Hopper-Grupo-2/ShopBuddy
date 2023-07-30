@@ -18,10 +18,16 @@ export default class MessagesRepositories {
         textContent: message,
         createdAt: Date.now(),
       });
+
+      const username = await UsersRepositories.getUsernameById(
+        String(response.userId)
+      );
+
       const createdMessage: IMessage = {
         _id: response._id,
         textContent: response.textContent,
         userId: response.userId,
+        username: username,
         listId: response.listId,
         createdAt: response.createdAt,
       };
