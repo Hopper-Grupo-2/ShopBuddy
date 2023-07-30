@@ -5,6 +5,6 @@ export default interface IProduct {
   quantity: Number;
   unit: string;
   price: Number;
-  checked: Boolean;
-  _id: Schema.Types.ObjectId | string;
+  checked?: Boolean;
+  _id?: Schema.Types.ObjectId | string;
 }

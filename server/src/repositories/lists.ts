@@ -282,6 +282,40 @@ export default class ListsRepositories {
       );
     }
   }
+
+  public static async updateProductInfo(
+    listId: string,
+    productId: string,
+    newProductInfo: IProduct
+  ): Promise<IList | null> {
+    try {
+      const updatedList = await this.Model.findOneAndUpdate(
+        {
+          _id: listId,
+          "products._id": productId,
+        },
+        {
+          $set: {
+            "products.$.name": newProductInfo.name,
+            "products.$.quantity": newProductInfo.quantity,
+            "products.$.unit": newProductInfo.unit,
+            "products.$.price": newProductInfo.price,
+            "products.$.checked": newProductInfo.checked,
+            updatedAt: new Date(),
+          },
+        },
+        { new: true }
+      );
+
+      return updatedList;
+    } catch (error) {
+      console.error(this.name, "updateProductInfo error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error updating info of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
   //
   // last bracket from class
   //
