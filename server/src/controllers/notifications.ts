@@ -21,6 +21,32 @@ export default class NotificationsController {
     }
   }
 
+  public static async sendNewUserNotification(
+    listId: string,
+    userId: string,
+    type: NotificationTypes,
+    textContent: string
+  ) {
+    try {
+      const notification =
+        await NotificationsServices.createNewListNotification(
+          listId,
+          userId,
+          type,
+          textContent
+        );
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToUser(
+        listId,
+        userId,
+        "listNotification",
+        notification
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   public static async sendNewListNotification(
     listId: string,
     type: NotificationTypes,

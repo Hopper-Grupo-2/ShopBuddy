@@ -45,20 +45,24 @@ export default function Notifications() {
         <div>
           <h1>Notificações</h1>
           <List>
-            {notifications.map((notification) => (
-              <ListItem
-                key={notification._id}
-                disablePadding
-                component={Link}
-                to={"/list/" + notification.listId}
-              >
-                <ListItemButton onClick={() => {}}>
-                  <ListItemText
-                    primary={notification.type + " : " + notification.listId}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
+            {notifications
+              .slice()
+              .reverse()
+              .map((notification) => (
+                <ListItem
+                  key={notification._id}
+                  sx={notification.read ? { backgroundColor: "red" } : null}
+                  disablePadding
+                  component={Link}
+                  to={"/list/" + notification.listId}
+                >
+                  <ListItemButton onClick={() => {}}>
+                    <ListItemText
+                      primary={notification.type + " : " + notification.listId}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
           </List>
         </div>
       </PageStructure>
