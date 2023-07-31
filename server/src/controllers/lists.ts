@@ -198,7 +198,7 @@ export default class ListsController {
 			const listId: string = req.params.listId;
 			const memberId: string = req.params.memberId;
 
-			const updatedList: IList | null =
+			const updatedList: IUser[] | null =
 				await ListsServices.deleteMemberFromList(
 					listId,
 					memberId,

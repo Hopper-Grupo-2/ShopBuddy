@@ -3,6 +3,8 @@ import Models from "../database/models";
 import ErrorHandler from "../errors";
 import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
+import IUser from "../interfaces/user";
+import UsersRepositories from "./users";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -214,7 +216,7 @@ export default class ListsRepositories {
   public static async deleteMemberFromList(
     listId: string,
     memberId: string
-  ): Promise<IList | null> {
+  ): Promise<IUser[] | null> {
     try {
       await this.Model.updateOne(
         { _id: listId },
@@ -224,8 +226,24 @@ export default class ListsRepositories {
         }
       );
 
-      const updatedList = await this.getListById(listId);
-      return updatedList;
+        const list = await this.getListById(listId)
+
+        if(list){
+
+      let members: IUser[] = [];
+
+      for (const element of list.members) {
+        const userId = element.userId.toString();
+        const member = await UsersRepositories.getUserById(userId);
+
+        if (member !== null) members.push(member);
+      }
+
+      return members;
+    } else{
+      throw "Error"
+    }
+
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
