@@ -78,68 +78,68 @@ describe("Lists Services", () => {
     })});
 
 
-    // describe("getListById", () => {
-    //     it("should retrieve a list by id", async () => {
-    //         const listsFromRepo: IList =
-    //             {
-    //                 _id: "64bc28f2e97fdb0fbd61c076",
-    //                 listName: "Meu Deus",
-    //                 products: [
-    //                     {
-    //                         "name": "dado",
-    //                         "quantity": 10,
-    //                         "unit": "Kg",
-    //                         "price": 200,
-    //                         "checked": false,
-    //                         "_id": "64c0a1558c586b987b4a018a"
-    //                     }
-    //                 ],
-    //                 owner: "64baecd19a6976beff14b5db",
-    //                 members: [
-    //                     {
-    //                         userId: "64baecd19a6976beff14b5db"
-    //                     }
-    //                 ],
-    //                 createdAt:  new Date("2023-07-22T19:07:30.172Z"),
-    //                 updatedAt:  new Date("2023-07-22T19:08:59.033Z"),
-    //             }
-    //         ;
-    //         // return a pre-defined value instead true method
-    //         jest.mocked(ListRepositories.getListById).mockResolvedValue(
-    //             listsFromRepo
-    //         );
+    describe("getListById", () => {
+        it("should retrieve a list by id", async () => {
+            const listsFromRepo: IList =
+                {
+                    _id: "64bc28f2e97fdb0fbd61c076",
+                    listName: "Meu Deus",
+                    products: [
+                        {
+                            "name": "dado",
+                            "quantity": 10,
+                            "unit": "Kg",
+                            "price": 200,
+                            "checked": false,
+                            "_id": "64c0a1558c586b987b4a018a"
+                        }
+                    ],
+                    owner: "64baecd19a6976beff14b5db",
+                    members: [
+                        {
+                            userId: "64baecd19a6976beff14b5db"
+                        }
+                    ],
+                    createdAt:  new Date("2023-07-22T19:07:30.172Z"),
+                    updatedAt:  new Date("2023-07-22T19:08:59.033Z"),
+                }
+            ;
+            // return a pre-defined value instead true method
+            jest.mocked(ListRepositories.getListById).mockResolvedValue(
+                listsFromRepo
+            );
 
-    //         // call the function under test
-    //         const list = await ListsServices.getListByListId(
-    //             "64bc28f2e97fdb0fbd61c076"
-    //         );
+            // call the function under test
+            const list = await ListsServices.getListByListId(
+                "64bc28f2e97fdb0fbd61c076"
+            );
 
-    //         // assertions
-    //         // console.log("=========================================================")
-    //         expect(list).toEqual(listsFromRepo);
-    //         // expect(jest.mocked(ListRepositories.findAllListsByUserId).toBeCalledTimes(
-    //         //     1
-    //         // ));
-    //         //ex. to functions without return
-    //         //expect(jest.mocked(UsersRepositories.getAllUsers)).toBeCalledWith("para1",2);
-    //     });
+            // assertions
+            // console.log("=========================================================")
+            expect(list).toEqual(listsFromRepo);
+            // expect(jest.mocked(ListRepositories.findAllListsByUserId).toBeCalledTimes(
+            //     1
+            // ));
+            //ex. to functions without return
+            //expect(jest.mocked(UsersRepositories.getAllUsers)).toBeCalledWith("para1",2);
+        });
 
-    //     it("should throw a error if list doesnt exist", async () => {
-    //         // mocked function about repositories that return null when user doesnt exist in db
-    //         jest.mocked(ListRepositories.getListById).mockResolvedValue(null);
+        it("should throw a error if list doesnt exist", async () => {
+            // mocked function about repositories that return null when user doesnt exist in db
+            jest.mocked(ListRepositories.getListById).mockResolvedValue(null);
 
-    //         // call the function under test
-    //         await expect(() => {
-    //             return ListsServices.getListByListId("1234567890ab");
-    //         }).rejects.toMatchObject({ name: "NotFoundError" });
+            // call the function under test
+            await expect(() => {
+                return ListsServices.getListByListId("1234567890ab");
+            }).rejects.toMatchObject({ name: "NotFoundError" });
 
-    //         await expect(() => {
-    //             return ListsServices.getListByListId("1234567890ab");
-    //         }).rejects.toMatchObject({
-    //             message: "List does not exist",
-    //         });
+            await expect(() => {
+                return ListsServices.getListByListId("1234567890ab");
+            }).rejects.toMatchObject({
+                message: "List does not exist",
+            });
 
-    //         //ex. to functions without return
-    //         //expect(jest.mocked(UsersRepositories.getAllUsers)).toBeCalledWith("para1",2);
-    //     });
-    // });
+            //ex. to functions without return
+            //expect(jest.mocked(UsersRepositories.getAllUsers)).toBeCalledWith("para1",2);
+        });
+    });
