@@ -27,8 +27,7 @@ usersRouter.get(
 usersRouter.patch(
   "/:userId",
   authenticate,
-  userIdValidator(),
-  userUpdateValidator(),
+  validate("updateUser"),
   handleValidation,
   UsersController.updateUser
 );
