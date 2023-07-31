@@ -5,6 +5,9 @@ import authenticate from "../middlewares/authentication";
 import userUpdateValidator from "../validators/userUpdateValidator";
 import userIdValidator from "../validators/userIdValidator";
 import handleValidation from "../validators/handle-validation";
+
+import validate from "../validators/validate";
+
 const usersRouter = Router();
 
 // GET /api/users/me - get the authenticated user
@@ -16,7 +19,8 @@ usersRouter.get("/", UsersController.getAllUsers);
 usersRouter.get(
   "/:userId",
   authenticate,
-  userIdValidator(),
+  validate("getUserById"),
+  handleValidation,
   UsersController.getUserById
 );
 // PATCH /api/users/:userId - update a user's information
