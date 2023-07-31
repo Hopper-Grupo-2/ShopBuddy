@@ -153,9 +153,12 @@ describe("Users Services", () => {
                 updatedUserFromRepo
             );
 
+            const loggedUserId = "1119e8640bf34fa1112da871";
+            const userIdParams = "1119e8640bf34fa1112da871";
             // call the function under test
             const updatedUser = await UsersServices.updateUser(
-                "1119e8640bf34fa1112da871",
+                loggedUserId,
+                userIdParams,
                 {
                     username: "user1updated",
                     email: "user1updated@alpha.com",
@@ -174,7 +177,7 @@ describe("Users Services", () => {
         it("should throw a error if user doesnt exist", async () => {
             // mocked function about repositories that return null when user doesnt exist in db
             jest.mocked(UsersRepositories.getUserById).mockResolvedValue(null);
-
+            const userIdParams = "idNotExist!!";
             const loggedUserId = "idNotExist!!";
             const userUpdateInfo: IUserUpdate = {
                 username: "user1updated",
@@ -186,11 +189,19 @@ describe("Users Services", () => {
             };
             // call the function under test
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({ name: "NotFoundError" });
 
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({
                 message: "There is no user with the given id",
             });
@@ -215,6 +226,7 @@ describe("Users Services", () => {
             jest.mocked(UsersRepositories.getUserById).mockResolvedValue(
                 oldUserFromRepo
             );
+            const userIdParams = oldUserFromRepo._id?.toString() || "";
             const loggedUserId = "thisIdAdiff!";
             const userUpdateInfo: IUserUpdate = {
                 username: "user1updated",
@@ -226,11 +238,19 @@ describe("Users Services", () => {
             };
             // call the function under test
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({ name: "ForbiddenError" });
 
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({
                 message: `User ${loggedUserId} does not have access`,
             });
@@ -257,6 +277,7 @@ describe("Users Services", () => {
                 username: "anotheruser",
                 email: "user1updated@alpha.com",
             } as IUser);
+            const userIdParams = oldUserFromRepo._id?.toString() || "";
             const loggedUserId = "1119e8640bf34fa1112da871";
             const userUpdateInfo: IUserUpdate = {
                 username: "user1updated",
@@ -268,11 +289,19 @@ describe("Users Services", () => {
             };
             // call the function under test
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
-            }).rejects.toMatchObject({ name: "UnauthorizedError" });
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
+            }).rejects.toMatchObject({ name: "Conflict" });
 
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({
                 message: "This e-mail is already in use",
             });
@@ -304,6 +333,8 @@ describe("Users Services", () => {
                 email: "nickused@alpha.com",
             } as IUser);
 
+            const userIdParams = oldUserFromRepo._id?.toString() || "";
+
             const loggedUserId = "1119e8640bf34fa1112da871";
             const userUpdateInfo: IUserUpdate = {
                 username: "user1updated",
@@ -315,11 +346,19 @@ describe("Users Services", () => {
             };
             // call the function under test
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
-            }).rejects.toMatchObject({ name: "UnauthorizedError" });
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
+            }).rejects.toMatchObject({ name: "Conflict" });
 
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({
                 message: "This username is already in use",
             });
@@ -350,6 +389,7 @@ describe("Users Services", () => {
                 null
             );
 
+            const userIdParams = oldUserFromRepo._id?.toString() || "";
             const loggedUserId = "1119e8640bf34fa1112da871";
             const userUpdateInfo: IUserUpdate = {
                 username: "user1updated",
@@ -361,11 +401,19 @@ describe("Users Services", () => {
             };
             // call the function under test
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({ name: "UnauthorizedError" });
 
             await expect(() => {
-                return UsersServices.updateUser(loggedUserId, userUpdateInfo);
+                return UsersServices.updateUser(
+                    loggedUserId,
+                    userIdParams,
+                    userUpdateInfo
+                );
             }).rejects.toMatchObject({
                 message: "Old password is wrong",
             });
