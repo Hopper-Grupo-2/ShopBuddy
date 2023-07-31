@@ -37,12 +37,12 @@ import {
         // insert some lists into database
         const list1 = await Model.create({
             listName: "lista1",
-            owner: user._id, // Definir o owner como o ID do usuário criado
+            owner: user._id,
           });
     
           const list2 = await Model.create({
             listName: "lista2",
-            owner: user._id, // Definir o owner como o ID do usuário criado
+            owner: user._id,
           });
     
   
@@ -137,5 +137,40 @@ import {
 
       // Assert the expected results
       expect(lists).toEqual([]);
+    });
+  });
+
+  describe("getListById", () => {
+    it("should retrieve the list with the given ID", async () => {
+      // Crie uma lista no banco de dados
+      const Model = Models.getInstance().listModel;
+      const newList = await Model.create({
+        listName: "Test List",
+        owner: "64baecd19a6976beff14b5db",
+        members: [
+          {
+            userId: "64baecd19a6976beff14b5db",
+          },
+        ],
+      });
+
+      // Chame a função para obter a lista pelo ID
+      const list = await ListRepositories.getListById(newList.id);
+
+      // Assert que a lista retornada corresponde à lista inserida
+      expect(list).not.toBeNull();
+      expect(list?._id.toString()).toBe(newList._id.toString());
+      expect(list?.listName).toBe("Test List");
+      expect(list?.owner.toString()).toBe("64baecd19a6976beff14b5db"); // Converter para string
+    });
+
+    it("should return null if no list exists with the given ID", async () => {
+      // Chame a função com um ID de lista que não existe
+      const nonExistentUserId = "1a3f5b2e9c7d0f8e6b4a9c8e";
+      const list = await ListRepositories.getListById(
+        nonExistentUserId
+      );
+      // Assert que a função retorna null
+      expect(list).toBeNull();
     });
   });
