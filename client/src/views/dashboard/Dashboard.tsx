@@ -128,11 +128,13 @@ export default function Dashboard() {
 							key={list._id}
 							title={list.listName}
 							date={new Date(list.createdAt)}
-							total={list.products.reduce(
-								(acc, product) =>
-									acc + product.price * product.quantity,
-								0
-							)}
+							total={list.products.reduce((acc, product) => {
+								if (product.unit === "Kg" || product.unit === "L" || product.unit === "Ml" || product.unit === "und") {
+								  return acc + product.price * product.quantity;
+								} else {
+								  return acc + product.price;
+								}
+							  }, 0)}
 							action={() => {
 								navigate("/list/" + list._id);
 							}}

@@ -14,8 +14,15 @@ interface CardProps {
 	action: () => void;
 	deleteAction?: () => void;
 }
-
 export default function BasicCard(props: CardProps) {
+	const formattedDate = new Intl.DateTimeFormat("pt-BR", {
+		day: "numeric",
+		month: "numeric",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+	  }).format(props.date);
 	return (
 		<Card sx={{ minWidth: 275, marginBottom: 2 }}>
 			<CardContent>
@@ -23,7 +30,7 @@ export default function BasicCard(props: CardProps) {
 					{props.title}
 				</Typography>
 				<Typography sx={{ mb: 1.5 }} color="text.secondary">
-					{props.date.toUTCString()}
+					{formattedDate}
 				</Typography>
 				<Typography variant="h6">
 					Total: R$ {props.total.toFixed(2).toString()}
