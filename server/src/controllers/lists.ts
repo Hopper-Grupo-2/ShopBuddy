@@ -137,7 +137,7 @@ export default class ListsController {
       const updatedList: IList | null = await ListsServices.addNewProduct(
         listId,
         productBody,
-        user._id as string
+        user._id?.toString() ?? ""
       );
 
       //websocket
@@ -150,6 +150,7 @@ export default class ListsController {
       );
 
       NotificationsController.sendNewListNotification(
+        user._id?.toString() ?? "",
         listId,
         NotificationTypes.ADD_PRODUCT,
         "New product added at list" + listId
@@ -265,12 +266,13 @@ export default class ListsController {
       const websocket = Websocket.getIstance();
       websocket.broadcastToList(
         listId,
-        user._id as string,
+        user._id?.toString() ?? "",
         "deleteProduct",
         productId
       );
 
       NotificationsController.sendNewListNotification(
+        user._id?.toString() ?? "",
         listId,
         NotificationTypes.REMOVE_PRODUCT,
         "Deleted product at list" + listId
@@ -302,19 +304,20 @@ export default class ListsController {
       const updatedList: IList | null = await ListsServices.invertProductCheck(
         listId,
         productId,
-        user._id as string
+        user._id?.toString() ?? ""
       );
 
       //websocket
       const websocket = Websocket.getIstance();
       websocket.broadcastToList(
         listId,
-        user._id as string,
+        user._id?.toString() ?? "",
         "checkProduct",
         productId
       );
 
       NotificationsController.sendNewListNotification(
+        user._id?.toString() ?? "",
         listId,
         NotificationTypes.TOGGLE_PRODUCT,
         "Product changed status at list" + listId

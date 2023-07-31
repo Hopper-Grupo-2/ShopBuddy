@@ -22,7 +22,7 @@ export default class MessagesController {
           "Token does not contain the user's data"
         );
 
-      const userId = user._id as string;
+      const userId = user._id?.toString() ?? "";
 
       const listId = req.params.listId;
       const messageBody = req.body;
@@ -37,6 +37,7 @@ export default class MessagesController {
       websocket.broadcastToList(listId, userId, "chatMessage", createdMessage);
 
       NotificationsController.sendNewListNotification(
+        userId,
         listId,
         NotificationTypes.MESSAGE_FROM_LIST,
         createdMessage.textContent
