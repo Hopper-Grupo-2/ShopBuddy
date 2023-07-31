@@ -179,7 +179,7 @@ describe("Users Repositories", () => {
           firstName: "test",
           lastName: "notexist",
         });
-      }).rejects.toMatchObject({ message: "Internal server errorz" });
+      }).rejects.toMatchObject({ message: "Internal server error" });
     });
   });
 });
