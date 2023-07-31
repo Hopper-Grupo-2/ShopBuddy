@@ -111,4 +111,23 @@ export default class NotificationsRepositories {
       );
     }
   }
+
+  public static async deleteUserListNotifications(
+    userId: string,
+    listId: string
+  ): Promise<boolean> {
+    try {
+      const response = await this.Model.deleteMany({
+        userId: userId,
+        listId: listId,
+      });
+      return response.acknowledged;
+    } catch (error) {
+      console.error(this.name, "deleteUserListNotifications error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        "Error deleting the user's notifications"
+      );
+    }
+  }
 }

@@ -118,14 +118,14 @@ export default class Websocket {
   }
 
   public broadcastToUser(
-    listId: string,
+    //listId: string,
     userId: string,
     eventName: string,
     data: any
   ) {
     if (!this.io) return;
     this.connections.forEach((conn: IConnection) => {
-      if (conn.userId === userId && conn.listId !== listId) {
+      if (conn.userId === userId) {
         conn.connection.emit(eventName, data);
       }
     });
