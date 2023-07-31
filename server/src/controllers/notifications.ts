@@ -12,7 +12,6 @@ export default class NotificationsController {
   ) {
     try {
       const userId = req.user?._id?.toString();
-
       const notifications =
         await NotificationsServices.getLatestListNotifications(userId ?? "");
       res.status(200).json({ error: null, data: notifications });
@@ -56,7 +55,7 @@ export default class NotificationsController {
       // broadcast notification to all clients
       const members = await ListsServices.getMembersByListId(listId);
       const websocket = Websocket.getIstance();
-      members.forEach(async (member) => {
+      for (const member of members) {
         const notification =
           await NotificationsServices.createNewListNotification(
             listId,
@@ -71,7 +70,7 @@ export default class NotificationsController {
           "listNotification",
           notification
         );
-      });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -86,10 +85,11 @@ export default class NotificationsController {
       const userId = req.user?._id?.toString();
       const notificationId = req.params.notificationId;
 
-      const notificationReadStatus = NotificationsServices.readNotification(
-        userId ?? "",
-        notificationId
-      );
+      const notificationReadStatus =
+        await NotificationsServices.readNotification(
+          userId ?? "",
+          notificationId
+        );
       res.status(200).json({ error: null, data: notificationReadStatus });
     } catch (error) {
       next(error);
@@ -106,7 +106,7 @@ export default class NotificationsController {
       const listId = req.params.listId;
 
       const notificationReadStatus =
-        NotificationsServices.readListNotifications(userId ?? "", listId);
+        await NotificationsServices.readListNotifications(userId ?? "", listId);
       res.status(200).json({ error: null, data: notificationReadStatus });
     } catch (error) {
       next(error);

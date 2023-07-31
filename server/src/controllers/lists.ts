@@ -61,7 +61,6 @@ export default class ListsController {
     const listId = req.params.listId;
     try {
       const membersById = await ListsServices.getMembersByListId(listId);
-
       //console.log("PEGUEI TUDO:", membersById);
       res.status(200).json({ error: null, data: membersById });
     } catch (error) {
