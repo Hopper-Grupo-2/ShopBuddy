@@ -2,15 +2,15 @@ version: "3.8"
 name: "shopbuddyprod"
 
 services:
-    #redis:
-    #    image: redis:7.0.9
-    #    container_name: redis
-    #    command: redis-server --requirepass ${REDIS_PASSWORD} --user ${REDIS_USER}
-    #    restart: always
-    #    ports:
-    #        - "6379:6379"
-    #    env_file:
-    #        - .env
+    svcredis:
+        image: bitnami/redis
+        expose:
+            - 6379
+        ports:
+            - 6373:6379
+        environment:
+            - TZ=America/Sao_Paulo
+            - ALLOW_EMPTY_PASSWORD=yes
 
     mongo:
         build: ./server/src/database/
@@ -37,7 +37,7 @@ services:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
         depends_on:
-            # - redis
+            - svcredis
             - mongo
         command: npm run start
 

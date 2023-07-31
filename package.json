@@ -8,8 +8,8 @@
         "start": "node dist/server.js",
         "build": "tsc && cd client && yarn --cwd ./ build",
         "dev": "nodemon -L ./server/server.ts",
-        "test": "jest --runInBand --detectOpenHandles --verbose",
-        "test:usersServices": "jest __tests__/unit/users/usersServices.test.ts"
+        "test": "jest --runInBand --detectOpenHandles --verbose __tests__/",
+        "test:services": "jest __tests__/unit/services"
     },
     "repository": {
         "type": "git",
@@ -28,6 +28,7 @@
         "dotenv": "^16.2.0",
         "express": "^4.18.2",
         "express-validator": "^7.0.1",
+        "ioredis": "^5.3.2",
         "jsonwebtoken": "^9.0.1",
         "mongoose": "^7.3.1",
         "socket.io": "^4.7.1"

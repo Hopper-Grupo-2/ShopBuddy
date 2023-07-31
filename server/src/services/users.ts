@@ -95,6 +95,7 @@ export default class UsersServices {
     }
 
     public static async updateUser(
+        loggedUserId: string,
         userId: string,
         user: IUserUpdate
     ): Promise<IUser> {
@@ -108,10 +109,10 @@ export default class UsersServices {
                 );
             }
 
-            if (oldUser._id?.toString() !== userId) {
+            if (loggedUserId !== userId) {
                 throw ErrorHandler.createError(
                     "ForbiddenError",
-                    `User ${userId} does not have access`
+                    `User ${loggedUserId} does not have access`
                 );
             }
 
@@ -120,7 +121,7 @@ export default class UsersServices {
             );
             if (foundUserByEmail !== null && user.email !== oldUser.email)
                 throw ErrorHandler.createError(
-                    "UnauthorizedError",
+                    "Conflict",
                     "This e-mail is already in use"
                 );
 
@@ -133,7 +134,7 @@ export default class UsersServices {
                 user.username !== oldUser.username
             )
                 throw ErrorHandler.createError(
-                    "UnauthorizedError",
+                    "Conflict",
                     "This username is already in use"
                 );
 
