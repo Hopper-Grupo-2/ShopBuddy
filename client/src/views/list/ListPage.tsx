@@ -100,9 +100,7 @@ export default function List() {
   useEffect(() => {
     fetchList();
     fetchMembers();
-
-    if (params.listId)
-      notificationsContext?.readListNotifications(params.listId);
+    notificationsContext?.readListNotifications(params.listId ?? "");
   }, []);
 
   const handleRemoveMember = async (memberId: String) => {
@@ -341,9 +339,15 @@ export default function List() {
       removeItem(productId);
     });
 
+    /* socketContext.socket.on("listNotification", (_) => {
+      notificationsContext?.readListNotifications(params.listId ?? "");
+    }) */
+
     return () => {
-      socketContext.socket?.off("checkProduct");
       socketContext.socket?.off("addProduct");
+      socketContext.socket?.off("checkProduct");
+      socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("deleteProduct");
     };
   }, [socketContext?.socket, items]);
 
