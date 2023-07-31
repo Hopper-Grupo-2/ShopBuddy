@@ -5,6 +5,21 @@ import INotification, { NotificationTypes } from "../interfaces/notification";
 export default class NotificationsRepositories {
   private static Model = Models.getInstance().notificationModel;
 
+  public static async getNotification(
+    notificationId: string
+  ): Promise<INotification | null> {
+    try {
+      const notification = await this.Model.findOne({ _id: notificationId });
+      return notification;
+    } catch (error) {
+      console.error(this.name, "getLatestNotifications error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        "Error getting the notification"
+      );
+    }
+  }
+
   public static async getLatestNotifications(
     userId: string,
     sevenDaysAgo: Date
@@ -126,7 +141,39 @@ export default class NotificationsRepositories {
       console.error(this.name, "deleteUserListNotifications error: ", error);
       throw ErrorHandler.createError(
         "InternalServerError",
+        "Error deleting the user's list notifications"
+      );
+    }
+  }
+
+  public static async deleteUserNotifications(
+    userId: string
+  ): Promise<boolean> {
+    try {
+      const response = await this.Model.deleteMany({
+        userId: userId,
+      });
+      return response.acknowledged;
+    } catch (error) {
+      console.error(this.name, "deleteUserNotifications error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
         "Error deleting the user's notifications"
+      );
+    }
+  }
+
+  public static async deleteNotification(
+    notificationId: string
+  ): Promise<boolean> {
+    try {
+      const response = await this.Model.deleteOne({ _id: notificationId });
+      return response.acknowledged;
+    } catch (error) {
+      console.error(this.name, "deleteNotification error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        "Error deleting the notification"
       );
     }
   }

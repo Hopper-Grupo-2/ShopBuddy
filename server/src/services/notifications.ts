@@ -63,6 +63,15 @@ export default class NotificationsServices {
       if (user === null)
         throw ErrorHandler.createError("NotFoundError", "User not found");
 
+      const notification: INotification | null =
+        await this.Repository.getNotification(notificationId);
+
+      if (notification === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Notification not found"
+        );
+
       const notificationReadStatus = await this.Repository.readNotification(
         notificationId
       );
@@ -87,6 +96,48 @@ export default class NotificationsServices {
       const notificationReadStatus =
         await this.Repository.readListNotifications(userId, listId);
       return notificationReadStatus;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async deleteUserNotifications(userId: string) {
+    try {
+      const user: IUser | null = await UsersRepositories.getUserById(userId);
+
+      if (user === null)
+        throw ErrorHandler.createError("NotFoundError", "User not found");
+
+      const wasDeleted = await this.Repository.deleteUserNotifications(userId);
+      return wasDeleted;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async deleteNotification(
+    userId: string,
+    notificationId: string
+  ) {
+    try {
+      const user: IUser | null = await UsersRepositories.getUserById(userId);
+
+      if (user === null)
+        throw ErrorHandler.createError("NotFoundError", "User not found");
+
+      const notification: INotification | null =
+        await this.Repository.getNotification(notificationId);
+
+      if (notification === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Notification not found"
+        );
+
+      const wasDeleted = await this.Repository.deleteNotification(
+        notificationId
+      );
+      return wasDeleted;
     } catch (error) {
       throw error;
     }

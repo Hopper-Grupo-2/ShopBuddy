@@ -64,7 +64,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <NotificationsContext.Provider
-      value={{ notifications, readListNotifications }}
+      value={{ notifications, readListNotifications, fetchNotifications }}
     >
       {children}
     </NotificationsContext.Provider>
