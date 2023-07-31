@@ -143,3 +143,74 @@ describe("Lists Services", () => {
             //expect(jest.mocked(UsersRepositories.getAllUsers)).toBeCalledWith("para1",2);
         });
     });
+    describe("getListsByUserId", () => {
+        it("should retrieve lists by userid", async () => {
+            const userId = "64baecd19a6976beff14b5db";
+            const listsFromRepo: IList[] = [
+                {
+                    _id: "64bc28f2e97fdb0fbd61c076",
+                    listName: "Meu Deus",
+                    products: [
+                        {
+                            "name": "dado",
+                            "quantity": 10,
+                            "unit": "Kg",
+                            "price": 200,
+                            "checked": false,
+                            "_id": "64c0a1558c586b987b4a018a"
+                        }
+                    ],
+                    owner: "64baecd19a6976beff14b5db",
+                    members: [
+                        {
+                            userId: "64baecd19a6976beff14b5db"
+                        }
+                    ],
+                    createdAt: new Date("2023-07-22T19:07:30.172Z"),
+                    updatedAt: new Date("2023-07-22T19:08:59.033Z"),
+                }
+            ];
+    
+            // Mocking the repository function
+            jest.mocked(ListRepositories.findAllListsByUserId).mockResolvedValue(
+                listsFromRepo
+            );
+    
+            // Call the function under test
+            const lists = await ListsServices.getListsByUserId(userId);
+    
+            // Assertions
+            expect(lists).toEqual(listsFromRepo);
+            // You can also check if the mocked function was called with the correct parameter
+            expect(ListRepositories.findAllListsByUserId).toBeCalledWith(userId);
+        });
+    
+        it("should return null if user has no lists", async () => {
+            const userId = "64baecd19a6976beff14b5db";
+    
+            // Mocking the repository function to return null
+            jest.mocked(ListRepositories.findAllListsByUserId).mockResolvedValue(null);
+    
+            // Call the function under test
+            const lists = await ListsServices.getListsByUserId(userId);
+    
+            // Assertions
+            expect(lists).toBeNull();
+            // You can also check if the mocked function was called with the correct parameter
+            expect(ListRepositories.findAllListsByUserId).toBeCalledWith(userId);
+        });
+    
+        it("should throw an error if the repository function throws an error", async () => {
+            const userId = "64baecd19a6976beff14b5db";
+            const errorMessage = "Database error";
+    
+            // Mocking the repository function to throw an error
+            jest.mocked(ListRepositories.findAllListsByUserId).mockRejectedValue(new Error(errorMessage));
+    
+            // Call the function under test
+            await expect(ListsServices.getListsByUserId(userId)).rejects.toThrow(errorMessage);
+            // You can also check if the mocked function was called with the correct parameter
+            expect(ListRepositories.findAllListsByUserId).toBeCalledWith(userId);
+        });
+    });
+    
