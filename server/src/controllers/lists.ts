@@ -325,4 +325,36 @@ export default class ListsController {
       next(error);
     }
   }
+
+  public static async patchProductInfo(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId: string = req.params.listId;
+      const productId: string = req.params.productId;
+
+      const newProductInfo: IProduct = req.body;
+
+      const updatedList: IList | null = await ListsServices.updateProductInfo(
+        listId,
+        productId,
+        user._id as string,
+        newProductInfo
+      );
+
+      res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

@@ -321,4 +321,50 @@ export default class ListsServices {
       throw error;
     }
   }
+
+  public static async updateProductInfo(
+    listId: string,
+    productId: string,
+    userId: string,
+    newProductInfo: IProduct
+  ): Promise<IList | null> {
+    try {
+      const listBody: IList | null = await ListsRepositories.getListById(
+        listId
+      );
+
+      if (listBody === null)
+        throw ErrorHandler.createError("NotFoundError", "List not found");
+
+      const userExistsInList = listBody.members.some(
+        (member) => String(member.userId) === userId
+      );
+
+      if (!userExistsInList)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `User doesn't belong to list with Id ${listId}`
+        );
+
+      const product = listBody.products.find(
+        (product) => String(product._id) === productId
+      );
+
+      if (!product)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          `Product doesn't exist in list with Id ${listId}`
+        );
+
+      const updatedList = await this.Repository.updateProductInfo(
+        listId,
+        productId,
+        newProductInfo
+      );
+
+      return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

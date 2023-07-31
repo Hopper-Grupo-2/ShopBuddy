@@ -53,6 +53,8 @@ export default function List() {
   const [list, setList] = useState<IList>();
   const [items, setItems] = useState<Array<IItem>>([]);
   const [openItemForm, setOpenItemForm] = useState(false);
+  const [openEditItemForm, setOpenEditItemForm] = useState(false);
+  const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
@@ -171,6 +173,15 @@ export default function List() {
     setShowMembers(false);
   };
 
+  const handleOpenEditItemForm = (itemId: string) => {
+    setProductIdToEdit(itemId);
+    setOpenEditItemForm(true);
+  };
+
+  const handleCloseEditItemForm = () => {
+    setOpenEditItemForm(false);
+  };
+
   const createNewItem = async (formData: Record<string, string>) => {
     try {
       const response = await fetch(`/api/lists/${params.listId}/products`, {
@@ -282,6 +293,39 @@ export default function List() {
     }
   };
 
+  const handleEditProduct = async (formData: Record<string, string>) => {
+    try {
+      const response = await fetch(
+        `/api/lists/${list?._id}/products/${productId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData["name"],
+            quantity: formData["quantity"],
+            unit: formData["unit"],
+            price: formData["price"],
+          }),
+        }
+      );
+
+      const responseObj = await response.json();
+      if (response.ok) {
+        const products = responseObj.data.products;
+        setItems(products);
+        return true;
+      } else {
+        throw responseObj.error;
+      }
+    } catch (error: any) {
+      console.error(error.name, error.message);
+      alert("Failed to edit item: " + error.message);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!socketContext?.socket) return;
 
@@ -343,6 +387,7 @@ export default function List() {
                 items={items}
                 onCheck={handleCheckProduct}
                 onRemove={handleDeleteProduct}
+                onEdit={handleOpenEditItemForm}
               />
             )}
             <Button
@@ -384,6 +429,18 @@ export default function List() {
         open={showMembers}
         handleClose={handleHideMembers}
         handleMember={handleRemoveMember}
+      />
+      <FormDialog
+        title="Editar item"
+        fields={[
+          { id: "name", label: "Nome do item", type: "text" },
+          { id: "unit", label: "Unidade de medida", type: "text" },
+          { id: "quantity", label: "Quantidade", type: "text" },
+          { id: "price", label: "Preço/unidade", type: "text" },
+        ]}
+        open={openEditItemForm}
+        handleClose={handleCloseEditItemForm}
+        handleSubmit={handleEditProduct}
       />
       <AlertDialog
         open={openDialog}
