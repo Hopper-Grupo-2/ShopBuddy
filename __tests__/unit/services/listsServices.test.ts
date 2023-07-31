@@ -2,7 +2,7 @@
 import IList from "../../../server/src/interfaces/list";
 
 import ListRepositories from "../../../server/src/repositories/lists";
-
+import UsersRepositories from "../../../server/src/repositories/users";
 //import class will be tested
 import ListsServices from "../../../server/src/services/lists";
 
@@ -213,4 +213,86 @@ describe("Lists Services", () => {
             expect(ListRepositories.findAllListsByUserId).toBeCalledWith(userId);
         });
     });
+
+    describe("createNewList", () => {
+        const userId = "64baecd19a6976beff14b5db";
+        const listName = "Listinha";
+    
+        it("should create a new list and return it", async () => {
+            const newListFromRepo = {
+                _id: "64bc28f2e97fdb0fbd61c076",
+                listName: "Listinha",
+                products: [
+                    {
+                        "name": "dado",
+                        "quantity": 10,
+                        "unit": "Kg",
+                        "price": 200,
+                        "checked": false,
+                        "_id": "64c0a1558c586b987b4a018a"
+                    }
+                ],
+                owner: userId,
+                members: [{ userId }],
+                createdAt: new Date("2023-07-31T12:34:56.789Z"),
+                updatedAt: new Date("2023-07-31T12:34:56.789Z"),
+            };
+    
+            // Mocking the repository functions
+            jest.spyOn(UsersRepositories, "getUserById").mockResolvedValue({
+                _id: userId,
+                username: "jongas",
+                email: "jongas@teste.com",
+                password: "123",
+                firstName: "jongas",
+                lastName: "teste",
+            });
+    
+            jest.spyOn(ListRepositories, "createNewList").mockResolvedValue(newListFromRepo);
+    
+            // Call the function under test
+            const createdList = await ListsServices.createNewList(listName, userId);
+    
+            // Assertions
+            expect(createdList).toEqual(newListFromRepo);
+            expect(UsersRepositories.getUserById).toBeCalledWith(userId);
+            expect(ListRepositories.createNewList).toBeCalledWith(listName, userId);
+        });
+    
+        it("should throw an error if user does not exist", async () => {
+            jest.spyOn(UsersRepositories, "getUserById").mockResolvedValue(null);
+    
+            await expect(() => {
+                return ListsServices.createNewList(listName, userId);
+            }).rejects.toMatchObject({ name: "UnauthorizedError" });
+    
+            await expect(() => {
+                return ListsServices.createNewList(listName, userId);
+            }).rejects.toMatchObject({
+                message: "User does not exist",
+            });
+        });
+    
+        it("should throw an error if there is an error while creating the list", async () => {
+            jest.spyOn(UsersRepositories, "getUserById").mockResolvedValue({
+                _id: userId,
+                username: "jongas",
+                email: "jongas@teste.com",
+                password: "123",
+                firstName: "jongas",
+                lastName: "teste",
+            });
+    
+            jest.spyOn(ListRepositories, "createNewList").mockRejectedValue(new Error("Database error"));
+    
+            await expect(() => {
+                return ListsServices.createNewList(listName, userId);
+            }).rejects.toThrowError("Database error");
+    
+            expect(UsersRepositories.getUserById).toBeCalledWith(userId);
+            expect(ListRepositories.createNewList).toBeCalledWith(listName, userId);
+        });
+    });
+    
+    
     
