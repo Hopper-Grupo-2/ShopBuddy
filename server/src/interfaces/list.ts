@@ -7,8 +7,8 @@ export default interface IList {
   products: IProduct[];
   owner: Schema.Types.ObjectId | string;
   members: IMember[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export interface IMember{
