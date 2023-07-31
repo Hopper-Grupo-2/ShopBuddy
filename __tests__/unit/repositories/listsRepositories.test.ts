@@ -174,3 +174,23 @@ import {
       expect(list).toBeNull();
     });
   });
+
+  describe("createNewList", () => {
+    it("should create a new list and return it", async () => {
+      const userId = "64baecd19a6976beff14b5db";
+      const listName = "Listinha";
+
+      // Call the function to create a new list
+      const createdList = await ListRepositories.createNewList(listName, userId);
+
+      // Assert that the created list matches the expected values
+      expect(createdList).toHaveProperty("_id");
+      expect(createdList.listName).toBe(listName);
+      expect(createdList.owner.toString()).toBe(userId);
+      expect(createdList.members).toHaveLength(1);
+      expect(createdList.members[0].userId.toString()).toBe(userId);
+      expect(createdList.products).toEqual([]);
+      expect(createdList.createdAt).toBeInstanceOf(Date);
+      expect(createdList.updatedAt).toBeInstanceOf(Date);
+    });
+  });
