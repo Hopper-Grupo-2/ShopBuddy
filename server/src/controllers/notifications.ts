@@ -36,7 +36,7 @@ export default class NotificationsController {
         );
       const websocket = Websocket.getIstance();
       websocket.broadcastToUser(
-        listId,
+        //listId,
         userId,
         "listNotification",
         notification
@@ -47,29 +47,33 @@ export default class NotificationsController {
   }
 
   public static async sendNewListNotification(
+    senderId: string,
     listId: string,
     type: NotificationTypes,
     textContent: string
   ) {
     try {
-      // broadcast notification to all clients
+      // broadcast notification to all clients but the sender
       const members = await ListsServices.getMembersByListId(listId);
       const websocket = Websocket.getIstance();
       for (const member of members) {
-        const notification =
-          await NotificationsServices.createNewListNotification(
-            listId,
-            member._id?.toString() ?? "",
-            type,
-            textContent
-          );
+        if (member._id?.toString() !== senderId) {
+          console.log("sending notification to user " + member._id);
+          const notification =
+            await NotificationsServices.createNewListNotification(
+              listId,
+              member._id?.toString() ?? "",
+              type,
+              textContent
+            );
 
-        websocket.broadcastToUser(
-          listId,
-          member._id?.toString() ?? "",
-          "listNotification",
-          notification
-        );
+          websocket.broadcastToUser(
+            //listId,
+            member._id?.toString() ?? "",
+            "listNotification",
+            notification
+          );
+        }
       }
     } catch (error) {
       console.error(error);
