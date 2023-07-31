@@ -220,7 +220,7 @@ export default class ListsController {
       const listId: string = req.params.listId;
       const memberId: string = req.params.memberId;
 
-      const updatedList: IList | null =
+      const updatedMembers: IUser[] | null =
         await ListsServices.deleteMemberFromList(
           listId,
           memberId,
@@ -233,7 +233,7 @@ export default class ListsController {
         NotificationTypes.REMOVED_FROM_LIST,
         "Removed from list" + listId
       );
-      res.status(200).json({ error: null, data: updatedList });
+      res.status(200).json({ error: null, data: updatedMembers });
     } catch (error) {
       next(error);
     }

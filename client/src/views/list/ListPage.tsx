@@ -103,6 +103,31 @@ export default function List() {
       notificationsContext?.readListNotifications(params.listId);
   }, []);
 
+  const handleRemoveMember = async (memberId: String) => {
+    try {
+      const response = await fetch(
+        `/api/lists/${params.listId}/members/${memberId}`,
+        {
+          method: "DELETE",
+          credentials: "include", // Ensure credentials are sent
+        }
+      );
+
+      const userData = await response.json();
+      if (response.ok) {
+        //console.log("members after delete:", userData.data);
+        setMembers(userData.data as IUser[]);
+      } else {
+        throw userData.error;
+      }
+    } catch (error: any) {
+      console.error(error.name, error.message);
+      setDialogMessage("Erro na remoção do usuário, tente novamente!");
+      setOpenDialog(true);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (!socketContext?.socket) return;
 
@@ -338,7 +363,7 @@ export default function List() {
         title="Adicionar novo item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
-          { id: "unit", label: "Unidade de medida", type: "text" }, //will be a select
+          { id: "unit", label: "Unidade de medida", type: "select" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
         ]}
@@ -358,6 +383,7 @@ export default function List() {
         members={members}
         open={showMembers}
         handleClose={handleHideMembers}
+        handleMember={handleRemoveMember}
       />
       <AlertDialog
         open={openDialog}
