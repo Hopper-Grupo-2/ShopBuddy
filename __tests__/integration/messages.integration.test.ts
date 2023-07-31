@@ -5,10 +5,6 @@ import { generateCookieForUser } from "../helpers/cookieGenerator";
 import MessagesRepositories from "../../server/src/repositories/messages";
 import UsersRepositories from "../../server/src/repositories/users";
 import IUser from "../../server/src/interfaces/user";
-import IMessage from "../../server/src/interfaces/message";
-import bcrypt from "bcrypt";
-import ListsServices from "../../server/src/services/lists";
-import IList from "../../server/src/interfaces/list";
 import ListsRepositories from "../../server/src/repositories/lists";
 
 const applicationObj = new App();
