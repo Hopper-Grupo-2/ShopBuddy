@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Socket, io } from "socket.io-client";
 import { SocketContext } from "./SocketContext";
+import { UserContext } from "./UserContext";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
+  children,
 }) => {
-	const [socket, setSocket] = useState<Socket | null>(null);
-	//const socket = useRef<Socket | null>(null);
+  const userContext = useContext(UserContext);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-	useEffect(() => {
-		if (socket) return;
-		const newSocket = io();
-		setSocket(newSocket);
-		//socket.current = io();
-		//console.log(socket.current);
-		return () => {
-			if (newSocket) newSocket.close();
-		};
-	}, []);
+  useEffect(() => {
+    if (socket) return;
+    const newSocket = io();
 
-	return (
-		<SocketContext.Provider value={{ socket }}>
-			{children}
-		</SocketContext.Provider>
-	);
+    if (userContext?.user) {
+      newSocket.emit("login", userContext?.user?._id);
+    }
+
+    setSocket(newSocket);
+
+    return () => {
+      if (newSocket) {
+        newSocket.close();
+      }
+    };
+  }, []);
+
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };

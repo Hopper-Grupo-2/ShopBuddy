@@ -13,14 +13,15 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from "@mui/icons-material/Settings";
-
+import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { NotificationsContext } from "../contexts/NotificationsContext";
 
 const drawerWidth = 240;
 
@@ -36,8 +37,8 @@ interface Props {
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
-  const context = React.useContext(UserContext);
+  const userContext = React.useContext(UserContext);
+  const notificationsContext = React.useContext(NotificationsContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -50,7 +51,7 @@ export default function ResponsiveDrawer(props: Props) {
   };
 
   const user = {
-    username: context?.user?.username || "",
+    username: userContext?.user?.username || "",
   };
 
   const links = [
@@ -58,6 +59,11 @@ export default function ResponsiveDrawer(props: Props) {
       text: "Listas",
       route: "/",
       icon: <ViewListIcon />,
+    },
+    {
+      text: "Notificações",
+      route: "/notifications",
+      icon: <NotificationsIcon />,
     },
     {
       text: "Configurações",
@@ -91,7 +97,22 @@ export default function ResponsiveDrawer(props: Props) {
             <ListItemButton
               onClick={() => (page.text === "Sair" ? handleLogout() : null)}
             >
-              <ListItemIcon>{page.icon}</ListItemIcon>
+              <ListItemIcon>
+                {page.text === "Notificações" ? (
+                  <Badge
+                    badgeContent={
+                      notificationsContext?.notifications?.filter(
+                        (notification) => notification.read === false
+                      ).length
+                    }
+                    color="primary"
+                  >
+                    {page.icon}
+                  </Badge>
+                ) : (
+                  page.icon
+                )}
+              </ListItemIcon>
               <ListItemText primary={page.text} />
             </ListItemButton>
           </ListItem>
