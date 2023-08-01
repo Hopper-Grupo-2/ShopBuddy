@@ -25,6 +25,11 @@ const allFieldsToValidate: {
     { title: "email", type: "email" },
     { title: "password", type: "pass" },
   ],
+  getMessagesByListId: [{ title: "listId", type: "mongoid" }],
+  postMessage: [
+    { title: "listId", type: "mongoid" },
+    { title: "textContent", type: "message" },
+  ],
 };
 
 export default function validate(route: string) {
@@ -91,6 +96,18 @@ function getAllValidations(
           .withMessage(`${fieldTitle} must be between 3 and 50 characters.`)
           .matches(/^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/)
           .withMessage("Invalid email format.");
+
+      case "message":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 1, max: 240 })
+          .withMessage(`${fieldTitle} must be between 1 and 240 characters.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
 
       default:
         return check(fieldTitle).trim().notEmpty();
