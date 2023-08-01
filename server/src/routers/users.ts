@@ -39,7 +39,7 @@ usersRouter.delete("/logout", authenticate, UsersController.logout);
 usersRouter.delete(
   "/:userId",
   authenticate,
-  userIdValidator(),
+  validate("deleteUser"),
   handleValidation,
   UsersController.deleteUser
 );
