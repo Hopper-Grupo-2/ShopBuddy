@@ -56,6 +56,7 @@ export default function List() {
   const [openEditItemForm, setOpenEditItemForm] = useState(false);
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
+  const [isListOwner, setIsListOwner] = useState(false);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const notificationsContext = useContext(NotificationsContext);
@@ -101,7 +102,13 @@ export default function List() {
     fetchList();
     fetchMembers();
     notificationsContext?.readListNotifications(params.listId ?? "");
-  }, []);
+
+    if (list && userContext?.user?._id === list.owner) {
+      setIsListOwner(true);
+    } else {
+      setIsListOwner(false);
+    }
+  }, [list, userContext?.user?._id]);
 
   const handleRemoveMember = async (memberId: String) => {
     try {
@@ -377,7 +384,7 @@ export default function List() {
             <Button variant="contained" onClick={handleShowMembers}>
               Members
             </Button>
-            {userContext?.user?._id === list?.owner && (
+            {isListOwner && (
               <Button variant="contained" onClick={handleOpenMemberForm}>
                 + Add member
               </Button>
