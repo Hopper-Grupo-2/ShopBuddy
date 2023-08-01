@@ -116,4 +116,40 @@ export default class NotificationsController {
       next(error);
     }
   }
+
+  public static async deleteUserNotifications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+
+      const wasDeleted = await NotificationsServices.deleteUserNotifications(
+        userId ?? ""
+      );
+      res.status(200).json({ erro: null, data: wasDeleted });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async deleteNotification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+      const notificationId = req.params.notificationId;
+
+      const wasDeleted = await NotificationsServices.deleteNotification(
+        userId ?? "",
+        notificationId
+      );
+      res.status(200).json({ erro: null, data: wasDeleted });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
