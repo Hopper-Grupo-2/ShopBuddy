@@ -3,6 +3,7 @@ import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
 import IUser from "../interfaces/user";
 import ListsRepositories from "../repositories/lists";
+import NotificationsRepositories from "../repositories/notifications";
 import UsersRepositories from "../repositories/users";
 
 export default class ListsServices {
@@ -220,6 +221,12 @@ export default class ListsServices {
           "NotFoundError",
           `User doesn't belong to list with Id ${listId}`
         );
+
+      //try to delete the user's notifications first...
+      await NotificationsRepositories.deleteUserListNotifications(
+        memberId,
+        listId
+      );
 
       const updatedList = await this.Repository.deleteMemberFromList(
         listId,
