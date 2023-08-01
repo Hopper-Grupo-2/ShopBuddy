@@ -14,6 +14,13 @@ const allFieldsToValidate: {
     { title: "newPassword", type: "pass" },
   ],
   deleteUser: [{ title: "userId", type: "mongoid" }],
+  registerNewUser: [
+    { title: "username", type: "name" },
+    { title: "firstName", type: "name" },
+    { title: "lastName", type: "name" },
+    { title: "email", type: "email" },
+    { title: "password", type: "pass" },
+  ],
 };
 
 export default function validate(route: string) {

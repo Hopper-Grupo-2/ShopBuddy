@@ -45,7 +45,12 @@ usersRouter.delete(
 );
 // ------ Authentication Routes -------
 // POST /api/users/signup - create a new authenticated user
-usersRouter.post("/signup", UsersController.registerNewUser);
+usersRouter.post(
+  "/signup",
+  validate("registerNewUser"),
+  handleValidation,
+  UsersController.registerNewUser
+);
 
 // POST /api/users/login - create a new login session (return the authentication token)
 usersRouter.post("/login", UsersController.getUserAuthentication);
