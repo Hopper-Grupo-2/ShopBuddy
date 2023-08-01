@@ -1,12 +1,8 @@
 import { Router } from "express";
+import validate from "../validators/validate";
 import UsersController from "../controllers/users";
 import authenticate from "../middlewares/authentication";
-//import UsersController from "../controllers/users";
-import userUpdateValidator from "../validators/userUpdateValidator";
-import userIdValidator from "../validators/userIdValidator";
 import handleValidation from "../validators/handle-validation";
-
-import validate from "../validators/validate";
 
 const usersRouter = Router();
 
