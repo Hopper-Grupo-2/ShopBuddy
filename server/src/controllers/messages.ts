@@ -59,11 +59,10 @@ export default class MessagesController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const messagesFromCache = await RedisCaching.getCacheByKeyname(
-        "messages"
-      );
+      const messagesFromCache: IMessage[] | null =
+        await RedisCaching.getCacheByKeyname<IMessage[]>("messages");
 
-      if (messagesFromCache.length > 0) {
+      if (messagesFromCache !== null) {
         res.status(200).json({ error: null, data: messagesFromCache });
         return;
       }
@@ -72,7 +71,7 @@ export default class MessagesController {
       res.status(200).json({ error: null, data: allMessages });
 
       if (allMessages && allMessages.length > 0) {
-        await RedisCaching.setCache("messages", allMessages);
+        await RedisCaching.setCache<IMessage[]>("messages", allMessages);
       }
     } catch (error) {
       next(error);
@@ -96,11 +95,12 @@ export default class MessagesController {
       const listId = req.params.listId;
 
       // checking cache
-      const listMessagesFromCache = await RedisCaching.getCacheByKeyname(
-        `messages/listId/${listId}`
-      );
+      const listMessagesFromCache: IMessage[] | null =
+        await RedisCaching.getCacheByKeyname<IMessage[]>(
+          `messages/listId/${listId}`
+        );
 
-      if (listMessagesFromCache.length > 0) {
+      if (listMessagesFromCache !== null) {
         res.status(200).json({
           error: null,
           data: listMessagesFromCache,
@@ -116,7 +116,10 @@ export default class MessagesController {
       res.status(200).json({ error: null, data: listMessages });
 
       if (listMessages && listMessages.length > 0) {
-        await RedisCaching.setCache(`messages/listId/${listId}`, listMessages);
+        await RedisCaching.setCache<IMessage[]>(
+          `messages/listId/${listId}`,
+          listMessages
+        );
       }
     } catch (error) {
       next(error);

@@ -19,7 +19,7 @@ export default class RedisCaching {
     }
   }
 
-  public static async setCache(keyName: string, value: any) {
+  public static async setCache<T>(keyName: string, value: T) {
     console.log(`Saving in redis cache: ${keyName}`);
     const TTL = 60 * 60 * 24; //time to live in seconds
 
@@ -33,7 +33,7 @@ export default class RedisCaching {
     }
   }
 
-  public static async getCacheByKeyname(keyName: string): Promise<any> {
+  public static async getCacheByKeyname<T>(keyName: string): Promise<T | null> {
     try {
       const redis = await RedisDatabase.getInstance();
 
@@ -41,14 +41,14 @@ export default class RedisCaching {
 
       if (cachedResultString) {
         console.log(`Get data from cache: ${keyName}`);
-        const cachedData: any = JSON.parse(cachedResultString);
+        const cachedData: T = JSON.parse(cachedResultString);
         return cachedData;
       }
 
-      return [] as any[];
+      return null;
     } catch (error) {
       console.error("Error class RedisCaching:", error);
-      return [] as any[];
+      return null;
     }
   }
 }
