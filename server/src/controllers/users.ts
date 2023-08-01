@@ -60,9 +60,10 @@ export default class UsersController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const usersFromCache = await RedisCaching.getCacheByKeyname("users");
+      const usersFromCache: IUser[] | null =
+        await RedisCaching.getCacheByKeyname<IUser[]>("users");
 
-      if (usersFromCache.length > 0) {
+      if (usersFromCache !== null) {
         res.status(200).json({ error: null, data: usersFromCache });
         return;
       }
@@ -71,7 +72,7 @@ export default class UsersController {
       res.status(200).json({ error: null, data: allUsers });
 
       if (allUsers && allUsers.length > 0) {
-        await RedisCaching.setCache("users", allUsers);
+        await RedisCaching.setCache<IUser[]>("users", allUsers);
       }
     } catch (error) {
       next(error);

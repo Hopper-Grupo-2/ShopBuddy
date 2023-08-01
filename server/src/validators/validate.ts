@@ -25,6 +25,49 @@ const allFieldsToValidate: {
     { title: "email", type: "email" },
     { title: "password", type: "pass" },
   ],
+  getMessagesByListId: [{ title: "listId", type: "mongoid" }],
+  postMessage: [
+    { title: "listId", type: "mongoid" },
+    { title: "textContent", type: "message" },
+  ],
+  getListsByUserId: [{ title: "userId", type: "mongoid" }],
+  getListByListId: [{ title: "listId", type: "mongoid" }],
+  getMembersByListId: [{ title: "listId", type: "mongoid" }],
+  postList: [{ title: "listName", type: "list" }],
+  patchProduct: [
+    { title: "listId", type: "mongoid" },
+    { title: "name", type: "list" },
+    { title: "quantity", type: "integer" },
+    { title: "unit", type: "measureunit" },
+    { title: "price", type: "float" },
+    { title: "checked", type: "boolean" },
+  ],
+  patchMembers: [
+    { title: "listId", type: "mongoid" },
+    { title: "username", type: "name" },
+  ],
+  deleteList: [{ title: "listId", type: "mongoid" }],
+  deleteMember: [
+    { title: "listId", type: "mongoid" },
+    { title: "memberId", type: "mongoid" },
+  ],
+  deleteProduct: [
+    { title: "listId", type: "mongoid" },
+    { title: "productId", type: "mongoid" },
+  ],
+  putProduct: [
+    { title: "listId", type: "mongoid" },
+    { title: "productId", type: "mongoid" },
+  ],
+  patchProductInfo: [
+    { title: "listId", type: "mongoid" },
+    { title: "productId", type: "mongoid" },
+    { title: "name", type: "list" },
+    { title: "quantity", type: "integer" },
+    { title: "unit", type: "measureunit" },
+    { title: "price", type: "float" },
+    { title: "checked", type: "boolean" },
+  ],
 };
 
 export default function validate(route: string) {
@@ -91,6 +134,67 @@ function getAllValidations(
           .withMessage(`${fieldTitle} must be between 3 and 50 characters.`)
           .matches(/^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/)
           .withMessage("Invalid email format.");
+
+      case "message":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 1, max: 240 })
+          .withMessage(`${fieldTitle} must be between 1 and 240 characters.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
+
+      case "list":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 3, max: 30 })
+          .withMessage(`${fieldTitle} must be between 3 and 30 characters.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
+
+      case "integer":
+        return check(fieldTitle)
+          .trim()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isInt({ min: 1, max: 150 })
+          .withMessage(`${fieldTitle} must be an integer between 1 and 150.`);
+
+      case "float":
+        return check(fieldTitle)
+          .trim()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isFloat({ min: 0 })
+          .withMessage(`${fieldTitle} must be a positive number.`);
+
+      case "measureunit":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 1, max: 50 })
+          .withMessage(`${fieldTitle} must be between 1 and 50 characters.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
+
+      case "boolean":
+        return check(fieldTitle)
+          .trim()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isBoolean()
+          .withMessage(`${fieldTitle} must be a boolean value.`)
+          .toBoolean();
 
       default:
         return check(fieldTitle).trim().notEmpty();
