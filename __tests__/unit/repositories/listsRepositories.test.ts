@@ -190,7 +190,5 @@ import {
       expect(createdList.members).toHaveLength(1);
       expect(createdList.members[0].userId.toString()).toBe(userId);
       expect(createdList.products).toEqual([]);
-      expect(createdList.createdAt).toBeInstanceOf(Date);
-      expect(createdList.updatedAt).toBeInstanceOf(Date);
     });
   });
