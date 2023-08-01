@@ -1,82 +1,89 @@
-import { check } from "express-validator";
+import { ValidationChain, check } from "express-validator";
+
+const allFieldsToValidate: {
+  [key: string]: { title: string; type: string }[];
+} = {
+  getUserById: [{ title: "userId", type: "mongoid" }],
+  updateUser: [
+    { title: "userId", type: "mongoid" },
+    { title: "username", type: "name" },
+    { title: "firstName", type: "name" },
+    { title: "lastName", type: "name" },
+    { title: "email", type: "email" },
+    { title: "oldPassword", type: "pass" },
+    { title: "newPassword", type: "pass" },
+  ],
+};
 
 export default function validate(route: string) {
-  switch (route) {
-    case "getUserById":
-      return [
-        check("userId")
-          .isMongoId()
-          .withMessage("The id must be a valid ObjectId."),
-      ];
+  let validationsChain: ValidationChain[] = [];
 
-    case "updateUser":
-      return [
-        check("username")
-          .trim()
-          .escape()
-          .isString()
-          .notEmpty()
-          .withMessage("username is mandatory.")
-          .isLength({ min: 3, max: 15 })
-          .withMessage("username must be between 3 and 15 characters.")
-          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]+$/)
-          .withMessage("username must contain only letters and digits.")
-          .isString()
-          .withMessage("username must be a string."),
-        check("firstName")
-          .trim()
-          .escape()
-          .isString()
-          .notEmpty()
-          .withMessage("firstName is mandatory.")
-          .isLength({ min: 3, max: 15 })
-          .withMessage("firstName must be between 3 and 15 characters.")
-          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]+$/)
-          .withMessage("firstName must contain only letters and digits.")
-          .isString()
-          .withMessage("firstName must be a string."),
-        check("lastName")
-          .trim()
-          .escape()
-          .isString()
-          .notEmpty()
-          .withMessage("lastName is mandatory.")
-          .isLength({ min: 3, max: 15 })
-          .withMessage("lastName must be between 3 and 15 characters.")
-          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]+$/)
-          .withMessage("lastName must contain only letters and digits.")
-          .isString()
-          .withMessage("lastName must be a string."),
-        check("email")
-          .trim()
-          .notEmpty()
-          .withMessage("Email is mandatory.")
-          .isLength({ min: 3, max: 50 })
-          .withMessage("Email must be between 3 and 50 characters.")
-          .matches(/^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/)
-          .withMessage("Invalid email format."),
-        check("oldPassword")
-          .trim()
-          .notEmpty()
-          .withMessage("oldPassword is mandatory.")
-          .isLength({ min: 3, max: 16 })
-          .withMessage("oldPassword must be at least 3-16 characters long.")
-          //.matches(/[a-zA-Z]/)
-          //.withMessage("oldPassword must contain at least one letter.")
-          .matches(/[0-9]/)
-          .withMessage("oldPassword must contain at least one digit."),
-        check("newPassword")
-          .trim()
-          .notEmpty()
-          .withMessage("newPassword is mandatory.")
-          .isLength({ min: 3, max: 16 })
-          .withMessage("newPassword must be at least 3-16 characters long.")
-          //.matches(/[a-zA-Z]/)
-          //.withMessage("oldPassword must contain at least one letter.")
-          .matches(/[0-9]/)
-          .withMessage("newPassword must contain at least one digit."),
-      ];
+  if (allFieldsToValidate.hasOwnProperty(route)) {
+    const fieldsToValidate: { title: string; type: string }[] =
+      allFieldsToValidate[route];
+
+    validationsChain = getAllValidations(fieldsToValidate);
   }
 
-  return [];
+  return validationsChain;
+}
+
+function getAllValidations(
+  fieldsToValidate: { title: string; type: string }[]
+): ValidationChain[] {
+  //
+  const validationsChain: ValidationChain[] = fieldsToValidate.map((field) => {
+    const fieldTitle = field.title;
+    const fieldType = field.type;
+
+    switch (fieldType) {
+      case "mongoid":
+        return check(fieldTitle)
+          .isMongoId()
+          .withMessage(`The ${fieldTitle} must be a valid ObjectId.`);
+
+      case "name":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 3, max: 15 })
+          .withMessage(`${fieldTitle} must be between 3 and 15 characters.`)
+          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]+$/)
+          .withMessage(`${fieldTitle} must contain only letters and digits.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
+
+      case "pass":
+        return (
+          check(fieldTitle)
+            .trim()
+            .notEmpty()
+            .withMessage(`${fieldTitle} is mandatory.`)
+            .isLength({ min: 3, max: 16 })
+            .withMessage(`${fieldTitle} must be at least 3-16 characters long.`)
+            //.matches(/[a-zA-Z]/)
+            //.withMessage("${fieldType} must contain at least one letter.")
+            .matches(/[0-9]/)
+            .withMessage(`${fieldTitle} must contain at least one digit.`)
+        );
+
+      case "email":
+        return check(fieldTitle)
+          .trim()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 3, max: 50 })
+          .withMessage(`${fieldTitle} must be between 3 and 50 characters.`)
+          .matches(/^[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}$/)
+          .withMessage("Invalid email format.");
+
+      default:
+        return check(fieldTitle).trim().notEmpty();
+    }
+  });
+
+  return validationsChain;
 }
