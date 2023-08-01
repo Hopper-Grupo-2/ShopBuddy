@@ -1,10 +1,9 @@
 import { Router } from "express";
+import validate from "../validators/validate";
 import UsersController from "../controllers/users";
 import authenticate from "../middlewares/authentication";
-//import UsersController from "../controllers/users";
-import userUpdateValidator from "../validators/userUpdateValidator";
-import userIdValidator from "../validators/userIdValidator";
 import handleValidation from "../validators/handle-validation";
+
 const usersRouter = Router();
 
 // GET /api/users/me - get the authenticated user
@@ -16,15 +15,15 @@ usersRouter.get("/", UsersController.getAllUsers);
 usersRouter.get(
   "/:userId",
   authenticate,
-  userIdValidator(),
+  validate("getUserById"),
+  handleValidation,
   UsersController.getUserById
 );
 // PATCH /api/users/:userId - update a user's information
 usersRouter.patch(
   "/:userId",
   authenticate,
-  userIdValidator(),
-  userUpdateValidator(),
+  validate("updateUser"),
   handleValidation,
   UsersController.updateUser
 );
@@ -36,15 +35,25 @@ usersRouter.delete("/logout", authenticate, UsersController.logout);
 usersRouter.delete(
   "/:userId",
   authenticate,
-  userIdValidator(),
+  validate("deleteUser"),
   handleValidation,
   UsersController.deleteUser
 );
 // ------ Authentication Routes -------
 // POST /api/users/signup - create a new authenticated user
-usersRouter.post("/signup", UsersController.registerNewUser);
+usersRouter.post(
+  "/signup",
+  validate("registerNewUser"),
+  handleValidation,
+  UsersController.registerNewUser
+);
 
 // POST /api/users/login - create a new login session (return the authentication token)
-usersRouter.post("/login", UsersController.getUserAuthentication);
+usersRouter.post(
+  "/login",
+  validate("getUserAuthentication"),
+  handleValidation,
+  UsersController.getUserAuthentication
+);
 
 export { usersRouter };

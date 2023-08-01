@@ -17,4 +17,16 @@ notificationsRouter.put(
   NotificationsController.readListNotifications
 );
 
+notificationsRouter.delete(
+  "/user",
+  authenticate,
+  NotificationsController.deleteUserNotifications
+);
+
+notificationsRouter.delete(
+  "/:notificationId",
+  authenticate,
+  NotificationsController.deleteNotification
+);
+
 export { notificationsRouter };
