@@ -78,16 +78,16 @@ jobs:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v3
             # Runs a single command using the runners shell
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
+            #- name: Use Node.js ${{ matrix.node-version }}
+            #  uses: actions/setup-node@v1
+            #  with:
+            #      node-version: ${{ matrix.node-version }}
 
-            - run: npm install
+            #- run: npm install
 
-            - name: Install client dependencies
-              working-directory: ./client
-              run: yarn install
+            #- name: Install client dependencies
+            #  working-directory: ./client
+            #  run: yarn install
 
             - name: Create .env file
               run: |
@@ -102,8 +102,23 @@ jobs:
                   cat .env
 
             - run: docker-compose down
-            - run: docker rm -f appshop-staging
-            - run: docker rmi shopbuddystaging-app
+            
+            - name: Stop and Remove Docker container (if it exists)
+              run: |
+                if docker inspect appshop-staging &>/dev/null; then
+                  docker rm -f appshop-staging
+                else
+                  echo "Container appshop-staging not found. Skipping deletion."
+                fi
+              
+            - name: Remove image shop-app-staging if exist
+              run: |
+                  if docker inspect shopbuddystaging-app &>/dev/null; then
+                    docker rmi shopbuddystaging-app
+                  else
+                    echo "Image shopbuddystaging-app not found. Skipping deletion."
+                  fi
+            
             - run: docker-compose -f docker-compose.staging.yaml up -d
             - run: yes | docker system prune -a
             - run: rm -rf ~/.cache/*

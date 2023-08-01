@@ -3,6 +3,7 @@ import IList from "../interfaces/list";
 import Schemas from "./schemas";
 import IUser from "../interfaces/user";
 import IMessage from "../interfaces/message";
+import INotification from "../interfaces/notification";
 
 export default class Models {
 	private static instance: Models;
@@ -30,5 +31,12 @@ export default class Models {
 
 	public get messageModel(): mongoose.Model<IMessage> {
 		return model<IMessage>("Message", this._schemas.messageSchema);
+	}
+
+	public get notificationModel(): mongoose.Model<INotification> {
+		return model<INotification>(
+			"Notification",
+			this._schemas.notificationSchema
+		);
 	}
 }

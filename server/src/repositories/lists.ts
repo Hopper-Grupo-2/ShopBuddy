@@ -3,6 +3,8 @@ import Models from "../database/models";
 import ErrorHandler from "../errors";
 import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
+import IUser from "../interfaces/user";
+import UsersRepositories from "./users";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -214,7 +216,7 @@ export default class ListsRepositories {
   public static async deleteMemberFromList(
     listId: string,
     memberId: string
-  ): Promise<IList | null> {
+  ): Promise<IUser[] | null> {
     try {
       await this.Model.updateOne(
         { _id: listId },
@@ -224,8 +226,24 @@ export default class ListsRepositories {
         }
       );
 
-      const updatedList = await this.getListById(listId);
-      return updatedList;
+        const list = await this.getListById(listId)
+
+        if(list){
+
+      let members: IUser[] = [];
+
+      for (const element of list.members) {
+        const userId = element.userId.toString();
+        const member = await UsersRepositories.getUserById(userId);
+
+        if (member !== null) members.push(member);
+      }
+
+      return members;
+    } else{
+      throw "Error"
+    }
+
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
@@ -279,6 +297,39 @@ export default class ListsRepositories {
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error inverting "checked" field of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
+
+  public static async updateProductInfo(
+    listId: string,
+    productId: string,
+    newProductInfo: IProduct
+  ): Promise<IList | null> {
+    try {
+      const updatedList = await this.Model.findOneAndUpdate(
+        {
+          _id: listId,
+          "products._id": productId,
+        },
+        {
+          $set: {
+            "products.$.name": newProductInfo.name,
+            "products.$.quantity": newProductInfo.quantity,
+            "products.$.unit": newProductInfo.unit,
+            "products.$.price": newProductInfo.price,
+            updatedAt: new Date(),
+          },
+        },
+        { new: true }
+      );
+
+      return updatedList;
+    } catch (error) {
+      console.error(this.name, "updateProductInfo error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error updating info of the product with id ${productId} from list with id: ${listId}`
       );
     }
   }

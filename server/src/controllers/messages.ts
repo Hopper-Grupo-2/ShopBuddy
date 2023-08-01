@@ -1,98 +1,128 @@
-import { NextFunction, Request, Response } from "express";
-import MessagesServices from "../services/messages";
+import Websocket from "../websocket";
 import ErrorHandler from "../errors";
 import IMessage from "../interfaces/message";
-import Websocket from "../websocket";
+import MessagesServices from "../services/messages";
+import { NextFunction, Request, Response } from "express";
+import RedisCaching from "../database/caching/redisCaching";
+import NotificationsController from "./notifications";
+import { NotificationTypes } from "../interfaces/notification";
 
 export default class MessagesController {
-	public static async postMessage(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	): Promise<void> {
-		try {
-			const user = req.user;
+  public static async postMessage(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
 
-			if (!user)
-				throw ErrorHandler.createError(
-					"UnauthorizedError",
-					"Token does not contain the user's data"
-				);
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
 
-			const listId = req.params.listId;
-			const messageBody = req.body;
-			const createdMessage: IMessage =
-				await MessagesServices.createMessage(
-					messageBody.textContent,
-					listId,
-					user._id as string
-				);
+      const userId = user._id?.toString() ?? "";
 
-			//websocket
-			const websocket = Websocket.getIstance();
-			websocket.broadcastToList(
-				listId,
-				user._id as string,
-				"chatMessage",
-				createdMessage
-			);
+      const listId = req.params.listId;
+      const messageBody = req.body;
+      const createdMessage: IMessage = await MessagesServices.createMessage(
+        messageBody.textContent,
+        listId,
+        userId
+      );
 
-			console.log("controller: passei do envio da mensagem");
+      //websocket
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToList(listId, userId, "chatMessage", createdMessage);
 
-			res.status(200).json({ error: null, data: createdMessage });
-		} catch (error) {
-			next(error);
-		}
-	}
+      NotificationsController.sendNewListNotification(
+        userId,
+        listId,
+        NotificationTypes.MESSAGE_FROM_LIST,
+        createdMessage.textContent
+      );
 
-	public static async getAllMessages(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	): Promise<void> {
-		try {
-			const allMessages = await MessagesServices.getAllMessages();
-			res.status(200).json({ error: null, data: allMessages });
-		} catch (error) {
-			next(error);
-		}
-	}
+      res.status(200).json({ error: null, data: createdMessage });
 
-	public static async getMessagesByListId(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	): Promise<void> {
-		try {
-			const user = req.user;
+      // clear cached data about MESSAGES
+      await RedisCaching.clearCache("messages");
+      await RedisCaching.clearCache(`messages/listId/${listId}`);
+    } catch (error) {
+      next(error);
+    }
+  }
 
-			if (!user)
-				throw ErrorHandler.createError(
-					"UnauthorizedError",
-					"Token does not contain the user's data"
-				);
+  public static async getAllMessages(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const messagesFromCache: IMessage[] | null =
+        await RedisCaching.getCacheByKeyname<IMessage[]>("messages");
 
-			const listId = req.params.listId;
-			const listMessages = await MessagesServices.getMessageByListId(
-				listId,
-				user._id as string
-			);
-			res.status(200).json({ error: null, data: listMessages });
-		} catch (error) {
-			next(error);
-		}
-	}
+      if (messagesFromCache !== null) {
+        res.status(200).json({ error: null, data: messagesFromCache });
+        return;
+      }
 
-	// public static async getLists(
-	// 	req: Request,
-	// 	res: Response,
-	// 	next: NextFunction
-	// ): Promise<void> {
-	// 	try {
-	// 		const allLists = await ListsServices.getAllLists();
-	// 		res.status(200).json({ error: null, data: allLists });
-	// 	} catch (error) {
-	// 		next(error);
-	// 	}
-	// }
+      const allMessages = await MessagesServices.getAllMessages();
+      res.status(200).json({ error: null, data: allMessages });
+
+      if (allMessages && allMessages.length > 0) {
+        await RedisCaching.setCache<IMessage[]>("messages", allMessages);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async getMessagesByListId(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+
+      if (!user)
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "Token does not contain the user's data"
+        );
+
+      const listId = req.params.listId;
+
+      // checking cache
+      const listMessagesFromCache: IMessage[] | null =
+        await RedisCaching.getCacheByKeyname<IMessage[]>(
+          `messages/listId/${listId}`
+        );
+
+      if (listMessagesFromCache !== null) {
+        res.status(200).json({
+          error: null,
+          data: listMessagesFromCache,
+        });
+        return;
+      }
+
+      const listMessages = await MessagesServices.getMessageByListId(
+        listId,
+        user._id as string
+      );
+
+      res.status(200).json({ error: null, data: listMessages });
+
+      if (listMessages && listMessages.length > 0) {
+        await RedisCaching.setCache<IMessage[]>(
+          `messages/listId/${listId}`,
+          listMessages
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }

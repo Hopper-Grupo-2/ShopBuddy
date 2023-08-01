@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import IUser from "../interfaces/iUser";
 import { Box, CircularProgress } from "@mui/material";
+import AlertDialog from "../components/AlertDialog"
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [user, setUser] = useState<IUser | null>(null);
 	const [loading, setLoading] = useState(true);
+
+	const [openDialog, setOpenDialog] = useState(false);
+	const [dialogMessage, setDialogMessage] = useState("");
 
 	useEffect(() => {
 		const fetchCurrentUser = async () => {
@@ -45,7 +49,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to log in: " + error.message);
+			setDialogMessage("Erro no login: Email e/ou senha incorreta.");
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -74,14 +79,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert("Usuário cadastrado com sucesso!");
+				setDialogMessage("Usuário cadastrado com sucesso!");
+    			setOpenDialog(true);
 				return true;
 			} else {
 				throw responseObj.error;
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to create user: " + error.message);
+			if (error.message === "This e-mail is already in use") {
+				setDialogMessage("Erro na criação de usuário: Email já cadastrado.");
+			} else if (error.message === "This username is already in use"){
+				setDialogMessage("Erro na criação de usuário: Nome de usuário já cadastrado.");
+			} else {
+				setDialogMessage("Erro na criação de usuário.");
+			}
+    		setOpenDialog(true);
 			return false;
 		}
 	};
@@ -121,16 +134,39 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			const responseObj = await response.json();
 			if (response.ok) {
-				alert("Usuário atualizado com sucesso!");
+				setDialogMessage("Usuário atualizado com sucesso!");
+    			setOpenDialog(true);
 				return true;
 			} else {
 				throw responseObj.error;
 			}
 		} catch (error: any) {
 			console.error(error.name, error.message);
-			alert("Failed to edit user: " + error.message);
+			if (error.message === "There is no user with the given id") {
+				setDialogMessage("Falha na edição do usuário: Usuário inexistente.");
+
+			} else if (error.message.includes("User does not have access")){
+				setDialogMessage("Falha na edição do usuário: Você não tem acesso a essa função.");
+
+			} else if (error.message === "This e-mail is already in use"){
+				setDialogMessage("Falha na edição do usuário: Este email já está em uso.");
+
+			} else if (error.message === "This username is already in use"){
+				setDialogMessage("Falha na edição do usuário: Este nome de usuário já está em uso.");
+
+			} else if (error.message === "Old password is wrong"){
+				setDialogMessage("Falha na edição do usuário: Senha atual incorreta.");
+
+			} else {
+				setDialogMessage("Falha na edição do usuário.");
+			}
+    		setOpenDialog(true);
 			return false;
 		}
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	if (loading) {
@@ -154,6 +190,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 			value={{ user, setUser, login, signup, editUser }}
 		>
 			{children}
+			<AlertDialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				contentText={dialogMessage}
+				buttonText="Fechar"
+			/>
 		</UserContext.Provider>
 	);
 };
