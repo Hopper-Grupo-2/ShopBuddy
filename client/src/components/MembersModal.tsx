@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IUser from "../interfaces/iUser";
 
@@ -34,9 +35,13 @@ const MembersModal: React.FC<MembersModalProps> = (
               <ListItem key={user._id.toString()}>
                 <ListItemText primary={user.username} />
                 {props.isOwner && user !== props.members[0] && (
-                  <DeleteIcon
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
                     onClick={() => props.handleMember(user._id.toString())}
-                  />
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 )}
               </ListItem>
             ))}
