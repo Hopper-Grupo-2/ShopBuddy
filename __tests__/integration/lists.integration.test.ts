@@ -49,7 +49,7 @@ describe("GET /api/lists:listid", () => {
       expect(response.body.data).toMatchObject(createdList);
      
   });
-  it("should return status 500 if the provided list ID is invalid", async () => {
+  it("should return status 404 if the provided list ID is invalid", async () => {
     const userInfo: IUser = {
         username: "joaoteste12",
         password: "123",
@@ -63,13 +63,13 @@ describe("GET /api/lists:listid", () => {
       const userid = userExample._id?.toString() || "";
 
     const createdList = await ListRepositories.createNewList(listName, userid);
-    const invalidListId = "invalid-id";
+    const invalidListId = "88888888888d";
 
     const response = await request
       .get(`/api/lists/${invalidListId}`)
       .set("Cookie", `session=${jtwCookie}`);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
 })});
 
 describe("POST /api/lists", () => {
@@ -106,10 +106,10 @@ describe("POST /api/lists", () => {
       lastName: "test",
     };
     const userExample = await UsersRepositories.createNewUser(userInfo);
-
     const jtwCookie = generateCookieForUser(userExample);
 
     const newListData = {
+      listName: "",
       owner: userExample._id,
     };
 

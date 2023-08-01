@@ -183,7 +183,6 @@ import {
       // Call the function to create a new list
       const createdList = await ListRepositories.createNewList(listName, userId);
 
-      // Assert that the created list matches the expected values
       expect(createdList).toHaveProperty("_id");
       expect(createdList.listName).toBe(listName);
       expect(createdList.owner.toString()).toBe(userId);
