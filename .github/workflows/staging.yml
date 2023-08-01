@@ -78,16 +78,16 @@ jobs:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v3
             # Runs a single command using the runners shell
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
+            #- name: Use Node.js ${{ matrix.node-version }}
+            #  uses: actions/setup-node@v1
+            #  with:
+            #      node-version: ${{ matrix.node-version }}
 
-            - run: npm install
+            #- run: npm install
 
-            - name: Install client dependencies
-              working-directory: ./client
-              run: yarn install
+            #- name: Install client dependencies
+            #  working-directory: ./client
+            #  run: yarn install
 
             - name: Create .env file
               run: |
