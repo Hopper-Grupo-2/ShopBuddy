@@ -71,3 +71,62 @@ describe("GET /api/lists:listid", () => {
 
     expect(response.status).toBe(500);
 })});
+
+describe("POST /api/lists", () => {
+  it("should create a new list with valid data", async () => {
+    // Criando um novo usuário ou usando um usuário existente
+    const userInfo = {
+      username: "joaoteste12",
+      password: "123",
+      email: "joaots@alpha.com",
+      firstName: "joao",
+      lastName: "test",
+    };
+    const userExample = await UsersRepositories.createNewUser(userInfo);
+
+    // Criando o cookie de autenticação
+    const jtwCookie = generateCookieForUser(userExample);
+
+    // Dados da nova lista
+    const newListData = {
+      listName: "Nova Lista de Compras",
+      owner: userExample._id,
+    };
+
+    // Fazendo a solicitação POST para criar a nova lista
+    const response = await request
+      .post("/api/lists")
+      .set("Cookie", `session=${jtwCookie}`)
+      .send(newListData);
+      expect(response.status).toBe(200);
+      expect(response.body);
+  })
+  it("should return status 500 if listName is missing", async () => {
+    // Criando um novo usuário ou usando um usuário existente
+    const userInfo = {
+      username: "joaoteste12",
+      password: "123",
+      email: "joaots@alpha.com",
+      firstName: "joao",
+      lastName: "test",
+    };
+    const userExample = await UsersRepositories.createNewUser(userInfo);
+
+    // Criando o cookie de autenticação
+    const jtwCookie = generateCookieForUser(userExample);
+
+    // Dados da nova lista, mas o listName está faltando
+    const newListData = {
+      owner: userExample._id,
+    };
+
+    // Fazendo a solicitação POST para criar a nova lista
+    const response = await request
+      .post("/api/lists")
+      .set("Cookie", `session=${jtwCookie}`)
+      .send(newListData);
+
+    // Verificando a resposta
+    expect(response.status).toBe(500); // O status 400 indica que a solicitação é inválida
+  });
+});
