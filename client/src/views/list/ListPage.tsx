@@ -377,9 +377,11 @@ export default function List() {
             <Button variant="contained" onClick={handleShowMembers}>
               Members
             </Button>
-            <Button variant="contained" onClick={handleOpenMemberForm}>
-              + Add member
-            </Button>
+            {userContext?.user?._id === list?.owner && (
+              <Button variant="contained" onClick={handleOpenMemberForm}>
+                + Add member
+              </Button>
+            )}
           </ButtonContainer>
         </HeaderContainer>
         <ContentContainer>
