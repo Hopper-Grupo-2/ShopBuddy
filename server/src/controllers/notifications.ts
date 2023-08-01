@@ -36,7 +36,7 @@ export default class NotificationsController {
         );
       const websocket = Websocket.getIstance();
       websocket.broadcastToUser(
-        listId,
+        //listId,
         userId,
         "listNotification",
         notification
@@ -47,29 +47,33 @@ export default class NotificationsController {
   }
 
   public static async sendNewListNotification(
+    senderId: string,
     listId: string,
     type: NotificationTypes,
     textContent: string
   ) {
     try {
-      // broadcast notification to all clients
+      // broadcast notification to all clients but the sender
       const members = await ListsServices.getMembersByListId(listId);
       const websocket = Websocket.getIstance();
       for (const member of members) {
-        const notification =
-          await NotificationsServices.createNewListNotification(
-            listId,
-            member._id?.toString() ?? "",
-            type,
-            textContent
-          );
+        if (member._id?.toString() !== senderId) {
+          console.log("sending notification to user " + member._id);
+          const notification =
+            await NotificationsServices.createNewListNotification(
+              listId,
+              member._id?.toString() ?? "",
+              type,
+              textContent
+            );
 
-        websocket.broadcastToUser(
-          listId,
-          member._id?.toString() ?? "",
-          "listNotification",
-          notification
-        );
+          websocket.broadcastToUser(
+            //listId,
+            member._id?.toString() ?? "",
+            "listNotification",
+            notification
+          );
+        }
       }
     } catch (error) {
       console.error(error);
@@ -108,6 +112,42 @@ export default class NotificationsController {
       const notificationReadStatus =
         await NotificationsServices.readListNotifications(userId ?? "", listId);
       res.status(200).json({ error: null, data: notificationReadStatus });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async deleteUserNotifications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+
+      const wasDeleted = await NotificationsServices.deleteUserNotifications(
+        userId ?? ""
+      );
+      res.status(200).json({ erro: null, data: wasDeleted });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async deleteNotification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const userId = req.user?._id?.toString();
+      const notificationId = req.params.notificationId;
+
+      const wasDeleted = await NotificationsServices.deleteNotification(
+        userId ?? "",
+        notificationId
+      );
+      res.status(200).json({ erro: null, data: wasDeleted });
     } catch (error) {
       next(error);
     }
