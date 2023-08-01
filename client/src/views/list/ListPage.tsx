@@ -442,6 +442,7 @@ export default function List() {
         open={showMembers}
         handleClose={handleHideMembers}
         handleMember={handleRemoveMember}
+        isOwner={isListOwner}
       />
       <FormDialog
         title="Editar item"

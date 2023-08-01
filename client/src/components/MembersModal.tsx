@@ -18,6 +18,7 @@ interface MembersModalProps {
 	open: boolean;
 	handleClose: () => void;
 	handleMember: (user: string) => Promise<false | undefined>;
+	isOwner: boolean
 }
 
 const MembersModal: React.FC<MembersModalProps> = (
@@ -32,7 +33,11 @@ const MembersModal: React.FC<MembersModalProps> = (
 						{props.members.map((user) => (
 							<ListItem key={user._id.toString()}>
 								<ListItemText primary={user.username} />
-								<DeleteIcon onClick = {() => props.handleMember(user._id.toString())}/>
+								{props.isOwner && user !== props.members[0] && (
+                  					<DeleteIcon
+										onClick={() => props.handleMember(user._id.toString())}
+									/>
+								)}
 							</ListItem>
 						))}
 					</List>
