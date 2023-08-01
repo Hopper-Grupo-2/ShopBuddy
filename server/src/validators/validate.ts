@@ -21,6 +21,10 @@ const allFieldsToValidate: {
     { title: "email", type: "email" },
     { title: "password", type: "pass" },
   ],
+  getUserAuthentication: [
+    { title: "email", type: "email" },
+    { title: "password", type: "pass" },
+  ],
 };
 
 export default function validate(route: string) {

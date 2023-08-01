@@ -53,6 +53,11 @@ usersRouter.post(
 );
 
 // POST /api/users/login - create a new login session (return the authentication token)
-usersRouter.post("/login", UsersController.getUserAuthentication);
+usersRouter.post(
+  "/login",
+  validate("getUserAuthentication"),
+  handleValidation,
+  UsersController.getUserAuthentication
+);
 
 export { usersRouter };
