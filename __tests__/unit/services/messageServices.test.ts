@@ -100,7 +100,7 @@ describe("Messages Services", () => {
         it('should throw an error if user does not exist', async () => {
             jest.spyOn(UsersRepositories, 'getUserById').mockResolvedValue(null);
             
-            const result = await MessagesServices.getMessageByListId(listId, userId);
+            const result = MessagesServices.getMessageByListId(listId, userId);
             await expect(result).rejects.toMatchObject({ name: "UnauthorizedError" })
         })
         
@@ -108,7 +108,7 @@ describe("Messages Services", () => {
             jest.spyOn(UsersRepositories, 'getUserById').mockResolvedValue(userFromRepo);
             jest.spyOn(ListRepositories, 'getListById').mockResolvedValue(null);
         
-            const result = await MessagesServices.getMessageByListId('listId', 'userId');
+            const result = MessagesServices.getMessageByListId('listId', 'userId');
             await expect(result).rejects.toMatchObject({ name: "UnauthorizedError" })
         });
 
@@ -117,7 +117,7 @@ describe("Messages Services", () => {
             jest.spyOn(ListRepositories, 'getListById').mockResolvedValue(listFromRepo);
             jest.spyOn(ListRepositories, 'isMember').mockResolvedValue(false);
 
-            const result = await MessagesServices.getMessageByListId('listId', 'userId');
+            const result = MessagesServices.getMessageByListId('listId', 'userId');
             await expect(result).rejects.toMatchObject({ name: "UnauthorizedError" })
         });
 
@@ -167,22 +167,21 @@ describe("Messages Services", () => {
             updatedAt: new Date("2023-07-31T12:34:56.789Z"),
         };
 
-        const messagesFromRepo: IMessage[] = [
+        const messagesFromRepo: IMessage = 
             {
                 _id: "64bc28f2e97fdb0fbd61c070",
-                listId: listId,
-                userId: userId,
                 textContent:"Message one",
+                userId: userId,
+                listId: listId,
                 createdAt: new Date("2023-07-22T19:07:30.172Z"),
-            },
-        ];
+            };
 
         const message = "Message one"
 
         it('should throw an error if user does not exist', async () => {
             jest.spyOn(UsersRepositories, 'getUserById').mockResolvedValue(null);
             
-            const result = await MessagesServices.createMessage('message', 'listId', 'userId');
+            const result = MessagesServices.createMessage('message', 'listId', 'userId');
             await expect(result).rejects.toMatchObject({ name: "UnauthorizedError" })
         })
         
@@ -190,15 +189,17 @@ describe("Messages Services", () => {
             jest.spyOn(UsersRepositories, 'getUserById').mockResolvedValue(userFromRepo);
             jest.spyOn(ListRepositories, 'getListById').mockResolvedValue(null);
         
-            const result = await MessagesServices.createMessage('message', 'listId', 'userId');
+            const result = MessagesServices.createMessage('message', 'listId', 'userId');
             await expect(result).rejects.toMatchObject({ name: "UnauthorizedError" })
         });
 
         it('should return message if list and user exist', async () => {
-            jest.spyOn(UsersRepositories, 'getUserById').mockResolvedValue(userFromRepo);
-            jest.spyOn(ListRepositories, 'getListById').mockResolvedValue(listFromRepo);
-        
-            const result = await MessagesServices.createMessage('message', 'listId', 'userId');
+            jest.spyOn(UsersRepositories, "getUserById").mockResolvedValue(userFromRepo);
+            jest.spyOn(ListRepositories, "getListById").mockResolvedValue(listFromRepo);
+
+            jest.spyOn(MessagesRepositories, "createMessage").mockResolvedValue(messagesFromRepo);
+
+            const result = await MessagesServices.createMessage(message, listId, userId);
             expect(result).toEqual(messagesFromRepo);
         });
     });
