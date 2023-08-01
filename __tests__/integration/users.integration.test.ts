@@ -54,7 +54,7 @@ describe("GET /api/users/:userId", () => {
     const jtwCookie = generateCookieForUser(userExample);
 
     const response = await request
-      .get(`/api/users/99999999999d`)
+      .get(`/api/users/1119e8640bf34fa1112da871`)
       .set("Cookie", `session=${jtwCookie}`);
 
     expect(response.status).toBe(404);
@@ -147,7 +147,7 @@ describe("PATCH /api/users/:userId", () => {
     // where at least one is "The id must be a valid ObjectId."
     expect(response.body.message).toEqual(
       expect.arrayContaining([
-        expect.stringContaining("The id must be a valid ObjectId."),
+        expect.stringContaining("The userId must be a valid ObjectId."),
       ])
     );
   });
