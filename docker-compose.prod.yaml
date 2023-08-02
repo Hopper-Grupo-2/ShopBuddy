@@ -31,8 +31,8 @@ services:
             - .env
         ports:
             - "${PORT}:${PORT}"
-        volumes:
-            - /app
+        #volumes:
+        #    - /app
         # environment:
         #   - REDIS_DB=redis
         #   - MONGO_DB=mongo
