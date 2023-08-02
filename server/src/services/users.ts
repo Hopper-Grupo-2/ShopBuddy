@@ -1,10 +1,13 @@
 import ErrorHandler from "../errors";
 import IUser, { IUserUpdate } from "../interfaces/user";
 import UsersRepositories from "../repositories/users";
+import ListsRepositories from "../repositories/lists";
 import bcrypt from "bcrypt";
+import IList from "../interfaces/list";
 
 export default class UsersServices {
     private static Repository = UsersRepositories;
+    private static ListRepository = ListsRepositories;
 
     public static async loginUser(
         email: string,
@@ -76,9 +79,15 @@ export default class UsersServices {
         }
     }
 
-    public static async getUserById(userId: string): Promise<IUser | null> {
+    public static async getUserById(userId: string): Promise<IUser> {
         try {
             const userById = await this.Repository.getUserById(userId);
+            if (userById === null) {
+                throw ErrorHandler.createError(
+                    "NotFoundError",
+                    "There is no user with the given id"
+                );
+            }
             return userById;
         } catch (error) {
             throw error;
@@ -86,11 +95,12 @@ export default class UsersServices {
     }
 
     public static async updateUser(
+        loggedUserId: string,
         userId: string,
         user: IUserUpdate
     ): Promise<IUser> {
         try {
-            const oldUser = await UsersServices.getUserById(userId);
+            const oldUser = await UsersRepositories.getUserById(userId);
 
             if (oldUser === null) {
                 throw ErrorHandler.createError(
@@ -99,10 +109,10 @@ export default class UsersServices {
                 );
             }
 
-            if (oldUser._id?.toString() !== userId) {
+            if (loggedUserId !== userId) {
                 throw ErrorHandler.createError(
                     "ForbiddenError",
-                    `User ${userId} does not have access`
+                    `User ${loggedUserId} does not have access`
                 );
             }
 
@@ -111,7 +121,7 @@ export default class UsersServices {
             );
             if (foundUserByEmail !== null && user.email !== oldUser.email)
                 throw ErrorHandler.createError(
-                    "UnauthorizedError",
+                    "Conflict",
                     "This e-mail is already in use"
                 );
 
@@ -124,7 +134,7 @@ export default class UsersServices {
                 user.username !== oldUser.username
             )
                 throw ErrorHandler.createError(
-                    "UnauthorizedError",
+                    "Conflict",
                     "This username is already in use"
                 );
 
@@ -155,17 +165,45 @@ export default class UsersServices {
 
     public static async deleteUser(userId: string): Promise<IUser> {
         try {
-            const userdeleted: IUser | null = await this.Repository.deleteUser(
+            const userDeleted: IUser | null = await this.Repository.deleteUser(
                 userId
             );
 
-            if (userdeleted === null) {
+            if (userDeleted === null) {
                 throw ErrorHandler.createError(
                     "NotFoundError",
                     `There is no user with the given id`
                 );
             }
-            return userdeleted;
+            const userLists: IList[] | null =
+                await this.ListRepository.findAllListsByUserId(userId);
+
+            if (userLists === null) {
+                return userDeleted;
+            }
+            for (const list of userLists) {
+                if (list.members.length === 1) {
+                    await this.ListRepository.deleteList(
+                        list._id.toString(),
+                        userId
+                    );
+                } else {
+                    const nextOwnerId = list.members[1].userId;
+                    //console.log("nextowner", nextOwnerId);
+
+                    await this.ListRepository.changeListOwner(
+                        list._id.toString(),
+                        userId,
+                        nextOwnerId.toString()
+                    );
+
+                    await this.ListRepository.deleteMemberFromList(
+                        list._id.toString(),
+                        userId
+                    );
+                }
+            }
+            return userDeleted;
         } catch (error) {
             throw error;
         }

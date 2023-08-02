@@ -87,25 +87,38 @@ export default class UsersRepositories {
 
     public static async createNewUser(user: IUser): Promise<IUser> {
         try {
-            const response = await this.Model.create({
+            const timestamp = Date.now();
+            const dateWithoutMS = new Date(Math.floor(timestamp / 1000) * 1000);
+
+            const response: IUser = await this.Model.create({
                 username: user.username,
                 email: user.email,
                 password: user.password,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                createdAt: Date.now(),
-                updatedAt: Date.now(),
+                createdAt: dateWithoutMS,
+                updatedAt: dateWithoutMS,
             });
+
+            let createdAt = new Date(response.createdAt?.toString() || "");
+            let updatedAt = new Date(response.updatedAt?.toString() || "");
+
+            // if (createdAt && updatedAt) {
+            //createdAt = new Date(createdAt).toISOString(); //new Date(createdAt.toString());
+            //updatedAt = new Date(createdAt).toISOString(); //new Date(updatedAt.toString());
+            // }
+
             const createdUser: IUser = {
-                _id: response._id,
+                _id: response._id?.toString(),
                 username: response.username,
                 email: response.email,
                 password: response.password,
                 firstName: response.firstName,
                 lastName: response.lastName,
-                createdAt: response.createdAt,
-                updatedAt: response.updatedAt,
+                createdAt: createdAt?.toISOString(),
+                updatedAt: updatedAt?.toISOString(),
             };
+
             return createdUser;
         } catch (error) {
             console.error(this.name, "createNewUser error: ", error);
@@ -115,6 +128,22 @@ export default class UsersRepositories {
             );
         }
     }
+
+    public static async getUsernameById(
+        userId: string
+    ): Promise<string | null> {
+        try {
+            const user = await UsersRepositories.getUserById(userId);
+            return user?.username || null;
+        } catch (error) {
+            console.error(this.name, "getUsernameById error: ", error);
+            throw ErrorHandler.createError(
+                "InternalServerError",
+                "Error getting username by ID"
+            );
+        }
+    }
+
     public static async getAllUsers() {
         try {
             const response = await this.Model.find();
@@ -180,7 +209,7 @@ export default class UsersRepositories {
                 "User was not updated"
             );
         } catch (error) {
-            console.error(this.name, "updateUser error: ", error);
+            //console.error(this.name, "updateUser error: ", error);
             throw ErrorHandler.createError(
                 "InternalServerError",
                 "Internal server error"

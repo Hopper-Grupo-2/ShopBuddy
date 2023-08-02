@@ -13,160 +13,191 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import SettingsIcon from "@mui/icons-material/Settings";
-
+import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
+import { NotificationsContext } from "../contexts/NotificationsContext";
 
 const drawerWidth = 240;
 
 interface Props {
-	/**
-	 * Injected by the documentation to work in an iframe.
-	 * You won't need it on your project.
-	 */
-	window?: () => Window;
-	children: React.ReactNode;
+  /**
+   * Injected by the documentation to work in an iframe.
+   * You won't need it on your project.
+   */
+  window?: () => Window;
+  children: React.ReactNode;
 }
 
 export default function ResponsiveDrawer(props: Props) {
-	const { window } = props;
-	const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { window } = props;
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const userContext = React.useContext(UserContext);
+  const notificationsContext = React.useContext(NotificationsContext);
 
-	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen);
-	};
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
-	//get this info from the cookie:
-	const user = {
-		username: "Username",
-	};
+  const handleLogout = async () => {
+    await fetch("/api/users/logout", {
+      method: "DELETE",
+    });
+  };
 
-	const links = [
-		{
-			text: "Listas",
-			route: "/",
-			icon: <ViewListIcon />,
-		},
-		{
-			text: "Configurações",
-			route: "/settings",
-			icon: <SettingsIcon />,
-		},
-		{
-			text: "Sair",
-			route: "/login",
-			icon: <LogoutIcon />,
-		},
-	];
+  const user = {
+    username: userContext?.user?.username || "",
+  };
 
-	const drawer = (
-		<div>
-			<ListItemButton sx={{ paddingTop: 2, paddingBottom: 2 }}>
-				<ListItemIcon>
-					<AccountBoxIcon />
-				</ListItemIcon>
-				<ListItemText primary={user.username} />
-			</ListItemButton>
-			<Divider />
-			<List>
-				{links.map((page) => (
-					<ListItem
-						key={page.text}
-						disablePadding
-						component={Link}
-						to={page.route}
-					>
-						<ListItemButton>
-							<ListItemIcon>{page.icon}</ListItemIcon>
-							<ListItemText primary={page.text} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
-		</div>
-	);
+  const links = [
+    {
+      text: "Listas",
+      route: "/",
+      icon: <ViewListIcon />,
+    },
+    {
+      text: "Notificações",
+      route: "/notifications",
+      icon: <NotificationsIcon />,
+    },
+    {
+      text: "Configurações",
+      route: "/settings",
+      icon: <SettingsIcon />,
+    },
+    {
+      text: "Sair",
+      route: "/login",
+      icon: <LogoutIcon />,
+    },
+  ];
 
-	const container =
-		window !== undefined ? () => window().document.body : undefined;
+  const drawer = (
+    <div>
+      <ListItemButton sx={{ paddingTop: 2, paddingBottom: 2 }}>
+        <ListItemIcon>
+          <AccountBoxIcon />
+        </ListItemIcon>
+        <ListItemText primary={user.username} />
+      </ListItemButton>
+      <Divider />
+      <List>
+        {links.map((page) => (
+          <ListItem
+            key={page.text}
+            disablePadding
+            component={Link}
+            to={page.route}
+          >
+            <ListItemButton
+              onClick={() => (page.text === "Sair" ? handleLogout() : null)}
+            >
+              <ListItemIcon>
+                {page.text === "Notificações" ? (
+                  <Badge
+                    badgeContent={
+                      notificationsContext?.notifications?.filter(
+                        (notification) => notification.read === false
+                      ).length
+                    }
+                    color="primary"
+                  >
+                    {page.icon}
+                  </Badge>
+                ) : (
+                  page.icon
+                )}
+              </ListItemIcon>
+              <ListItemText primary={page.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
-	return (
-		<Box sx={{ display: "flex" }}>
-			<CssBaseline />
-			<AppBar
-				position="fixed"
-				sx={{
-					width: { sm: `calc(100% - ${drawerWidth}px)` },
-					ml: { sm: `${drawerWidth}px` },
-				}}
-			>
-				<Toolbar>
-					<IconButton
-						color="inherit"
-						aria-label="open drawer"
-						edge="start"
-						onClick={handleDrawerToggle}
-						sx={{ mr: 2, display: { sm: "none" } }}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography variant="h6" noWrap component="div">
-						ShopBuddy
-					</Typography>
-				</Toolbar>
-			</AppBar>
-			<Box
-				component="nav"
-				sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-				aria-label="mailbox folders"
-			>
-				{/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-				<Drawer
-					container={container}
-					variant="temporary"
-					open={mobileOpen}
-					onClose={handleDrawerToggle}
-					ModalProps={{
-						keepMounted: true, // Better open performance on mobile.
-					}}
-					sx={{
-						display: { xs: "block", sm: "none" },
-						"& .MuiDrawer-paper": {
-							boxSizing: "border-box",
-							width: drawerWidth,
-						},
-					}}
-				>
-					{drawer}
-				</Drawer>
-				<Drawer
-					variant="permanent"
-					sx={{
-						display: { xs: "none", sm: "block" },
-						"& .MuiDrawer-paper": {
-							boxSizing: "border-box",
-							width: drawerWidth,
-						},
-					}}
-					open
-				>
-					{drawer}
-				</Drawer>
-			</Box>
-			<Box
-				component="main"
-				sx={{
-					flexGrow: 1,
-					p: 3,
-					width: { sm: `calc(100% - ${drawerWidth}px)` },
-				}}
-			>
-				<Toolbar />
-				{props.children}
-			</Box>
-		</Box>
-	);
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
+
+  return (
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            ShopBuddy
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar />
+        {props.children}
+      </Box>
+    </Box>
+  );
 }

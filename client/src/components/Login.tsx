@@ -4,9 +4,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import ExternalLink from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -14,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
+import { useState } from "react";
+import AlertDialog from "./AlertDialog"
 
 function Copyright(props: any) {
 	return (
@@ -24,9 +25,12 @@ function Copyright(props: any) {
 			{...props}
 		>
 			{"Copyright © "}
-			<Link color="inherit" href="https://github.com/Hopper-Grupo-2">
+			<ExternalLink
+				color="inherit"
+				href="https://github.com/Hopper-Grupo-2"
+			>
 				Hopper Grupo 2
-			</Link>{" "}
+			</ExternalLink>{" "}
 			{new Date().getFullYear()}
 			{"."}
 		</Typography>
@@ -40,33 +44,44 @@ export default function LogIn() {
 	const context = React.useContext(UserContext);
 	const navigate = useNavigate();
 
+	const [openDialog, setOpenDialog] = useState(false);
+  	const [dialogMessage, setDialogMessage] = useState("");
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log({
+		/* console.log({
 			email: data.get("email"),
 			password: data.get("password"),
-		});
+		}); */
 		const credentials = {
 			email: data.get("email"),
 			password: data.get("password"),
 		};
 
-		if (credentials.email === null) {
-			return alert("Por favor, insira um e-mail");
+		if (credentials.email === null || credentials.email === "") {
+			setDialogMessage("Por favor, insira um e-mail");
+			setOpenDialog(true);
+			return;
 		}
 
-		if (credentials.password === null) {
-			return alert("Por favor, insira uma senha");
+		if (credentials.password === null || credentials.password === "") {
+			setDialogMessage("Por favor, insira uma senha");
+			setOpenDialog(true);
+			return;
 		}
 
 		// i want to call login here
-		await context?.login(
+		const loggedIn = await context?.login(
 			credentials.email.toString(),
 			credentials.password.toString()
 		);
 
-		navigate("/");
+		if (loggedIn) navigate("/");
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -85,7 +100,7 @@ export default function LogIn() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5">
-						Log in
+						Bem vindo ao ShopBuddy!
 					</Typography>
 					<Box
 						component="form"
@@ -98,7 +113,7 @@ export default function LogIn() {
 							required
 							fullWidth
 							id="email"
-							label="Email Address"
+							label="Endereço de e-mail"
 							name="email"
 							autoComplete="email"
 							autoFocus
@@ -108,16 +123,10 @@ export default function LogIn() {
 							required
 							fullWidth
 							name="password"
-							label="Password"
+							label="Senha"
 							type="password"
 							id="password"
 							autoComplete="current-password"
-						/>
-						<FormControlLabel
-							control={
-								<Checkbox value="remember" color="primary" />
-							}
-							label="Remember me"
 						/>
 						<Button
 							type="submit"
@@ -125,23 +134,25 @@ export default function LogIn() {
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
 						>
-							Log In
+							entrar
 						</Button>
-						<Grid container>
-							<Grid item xs>
-								<Link href="#" variant="body2">
-									Forgot password?
-								</Link>
-							</Grid>
+						<Grid container justifyContent="center">
 							<Grid item>
-								<Link href="#" variant="body2">
-									{"Don't have an account? Sign Up"}
+								<Link to="/signup">
+									{"Ainda não tem uma conta? Cadastre-se"}
 								</Link>
 							</Grid>
 						</Grid>
 					</Box>
 				</Box>
 				<Copyright sx={{ mt: 8, mb: 4 }} />
+
+				<AlertDialog
+					open={openDialog}
+					onClose={handleCloseDialog}
+					contentText={dialogMessage}
+					buttonText="Fechar"
+				/>
 			</Container>
 		</ThemeProvider>
 	);

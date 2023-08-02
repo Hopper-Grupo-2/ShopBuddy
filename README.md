@@ -10,4 +10,6 @@ Para inicializar o projeto, basta criar os arquivos .env, baseado no .env-exampl
 
 -   Estrutura inicial
 -   Runners self-hosted adicionados
--   Primeiros endpoints criados /api/users /api/lists
+-   Endpoints criados /api/users /api/lists
+-   Redis adicionado para caching
+-   Redis into all containers
