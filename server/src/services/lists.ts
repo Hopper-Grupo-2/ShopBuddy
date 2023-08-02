@@ -89,7 +89,7 @@ export default class ListsServices {
     userId: string
   ): Promise<void> {
     try {
-      const list = await this.Repository.getListById(listId); // Suponhamos que exista um método getList no Repository para buscar a lista
+      const list = await this.Repository.getListById(listId);
       if (!list) {
         throw ErrorHandler.createError("BadRequest", "List not found");
       }
