@@ -49,7 +49,7 @@ describe("GET /api/lists:listid", () => {
       expect(response.body.data).toMatchObject(createdList);
      
   });
-  it("should return status 404 if the provided list ID is invalid", async () => {
+  it("should return status 422 if the provided list ID is invalid", async () => {
     const userInfo: IUser = {
         username: "joaoteste12",
         password: "123",
@@ -69,7 +69,7 @@ describe("GET /api/lists:listid", () => {
       .get(`/api/lists/${invalidListId}`)
       .set("Cookie", `session=${jtwCookie}`);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(422);
 })});
 
 describe("POST /api/lists", () => {
@@ -97,7 +97,7 @@ describe("POST /api/lists", () => {
       expect(response.status).toBe(200);
       expect(response.body);
   })
-  it("should return status 500 if listName is missing", async () => {
+  it("should return status 422 if listName is missing", async () => {
     const userInfo = {
       username: "joaoteste12",
       password: "123",
@@ -118,6 +118,6 @@ describe("POST /api/lists", () => {
       .set("Cookie", `session=${jtwCookie}`)
       .send(newListData);
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(422);
   });
 });
