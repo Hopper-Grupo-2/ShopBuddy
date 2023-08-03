@@ -185,7 +185,6 @@ export default class UsersServices {
                 if (list.members.length === 1) {
                     await this.ListRepository.deleteList(
                         list._id.toString(),
-                        userId
                     );
                 } else {
                     const nextOwnerId = list.members[1].userId;
