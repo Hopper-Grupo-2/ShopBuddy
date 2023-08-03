@@ -102,7 +102,9 @@ export default function List() {
     fetchList();
     fetchMembers();
     notificationsContext?.readListNotifications(params.listId ?? "");
+  }, []);
 
+  useEffect(() => {
     if (list && userContext?.user?._id === list.owner) {
       setIsListOwner(true);
     } else {

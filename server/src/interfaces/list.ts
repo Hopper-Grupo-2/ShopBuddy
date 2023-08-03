@@ -1,20 +1,14 @@
 import { Schema } from "mongoose";
+import IProduct from "./product";
 
 export default interface IList {
   _id: Schema.Types.ObjectId | string;
   listName: string;
-  products: {
-      name: string;
-      quantity: Number;
-      unit: string;
-      price: Number;
-      checked: Boolean;
-      _id: Schema.Types.ObjectId | string;
-    }[];
+  products: IProduct[];
   owner: Schema.Types.ObjectId | string;
   members: IMember[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export interface IMember{

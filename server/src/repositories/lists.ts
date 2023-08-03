@@ -73,22 +73,26 @@ export default class ListsRepositories {
     userId: string
   ): Promise<IList> {
     try {
+      const timestamp = Date.now();
+      const dateWithoutMS = new Date(Math.floor(timestamp / 1000) * 1000);
       const response = await this.Model.create({
         listName: listName,
         products: [],
-        owner: userId,
-        members: [{ userId: userId }],
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        owner: userId.toString(),
+        members: [{ userId: userId.toString() }],
+        createdAt: dateWithoutMS,
+        updatedAt: dateWithoutMS,
       });
+      let createdAt = new Date(response.createdAt?.toString() || "");
+      let updatedAt = new Date(response.updatedAt?.toString() || "");
       const createdList: IList = {
-        _id: response._id,
+        _id: response._id.toString(),
         listName: response.listName,
         products: response.products,
-        owner: response.owner,
-        members: [{ userId: response.members[0].userId }],
-        createdAt: response.createdAt,
-        updatedAt: response.createdAt,
+        owner: response.owner.toString(),
+        members: [{ userId: response.members[0].userId.toString() }],
+        createdAt: createdAt?.toISOString(),
+        updatedAt: updatedAt?.toISOString(),
       };
       return createdList;
     } catch (error) {
@@ -124,15 +128,6 @@ export default class ListsRepositories {
     ownerId: string
   ): Promise<void> {
     try {
-      const list = await this.Model.findOne({ _id: listId });
-      if (!list) {
-        throw ErrorHandler.createError("BadRequest", "List not found");
-      }
-
-      if (list.owner.toString() !== ownerId) {
-        throw ErrorHandler.createError("UnauthorizedError", "forbiddenError");
-      }
-
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {
       console.error(this.name, "deleteList error: ", error);
