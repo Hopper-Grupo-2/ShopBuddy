@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 interface CardProps {
 	title: string;
@@ -13,6 +14,7 @@ interface CardProps {
 	total: number;
 	action: () => void;
 	deleteAction?: () => void;
+  exitAction?: () => void;
 }
 export default function BasicCard(props: CardProps) {
 	const formattedDate = new Intl.DateTimeFormat("pt-BR", {
@@ -50,6 +52,9 @@ export default function BasicCard(props: CardProps) {
 						>
 							<DeleteIcon />
 						</IconButton>
+            <IconButton aria-label="exit" onClick={props.exitAction}>
+              <LogoutIcon />
+            </IconButton>
 					</Grid>
 				</Grid>
 			</CardActions>
