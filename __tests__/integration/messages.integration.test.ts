@@ -38,7 +38,7 @@ describe("GET /api/messages/:listId", () => {
         expect(response.status).toBe(401);
     });
 
-    it("should return status 401 if doesnt exist a list with id informed", async () => {
+    it("should return status 422 if doesnt exist a list with id informed", async () => {
         const userInfo: IUser = {
             username: "user",
             password: "123",
@@ -69,7 +69,7 @@ describe("GET /api/messages/:listId", () => {
         .get(`/api/messages/999999999999`)
         .set("Cookie", `session=${jtwCookie}`);
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(422);
     });
 
     it("should return status 200 and message  infos", async () => {
@@ -124,7 +124,7 @@ describe("POST /api/messages/:listId", () => {
         expect(response.status).toBe(401);
     });
 
-    it("should return status 401 if doesnt exist a list with id informed", async () => {
+    it("should return status 422 if doesnt exist a list with id informed", async () => {
         const userInfo: IUser = {
             username: "user",
             password: "123",
@@ -156,7 +156,7 @@ describe("POST /api/messages/:listId", () => {
         .post(`/api/messages/999999999999`)
         .set("Cookie", `session=${jtwCookie}`);
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(422);
     });
 
     it("should return status 200 and message infos", async () => {
