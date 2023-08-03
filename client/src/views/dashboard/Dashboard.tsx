@@ -7,104 +7,101 @@ import { useState, useEffect, useContext } from "react";
 import { FormDialog } from "../../components/FormDialog";
 import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
-import AlertDialog from "../../components/AlertDialog"
+import AlertDialog from "../../components/AlertDialog";
 
 export default function Dashboard() {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	const [lists, setLists] = useState<IList[]>([]);
-	const [fetchTrigger, setFetchTrigger] = useState(false);
-	const [openListForm, setOpenListForm] = useState(false);
-	const context = useContext(UserContext);
+  const [lists, setLists] = useState<IList[]>([]);
+  const [fetchTrigger, setFetchTrigger] = useState(false);
+  const [openListForm, setOpenListForm] = useState(false);
+  const context = useContext(UserContext);
 
-	const [openDialog, setOpenDialog] = useState(false);
-	const [dialogMessage, setDialogMessage] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
   const userContext = useContext(UserContext);
 
-	useEffect(() => {
-		const fetchLists = async () => {
-			const response = await fetch(
-				`/api/lists/user/${context?.user?._id}`,
-				{
-					method: "GET",
-					credentials: "include", // Ensure credentials are sent
-				}
-			);
+  useEffect(() => {
+    const fetchLists = async () => {
+      const response = await fetch(`/api/lists/user/${context?.user?._id}`, {
+        method: "GET",
+        credentials: "include", // Ensure credentials are sent
+      });
 
-			if (response.ok) {
-				const listsData = await response.json();
-				setLists(listsData.data);
-			}
-		};
+      if (response.ok) {
+        const listsData = await response.json();
+        setLists(listsData.data);
+      }
+    };
 
-		fetchLists();
-	}, [fetchTrigger]);
+    fetchLists();
+  }, [fetchTrigger]);
 
-	const handleOpenListForm = () => {
-		setOpenListForm(true);
-	};
-	const handleCloseListForm = () => {
-		setOpenListForm(false);
-	};
+  const handleOpenListForm = () => {
+    setOpenListForm(true);
+  };
+  const handleCloseListForm = () => {
+    setOpenListForm(false);
+  };
 
-	const createNewList = async (formData: Record<string, string>) => {
-		try {
-			const response = await fetch("/api/lists/", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					listName: formData["listName"],
-				}),
-			});
+  const createNewList = async (formData: Record<string, string>) => {
+    try {
+      const response = await fetch("/api/lists/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          listName: formData["listName"],
+        }),
+      });
 
-			const responseObj = await response.json();
-			if (response.ok) {
-				setDialogMessage("Lista criada com sucesso!");
-				setOpenDialog(true);
-				setFetchTrigger(!fetchTrigger);
-				return true;
-			} else {
-				throw responseObj.error;
-			}
-		} catch (error: any) {
-			console.error(error.name, error.message);
-			setDialogMessage("Erro ao criar a lista, tente novamente!");
-			setOpenDialog(true);
-			return false;
-		}
-	};
+      const responseObj = await response.json();
+      if (response.ok) {
+        setDialogMessage("Lista criada com sucesso!");
+        setOpenDialog(true);
+        setFetchTrigger(!fetchTrigger);
+        return true;
+      } else {
+        throw responseObj.error;
+      }
+    } catch (error: any) {
+      console.error(error.name, error.message);
+      setDialogMessage("Erro ao criar a lista, tente novamente!");
+      setOpenDialog(true);
+      return false;
+    }
+  };
 
-	const deleteList = async (listId: string, listName: string) => {
-		if (!confirm(`Deseja realmente apagar a lista ${listName}?`)) return;
-		
-		try {
-			const response = await fetch(`/api/lists/${listId}`, {
-				method: "DELETE",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+  const deleteList = async (listId: string, listName: string) => {
+    if (!confirm(`Deseja realmente apagar a lista ${listName}?`)) return;
 
-			const responseObj = await response.json();
-			if (response.ok) {
-				setFetchTrigger(!fetchTrigger);
-				setDialogMessage("Lista apagada com sucesso!");
-				setOpenDialog(true);
-				//return true;
+    try {
+      const response = await fetch(`/api/lists/${listId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-			} else {
-				throw responseObj.error;
-			}
-
-		} catch (error: any) {
-			console.error(error.name, error.message);
-			setDialogMessage("Desculpe, apenas administradores da lista podem deleta-la.");
-			setOpenDialog(true);
-			//return false;
-		}
-	};
+      const responseObj = await response.json();
+      if (response.ok) {
+        setFetchTrigger(!fetchTrigger);
+        setDialogMessage("Lista apagada com sucesso!");
+        setOpenDialog(true);
+        //return true;
+      } else {
+        throw responseObj.error;
+      }
+    } catch (error: any) {
+      console.error(error.name, error.message);
+      setDialogMessage(
+        "Desculpe, apenas administradores da lista podem deleta-la."
+      );
+      setOpenDialog(true);
+      //return false;
+    }
+  };
 
   const exitList = async (
     listId: string,
@@ -144,42 +141,47 @@ export default function Dashboard() {
     }
   };
 
-	const handleCloseDialog = () => {
-		setOpenDialog(false);
-	};
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
-	return (
-		<>
-			<PageStructure>
-				<h1>Bem vindo(a) ao ShopBuddy!</h1>
-				<Button
-					sx={{ marginBottom: "30px" }}
-					variant="contained"
-					onClick={handleOpenListForm}
-				>
-					Adicionar nova lista
-				</Button>
-				{lists
-					.slice()
-					.reverse()
-					.map((list) => (
-						<Card
-							key={list._id}
-							title={list.listName}
-							date={new Date(list.createdAt)}
-							total={list.products.reduce((acc, product) => {
-								if (product.unit === "Kg" || product.unit === "L" || product.unit === "Ml" || product.unit === "und") {
-								  return acc + product.price * product.quantity;
-								} else {
-								  return acc + product.price;
-								}
-							  }, 0)}
-							action={() => {
-								navigate("/list/" + list._id);
-							}}
-							deleteAction={() => {
-								deleteList(list._id, list.listName);
-							}}
+  return (
+    <>
+      <PageStructure>
+        <h1>Bem vindo(a) ao ShopBuddy!</h1>
+        <Button
+          sx={{ marginBottom: "30px" }}
+          variant="contained"
+          onClick={handleOpenListForm}
+        >
+          Adicionar nova lista
+        </Button>
+        {lists
+          .slice()
+          .reverse()
+          .map((list) => (
+            <Card
+              key={list._id}
+              title={list.listName}
+              date={new Date(list.createdAt)}
+              total={list.products.reduce((acc, product) => {
+                if (
+                  product.unit === "Kg" ||
+                  product.unit === "L" ||
+                  product.unit === "Ml" ||
+                  product.unit === "und"
+                ) {
+                  return acc + product.price * product.quantity;
+                } else {
+                  return acc + product.price;
+                }
+              }, 0)}
+              action={() => {
+                navigate("/list/" + list._id);
+              }}
+              deleteAction={() => {
+                deleteList(list._id, list.listName);
+              }}
               exitAction={() =>
                 exitList(
                   list._id,
@@ -188,25 +190,23 @@ export default function Dashboard() {
                   userContext?.user?._id
                 )
               }
-						/>
-					))}
-			</PageStructure>
-			<FormDialog
-				title="Adicionar nova lista"
-				fields={[
-					{ id: "listName", label: "Nome da lista", type: "text" },
-				]}
-				open={openListForm}
-				handleClose={handleCloseListForm}
-				handleSubmit={createNewList}
-			></FormDialog>
+            />
+          ))}
+      </PageStructure>
+      <FormDialog
+        title="Adicionar nova lista"
+        fields={[{ id: "listName", label: "Nome da lista", type: "text" }]}
+        open={openListForm}
+        handleClose={handleCloseListForm}
+        handleSubmit={createNewList}
+      ></FormDialog>
 
-			<AlertDialog
-				open={openDialog}
-				onClose={handleCloseDialog}
-				contentText={dialogMessage}
-				buttonText="Fechar"
-			/>
-		</>
-	);
+      <AlertDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        contentText={dialogMessage}
+        buttonText="Fechar"
+      />
+    </>
+  );
 }

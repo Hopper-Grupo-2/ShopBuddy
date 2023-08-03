@@ -93,21 +93,23 @@ export default class ListsServices {
       if (!list) {
         throw ErrorHandler.createError("BadRequest", "List not found");
       }
-  
+
       if (list.owner.toString() !== userId) {
         throw ErrorHandler.createError("UnauthorizedError", "Forbidden error");
       }
-  
+
       if (list.members.length > 1) {
-        throw ErrorHandler.createError("BadRequest", "Cannot delete list with members");
+        throw ErrorHandler.createError(
+          "BadRequest",
+          "Cannot delete list with members"
+        );
       }
-  
-      await this.Repository.deleteList(listId, userId);
+
+      await this.Repository.deleteList(listId);
     } catch (error) {
       throw error;
     }
   }
-  
 
   public static async addNewProduct(
     listId: string,
