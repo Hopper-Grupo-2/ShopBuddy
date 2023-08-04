@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import ExternalLink from "@mui/material/Link";
@@ -15,6 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
 import { useState } from "react";
 import AlertDialog from "./AlertDialog"
+import LoadingButton from "./LoadingButton"
 
 function Copyright(props: any) {
 	return (
@@ -46,9 +46,11 @@ export default function LogIn() {
 
 	const [openDialog, setOpenDialog] = useState(false);
   	const [dialogMessage, setDialogMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setLoading(true)
 		const data = new FormData(event.currentTarget);
 		/* console.log({
 			email: data.get("email"),
@@ -62,12 +64,14 @@ export default function LogIn() {
 		if (credentials.email === null || credentials.email === "") {
 			setDialogMessage("Por favor, insira um e-mail");
 			setOpenDialog(true);
+			setLoading(false)
 			return;
 		}
 
 		if (credentials.password === null || credentials.password === "") {
 			setDialogMessage("Por favor, insira uma senha");
 			setOpenDialog(true);
+			setLoading(false)
 			return;
 		}
 
@@ -78,6 +82,7 @@ export default function LogIn() {
 		);
 
 		if (loggedIn) navigate("/");
+		setLoading(false)
 	};
 
 	const handleCloseDialog = () => {
@@ -128,14 +133,15 @@ export default function LogIn() {
 							id="password"
 							autoComplete="current-password"
 						/>
-						<Button
+						<LoadingButton
 							type="submit"
 							fullWidth
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
+							loading={loading}
 						>
 							entrar
-						</Button>
+						</LoadingButton>
 						<Grid container justifyContent="center">
 							<Grid item>
 								<Link to="/signup">

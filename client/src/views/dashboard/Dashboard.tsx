@@ -15,6 +15,7 @@ export default function Dashboard() {
 	const [lists, setLists] = useState<IList[]>([]);
 	const [fetchTrigger, setFetchTrigger] = useState(false);
 	const [openListForm, setOpenListForm] = useState(false);
+	const [disable, setdisable] = useState(false);
 	const context = useContext(UserContext);
 
 	const [openDialog, setOpenDialog] = useState(false);
@@ -40,9 +41,11 @@ export default function Dashboard() {
 	}, [fetchTrigger]);
 
 	const handleOpenListForm = () => {
+		setdisable(true);
 		setOpenListForm(true);
 	};
 	const handleCloseListForm = () => {
+		setdisable(false);
 		setOpenListForm(false);
 	};
 
@@ -117,6 +120,7 @@ export default function Dashboard() {
 					sx={{ marginBottom: "30px" }}
 					variant="contained"
 					onClick={handleOpenListForm}
+					disabled={disable}
 				>
 					Adicionar nova lista
 				</Button>

@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import PageStructure from "../../components/PageStructure";
 import {
-  Button,
   IconButton,
   List,
   ListItem,
@@ -13,12 +12,14 @@ import { NotificationsContext } from "../../contexts/NotificationsContext";
 import AlertDialog from "../../components/AlertDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PendingIcon from "@mui/icons-material/Pending";
+import LoadingButton from "../../components/LoadingButton"
 
 export default function Notifications() {
   const notificationsContext = useContext(NotificationsContext);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleCloseDialog = () => {
@@ -27,6 +28,7 @@ export default function Notifications() {
 
   const handleClearNotifications = async () => {
     try {
+      setLoading(true)
       const response = await fetch("/api/notifications/user", {
         method: "DELETE",
         headers: {
@@ -35,6 +37,7 @@ export default function Notifications() {
       });
 
       const responseObj = await response.json();
+      setLoading(false)
       if (response.ok) {
         notificationsContext?.fetchNotifications();
       } else {
@@ -44,6 +47,7 @@ export default function Notifications() {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao apagar as notificações, tente novamente!");
       setOpenDialog(true);
+      setLoading(false)
       return false;
     }
   };
@@ -77,13 +81,15 @@ export default function Notifications() {
       <PageStructure>
         <div>
           <h1>Notificações</h1>
-          <Button
+          <LoadingButton
             sx={{ marginBottom: "30px" }}
             variant="contained"
+            fullWidth
             onClick={handleClearNotifications}
+            loading={loading}
           >
             Limpar notificações
-          </Button>
+          </LoadingButton>
           {/* Everything below here will be a dedicated component */}
           <List>
             {notificationsContext?.notifications

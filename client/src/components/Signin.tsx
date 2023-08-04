@@ -1,6 +1,5 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -10,6 +9,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import LoadingButton from "./LoadingButton"
+import { useState } from "react";
 
 function Copyright(props: any) {
 	return (
@@ -33,13 +34,19 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+	const [loading, setLoading] = useState(false);	
+	
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setLoading(true)
+
 		const data = new FormData(event.currentTarget);
 		console.log({
 			email: data.get("email"),
 			password: data.get("password"),
 		});
+
+		setLoading(false)
 	};
 
 	return (
@@ -86,14 +93,15 @@ export default function SignIn() {
 							id="password"
 							autoComplete="current-password"
 						/>
-						<Button
+						<LoadingButton
 							type="submit"
 							fullWidth
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
+							loading={loading}
 						>
 							Sign In
-						</Button>
+						</LoadingButton>
 						<Grid container>
 							<Grid item xs>
 								<Link href="#" variant="body2">

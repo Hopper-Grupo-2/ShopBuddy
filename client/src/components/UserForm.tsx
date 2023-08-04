@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { UserContext } from "../contexts/UserContext";
 import AlertDialog from "./AlertDialog"
+import LoadingButton from "./LoadingButton"
 
 export default function UserForm() {
 	const context = useContext(UserContext);
@@ -12,9 +12,12 @@ export default function UserForm() {
 
 	const [openDialog, setOpenDialog] = useState(false);
 	const [dialogMessage, setDialogMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setLoading(true)
+
 		const data = new FormData(event.currentTarget);
 		const credentials = {
 			email: data.get("email"),
@@ -29,6 +32,7 @@ export default function UserForm() {
 		if (validation !== null){
 			setDialogMessage(validation);
     		setOpenDialog(true);
+			setLoading(false)
     		return;
 		}
 
@@ -135,14 +139,15 @@ export default function UserForm() {
 				type="text"
 				id="lastName"
 			/>
-			<Button
+			<LoadingButton
 				type="submit"
 				fullWidth
 				variant="contained"
 				sx={{ mt: 3, mb: 2 }}
+				loading={loading}
 			>
 				salvar alterações
-			</Button>
+			</LoadingButton>
 
 			<AlertDialog
 				open={openDialog}

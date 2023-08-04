@@ -57,6 +57,7 @@ export default function List() {
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
+  const [disable, setDisable] = useState(false);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const notificationsContext = useContext(NotificationsContext);
@@ -158,25 +159,31 @@ export default function List() {
   }, [socketContext?.socket]);
 
   const handleOpenItemForm = () => {
+    setDisable(true)
     setOpenItemForm(true);
   };
   const handleCloseItemForm = () => {
+    setDisable(false)
     setOpenItemForm(false);
   };
 
   const handleOpenMemberForm = () => {
+    setDisable(true)
     setOpenMemberForm(true);
   };
   const handleCloseMemberForm = () => {
+    setDisable(false)
     setOpenMemberForm(false);
   };
 
   //show/hide members
   const handleShowMembers = () => {
+    setDisable(true)
     setShowMembers(true);
   };
 
   const handleHideMembers = () => {
+    setDisable(false)
     setShowMembers(false);
   };
 
@@ -383,11 +390,19 @@ export default function List() {
         <HeaderContainer>
           <h1>{list?.listName}</h1>
           <ButtonContainer>
-            <Button variant="contained" onClick={handleShowMembers}>
+            <Button 
+              variant="contained" 
+              onClick={handleShowMembers}
+              disabled={disable}
+            >
               Members
             </Button>
             {isListOwner && (
-              <Button variant="contained" onClick={handleOpenMemberForm}>
+              <Button 
+                variant="contained" 
+                onClick={handleOpenMemberForm}
+                disabled={disable}
+              >
                 + Add member
               </Button>
             )}
@@ -412,6 +427,7 @@ export default function List() {
               }}
               variant="contained"
               onClick={handleOpenItemForm}
+              disabled={disable}
             >
               Adicionar item
             </Button>
