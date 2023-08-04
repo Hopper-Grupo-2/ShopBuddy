@@ -5,6 +5,7 @@ import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
 import IUser from "../interfaces/user";
 import UsersRepositories from "./users";
+import mongoose from "mongoose";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -330,21 +331,47 @@ export default class ListsRepositories {
   public static async searchListsWithProducts(
     searchTerm: string,
     userId: string
-  ): Promise<IList[]> {
+  ): Promise<IProduct[]> {
     try {
-      const listsWithTerm = await this.Model.find(
+      const matchingProducts = await this.Model.aggregate([
         {
-          "members.userId": userId,
-          products: {
-            $elemMatch: {
-              name: { $regex: searchTerm, $options: "i" },
+          $match: {
+            "members.userId": new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $sort: { updatedAt: -1 },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            "products.name": {
+              $regex: new RegExp(searchTerm, "i"),
             },
           },
         },
-        "products"
-      ).sort("-updatedAt");
+        {
+          $replaceRoot: { newRoot: "$products" },
+        },
+      ]);
 
-      return listsWithTerm;
+      // (
+      //   {
+      //     "members.userId": userId,
+      //     products: {
+      //       $elemMatch: {
+      //         name: { $regex: searchTerm, $options: "i" },
+      //       },
+      //     },
+      //   },
+      //   "products"
+      // ).sort("-updatedAt");
+
+      console.log(matchingProducts);
+
+      return matchingProducts;
     } catch (error) {
       console.error(this.name, "searchProducts error: ", error);
       throw ErrorHandler.createError(

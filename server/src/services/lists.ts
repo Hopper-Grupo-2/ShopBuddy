@@ -401,28 +401,23 @@ export default class ListsServices {
           "Member user not found"
         );
 
-      const listsWithTerm = await this.Repository.searchListsWithProducts(
+      const matchedProducts = await this.Repository.searchListsWithProducts(
         searchTerm,
         userId
       );
 
-      const matchedProducts: IProduct[] = [];
+      const latestProducts: IProduct[] = [];
 
-      listsWithTerm.forEach((list) => {
-        list.products.forEach((product) => {
-          if (product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-            if (
-              !matchedProducts.find(
-                (p) => p.name === product.name && p.market === product.market
-              )
-            ) {
-              matchedProducts.push(product);
-            }
-          }
-        });
+      matchedProducts.forEach((product) => {
+        if (
+          !latestProducts.find(
+            (p) => p.name === product.name && p.market === product.market
+          )
+        ) {
+          latestProducts.push(product);
+        }
       });
-
-      return matchedProducts;
+      return latestProducts;
     } catch (error) {
       throw error;
     }
