@@ -221,24 +221,22 @@ export default class ListsRepositories {
         }
       );
 
-        const list = await this.getListById(listId)
+      const list = await this.getListById(listId);
 
-        if(list){
+      if (list) {
+        let members: IUser[] = [];
 
-      let members: IUser[] = [];
+        for (const element of list.members) {
+          const userId = element.userId.toString();
+          const member = await UsersRepositories.getUserById(userId);
 
-      for (const element of list.members) {
-        const userId = element.userId.toString();
-        const member = await UsersRepositories.getUserById(userId);
+          if (member !== null) members.push(member);
+        }
 
-        if (member !== null) members.push(member);
+        return members;
+      } else {
+        throw "Error";
       }
-
-      return members;
-    } else{
-      throw "Error"
-    }
-
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
@@ -325,6 +323,33 @@ export default class ListsRepositories {
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error updating info of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
+
+  public static async searchListsWithProducts(
+    searchTerm: string,
+    userId: string
+  ): Promise<IList[]> {
+    try {
+      const listsWithTerm = await this.Model.find(
+        {
+          "members.userId": userId,
+          products: {
+            $elemMatch: {
+              name: { $regex: searchTerm, $options: "i" },
+            },
+          },
+        },
+        "products"
+      ).sort("-updatedAt");
+
+      return listsWithTerm;
+    } catch (error) {
+      console.error(this.name, "searchProducts error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error searching for the term ${searchTerm}`
       );
     }
   }
