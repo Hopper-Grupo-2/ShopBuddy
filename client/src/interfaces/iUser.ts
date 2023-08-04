@@ -1,3 +1,5 @@
+import { Schema } from "mongoose";
+
 export default interface IUser {
 	_id: string;
 	username: string;
@@ -7,4 +9,9 @@ export default interface IUser {
 	lastName: string;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+export interface IUserAll {
+    _id?: Schema.Types.ObjectId | string;
+    username: string;
 }
