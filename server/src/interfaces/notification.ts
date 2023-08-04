@@ -2,8 +2,11 @@ import { Schema } from "mongoose";
 
 export default interface INotification {
   _id: Schema.Types.ObjectId;
-  listId: Schema.Types.ObjectId | string;
   userId: Schema.Types.ObjectId | string;
+  listId: Schema.Types.ObjectId | string;
+  listName?: string;
+  senderId: Schema.Types.ObjectId | string;
+  senderName?: string;
   type: NotificationTypes;
   textContent: string;
   read: boolean;
