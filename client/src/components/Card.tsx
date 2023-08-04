@@ -15,6 +15,7 @@ interface CardProps {
   action: () => void;
   deleteAction?: () => void;
   exitAction?: () => void;
+  showButton: boolean;
 }
 
 export default function BasicCard(props: CardProps) {
@@ -47,9 +48,11 @@ export default function BasicCard(props: CardProps) {
             </Button>
           </Grid>
           <Grid item>
-            <IconButton aria-label="delete" onClick={props.deleteAction}>
-              <DeleteIcon />
-            </IconButton>
+            {props.showButton && (
+              <IconButton aria-label="delete" onClick={props.deleteAction}>
+                <DeleteIcon />
+              </IconButton>
+            )}
             <IconButton aria-label="exit" onClick={props.exitAction}>
               <LogoutIcon />
             </IconButton>

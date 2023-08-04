@@ -190,6 +190,7 @@ export default function Dashboard() {
                   userContext?.user?._id
                 )
               }
+              showButton={list.owner === userContext?.user?._id}
             />
           ))}
       </PageStructure>
