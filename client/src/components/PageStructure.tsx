@@ -22,6 +22,7 @@ import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { NotificationsContext } from "../contexts/NotificationsContext";
+import { alignProperty } from "@mui/material/styles/cssUtils";
 
 const drawerWidth = 240;
 
@@ -105,7 +106,7 @@ export default function ResponsiveDrawer(props: Props) {
                         (notification) => notification.read === false
                       ).length
                     }
-                    color="primary"
+                    color="secondary"
                   >
                     {page.icon}
                   </Badge>
@@ -144,7 +145,17 @@ export default function ResponsiveDrawer(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography
+            variant="h2"
+            noWrap
+            component="div"
+            sx={{
+              margin: "0px auto",
+              padding: "20px 0px",
+              fontFamily: "'Just Me Again Down Here', cursive",
+              color: "white",
+            }}
+          >
             ShopBuddy
           </Typography>
         </Toolbar>
