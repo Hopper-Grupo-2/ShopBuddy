@@ -6,6 +6,6 @@ export default interface IProduct {
   quantity: Number;
   unit: string;
   price: Number;
-  market: String;
+  market?: String;
   checked?: Boolean;
 }
