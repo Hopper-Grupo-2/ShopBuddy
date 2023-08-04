@@ -25,8 +25,8 @@ export default class Schemas {
       name: { type: String, required: true },
       quantity: { type: Number, required: true },
       unit: { type: String, required: true },
-      price: { type: Number, required: false },
-      market: { type: String, required: false },
+      price: { type: Number, required: true, default: 0 },
+      market: { type: String, required: true, default: "" },
       checked: { type: Boolean, default: true },
     });
   }

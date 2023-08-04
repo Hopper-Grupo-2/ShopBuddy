@@ -5,7 +5,7 @@ export default interface IProduct {
   name: string;
   quantity: Number;
   unit: string;
-  price?: Number;
-  market?: String;
+  price: Number;
+  market: String;
   checked?: Boolean;
 }
