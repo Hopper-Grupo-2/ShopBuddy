@@ -93,21 +93,23 @@ export default class ListsServices {
       if (!list) {
         throw ErrorHandler.createError("BadRequest", "List not found");
       }
-  
+
       if (list.owner.toString() !== userId) {
         throw ErrorHandler.createError("UnauthorizedError", "Forbidden error");
       }
-  
+
       if (list.members.length > 1) {
-        throw ErrorHandler.createError("BadRequest", "Cannot delete list with members");
+        throw ErrorHandler.createError(
+          "BadRequest",
+          "Cannot delete list with members"
+        );
       }
-  
+
       await this.Repository.deleteList(listId, userId);
     } catch (error) {
       throw error;
     }
   }
-  
 
   public static async addNewProduct(
     listId: string,
@@ -384,6 +386,43 @@ export default class ListsServices {
       );
 
       return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async searchProducts(searchTerm: string, userId: string) {
+    try {
+      const user: IUser | null = await UsersRepositories.getUserById(userId);
+
+      if (user === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Member user not found"
+        );
+
+      const listsWithTerm = await this.Repository.searchListsWithProducts(
+        searchTerm,
+        userId
+      );
+
+      const matchedProducts: IProduct[] = [];
+
+      listsWithTerm.forEach((list) => {
+        list.products.forEach((product) => {
+          if (product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            if (
+              !matchedProducts.find(
+                (p) => p.name === product.name && p.market === product.market
+              )
+            ) {
+              matchedProducts.push(product);
+            }
+          }
+        });
+      });
+
+      return matchedProducts;
     } catch (error) {
       throw error;
     }
