@@ -3,32 +3,38 @@ import IList from "../interfaces/list";
 import IUser from "../interfaces/user";
 import IMessage from "../interfaces/message";
 import INotification, { NotificationTypes } from "../interfaces/notification";
+import IProduct from "../interfaces/product";
 
 export default class Schemas {
+  private _productSchema: mongoose.Schema<IProduct>;
   private _listSchema: mongoose.Schema<IList>;
   private _userSchema: mongoose.Schema<IUser>;
   private _messageSchema: mongoose.Schema<IMessage>;
   private _notificationSchema: mongoose.Schema<INotification>;
 
   constructor() {
+    this._productSchema = this.setProductSchema();
     this._listSchema = this.setListSchema();
     this._userSchema = this.setUserSchema();
     this._messageSchema = this.setMessageSchema();
     this._notificationSchema = this.setNotificationSchema();
   }
 
+  private setProductSchema(): mongoose.Schema<IProduct> {
+    return new mongoose.Schema<IProduct>({
+      name: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      unit: { type: String, required: true },
+      price: { type: Number, required: false },
+      market: { type: String, required: false },
+      checked: { type: Boolean, default: true },
+    });
+  }
+
   private setListSchema(): mongoose.Schema<IList> {
     return new mongoose.Schema<IList>({
       listName: { type: String, required: true },
-      products: [
-        {
-          name: { type: String, required: true },
-          quantity: { type: Number, required: true },
-          unit: { type: String, required: true },
-          price: { type: Number, required: true },
-          checked: { type: Boolean, default: true },
-        },
-      ],
+      products: [this._productSchema],
       owner: { type: Schema.Types.ObjectId, required: true },
       members: [{ userId: { type: Schema.Types.ObjectId } }],
       createdAt: { type: Date, default: Date.now() },
@@ -72,6 +78,10 @@ export default class Schemas {
       createdAt: { type: Date, default: Date.now() },
       updatedAt: { type: Date, default: Date.now() },
     });
+  }
+
+  public get productSchema() {
+    return this._productSchema;
   }
 
   public get listSchema() {
