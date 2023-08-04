@@ -533,6 +533,6 @@ describe("PATCH /api/users/:userId", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.body.data).toBe(userReturned);
+    expect(response.body.data).toEqual(userReturned);
   });
 });
