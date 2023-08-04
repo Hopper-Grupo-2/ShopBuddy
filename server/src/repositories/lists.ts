@@ -357,20 +357,6 @@ export default class ListsRepositories {
         },
       ]);
 
-      // (
-      //   {
-      //     "members.userId": userId,
-      //     products: {
-      //       $elemMatch: {
-      //         name: { $regex: searchTerm, $options: "i" },
-      //       },
-      //     },
-      //   },
-      //   "products"
-      // ).sort("-updatedAt");
-
-      console.log(matchingProducts);
-
       return matchingProducts;
     } catch (error) {
       console.error(this.name, "searchProducts error: ", error);
