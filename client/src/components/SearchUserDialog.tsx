@@ -65,7 +65,7 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
                 renderInput={(params) => (
                   <TextField {...params} label={field.label} variant="standard" fullWidth />
                 )}
-                onChange={(event, newValue) => {
+                onChange={(_, newValue) => {
                   setFormData((prevFormData) => ({
                     ...prevFormData,
                     [field.id]: newValue.username,
