@@ -141,11 +141,11 @@ describe("PATCH /api/users/:userId", () => {
       });
 
     expect(response.status).toBe(422);
-    expect(response.body).toMatchObject({ name: "UnprocessableEntity" });
-    expect(Array.isArray(response.body.message)).toBe(true);
+    expect(response.body.error).toMatchObject({ name: "UnprocessableEntity" });
+    expect(Array.isArray(response.body.error.message)).toBe(true);
     //message need tobe a string array message:["string1",...]
     // where at least one is "The id must be a valid ObjectId."
-    expect(response.body.message).toEqual(
+    expect(response.body.error.message).toEqual(
       expect.arrayContaining([
         expect.stringContaining("The userId must be a valid ObjectId."),
       ])
@@ -179,9 +179,9 @@ describe("PATCH /api/users/:userId", () => {
       });
 
     expect(response.status).toBe(422);
-    expect(response.body).toMatchObject({ name: "UnprocessableEntity" });
-    expect(Array.isArray(response.body.message)).toBe(true);
-    expect(response.body.message).toEqual(
+    expect(response.body.error).toMatchObject({ name: "UnprocessableEntity" });
+    expect(Array.isArray(response.body.error.message)).toBe(true);
+    expect(response.body.error.message).toEqual(
       expect.arrayContaining([
         expect.stringContaining(
           "username must contain only letters and digits."
@@ -217,9 +217,9 @@ describe("PATCH /api/users/:userId", () => {
       });
 
     expect(response.status).toBe(422);
-    expect(response.body).toMatchObject({ name: "UnprocessableEntity" });
-    expect(Array.isArray(response.body.message)).toBe(true);
-    expect(response.body.message).toEqual(
+    expect(response.body.error).toMatchObject({ name: "UnprocessableEntity" });
+    expect(Array.isArray(response.body.error.message)).toBe(true);
+    expect(response.body.error.message).toEqual(
       expect.arrayContaining([expect.stringContaining("Invalid email format.")])
     );
   });
@@ -251,9 +251,9 @@ describe("PATCH /api/users/:userId", () => {
       });
 
     expect(response.status).toBe(422);
-    expect(response.body).toMatchObject({ name: "UnprocessableEntity" });
-    expect(Array.isArray(response.body.message)).toBe(true);
-    expect(response.body.message).toEqual(
+    expect(response.body.error).toMatchObject({ name: "UnprocessableEntity" });
+    expect(Array.isArray(response.body.error.message)).toBe(true);
+    expect(response.body.error.message).toEqual(
       expect.arrayContaining([
         expect.stringContaining(
           "firstName must contain only letters and digits."
@@ -289,9 +289,9 @@ describe("PATCH /api/users/:userId", () => {
       });
 
     expect(response.status).toBe(422);
-    expect(response.body).toMatchObject({ name: "UnprocessableEntity" });
-    expect(Array.isArray(response.body.message)).toBe(true);
-    expect(response.body.message).toEqual(
+    expect(response.body.error).toMatchObject({ name: "UnprocessableEntity" });
+    expect(Array.isArray(response.body.error.message)).toBe(true);
+    expect(response.body.error.message).toEqual(
       expect.arrayContaining([
         expect.stringContaining(
           "lastName must contain only letters and digits."
