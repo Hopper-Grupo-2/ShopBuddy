@@ -5,6 +5,6 @@ export default interface IUser {
 	password: string;
 	firstName: string;
 	lastName: string;
-	createdAt: Date;
-	updatedAt: Date;
+  createdAt?: Date;
+  updatedAt: Date;
 }

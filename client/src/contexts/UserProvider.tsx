@@ -109,14 +109,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 		lastName: string
 	) => {
 		try {
-			console.log({
-				email,
-				username,
-				oldPassword,
-				newPassword,
-				firstName,
-				lastName,
-			});
 			const response = await fetch(`/api/users/${userId}`, {
 				method: "PATCH",
 				headers: {
@@ -134,8 +126,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 			const responseObj = await response.json();
 			if (response.ok) {
+        const newData = responseObj.data;
+
+        const updatedUser: IUser = {
+          _id: String(newData._id),
+          username: newData.username,
+          email: newData.email,
+          password: newData.password,
+          firstName: newData.firstName,
+          lastName: newData.lastName,
+          updatedAt: newData.updatedAt,
+        };
+
 				setDialogMessage("Usuário atualizado com sucesso!");
     			setOpenDialog(true);
+        setUser(updatedUser);
 				return true;
 			} else {
 				throw responseObj.error;
