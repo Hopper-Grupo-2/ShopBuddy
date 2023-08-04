@@ -200,7 +200,8 @@ export default function List() {
           name: formData["name"],
           quantity: formData["quantity"],
           unit: formData["unit"],
-          price: formData["price"],
+          price: formData["price"] === "" ? 0 : formData["price"],
+          market: formData["market"],
           checked: false,
         }),
       });
@@ -313,7 +314,8 @@ export default function List() {
             name: formData["name"],
             quantity: formData["quantity"],
             unit: formData["unit"],
-            price: formData["price"],
+            price: formData["price"] === "" ? 0 : formData["price"],
+            market: formData["market"],
           }),
         }
       );
@@ -426,6 +428,7 @@ export default function List() {
           { id: "unit", label: "Unidade de medida", type: "select" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openItemForm}
         handleClose={handleCloseItemForm}
@@ -453,6 +456,7 @@ export default function List() {
           { id: "unit", label: "Unidade de medida", type: "text" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openEditItemForm}
         handleClose={handleCloseEditItemForm}

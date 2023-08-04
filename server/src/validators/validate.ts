@@ -40,6 +40,7 @@ const allFieldsToValidate: {
     { title: "quantity", type: "integer" },
     { title: "unit", type: "measureunit" },
     { title: "price", type: "float" },
+    { title: "market", type: "optional-name" },
     { title: "checked", type: "boolean" },
   ],
   patchMembers: [
@@ -66,7 +67,7 @@ const allFieldsToValidate: {
     { title: "quantity", type: "integer" },
     { title: "unit", type: "measureunit" },
     { title: "price", type: "float" },
-    { title: "checked", type: "boolean" },
+    { title: "market", type: "optional-name" },
   ],
 };
 
@@ -195,6 +196,18 @@ function getAllValidations(
           .isBoolean()
           .withMessage(`${fieldTitle} must be a boolean value.`)
           .toBoolean();
+
+      case "optional-name":
+        return check(fieldTitle)
+          .trim()
+          .escape()
+          .isString()
+          .isLength({ max: 50 })
+          .withMessage(`${fieldTitle} must have less than 50 characters.`)
+          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]*$/)
+          .withMessage(`${fieldTitle} must contain only letters and digits.`)
+          .isString()
+          .withMessage(`${fieldTitle} must be a string.`);
 
       default:
         return check(fieldTitle).trim().notEmpty();
