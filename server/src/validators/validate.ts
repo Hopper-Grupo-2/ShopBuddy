@@ -66,7 +66,6 @@ const allFieldsToValidate: {
     { title: "quantity", type: "integer" },
     { title: "unit", type: "measureunit" },
     { title: "price", type: "float" },
-    { title: "checked", type: "boolean" },
   ],
 };
 
