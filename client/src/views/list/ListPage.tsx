@@ -6,6 +6,7 @@ import IItem from "../../interfaces/iItem";
 import { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
+import { ItemFormDialog } from "../../components/ItemFormDialog";
 import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
@@ -421,7 +422,7 @@ export default function List() {
           {list ? <ChatBox listId={list._id} /> : null}
         </ContentContainer>
       </PageStructure>
-      <FormDialog
+      <ItemFormDialog
         title="Adicionar novo item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
@@ -449,7 +450,7 @@ export default function List() {
         handleMember={handleRemoveMember}
         isOwner={isListOwner}
       />
-      <FormDialog
+      <ItemFormDialog
         title="Editar item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
