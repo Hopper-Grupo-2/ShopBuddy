@@ -1,6 +1,8 @@
 import Models from "../database/models";
 import ErrorHandler from "../errors";
 import INotification, { NotificationTypes } from "../interfaces/notification";
+import ListsRepositories from "./lists";
+import UsersRepositories from "./users";
 
 export default class NotificationsRepositories {
   private static Model = Models.getInstance().notificationModel;
@@ -30,18 +32,23 @@ export default class NotificationsRepositories {
         createdAt: { $gte: sevenDaysAgo },
       });
       const latestNotifications: INotification[] = [];
-      response.forEach((notification) => {
-        latestNotifications.push({
-          _id: notification._id,
-          listId: notification.listId,
-          userId: notification.userId,
-          type: notification.type,
-          read: notification.read,
-          textContent: notification.textContent,
-          createdAt: notification.createdAt,
-          updatedAt: notification.updatedAt,
+      try {
+        response.forEach(async (notification) => {
+          latestNotifications.push({
+            _id: notification._id,
+            listId: notification.listId,
+            userId: notification.userId,
+            senderId: notification.senderId,
+            type: notification.type,
+            read: notification.read,
+            textContent: notification.textContent,
+            createdAt: notification.createdAt,
+            updatedAt: notification.updatedAt,
+          });
         });
-      });
+      } catch (error) {
+        throw error;
+      }
       return latestNotifications;
     } catch (error) {
       console.error(this.name, "getLatestNotifications error: ", error);
@@ -55,6 +62,7 @@ export default class NotificationsRepositories {
   public static async createListNotification(
     listId: string,
     userId: string,
+    senderId: string,
     type: NotificationTypes,
     textContent: string
   ): Promise<INotification> {
@@ -62,6 +70,7 @@ export default class NotificationsRepositories {
       const response = await this.Model.create({
         listId: listId,
         userId: userId,
+        senderId: senderId,
         type: type,
         textContent: textContent,
         read: false,
@@ -73,6 +82,7 @@ export default class NotificationsRepositories {
         _id: response._id,
         listId: response.listId,
         userId: response.userId,
+        senderId: response.senderId,
         type: response.type,
         read: response.read,
         textContent: response.textContent,
