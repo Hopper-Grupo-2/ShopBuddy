@@ -22,7 +22,6 @@ import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { NotificationsContext } from "../contexts/NotificationsContext";
-import { alignProperty } from "@mui/material/styles/cssUtils";
 
 const drawerWidth = 240;
 

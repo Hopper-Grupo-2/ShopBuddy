@@ -1,10 +1,11 @@
-import { Container, CssBaseline, Typography } from "@mui/material";
+import { CssBaseline, Typography } from "@mui/material";
 import PageStructure from "../../components/PageStructure";
 import UserForm from "../../components/UserForm";
 import Box from "@mui/material/Box";
-import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+//import { createTheme, useTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-
+/*
 const theme = createTheme({
   breakpoints: {
     values: {
@@ -16,6 +17,7 @@ const theme = createTheme({
     },
   },
 });
+*/
 
 export default function Settings() {
   const theme = useTheme();

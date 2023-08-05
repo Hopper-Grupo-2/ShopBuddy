@@ -5,7 +5,7 @@ import "./index.css";
 import { UserProvider } from "./contexts/UserProvider.tsx";
 
 import { createTheme } from "@mui/material/styles";
-import { Theme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
