@@ -48,7 +48,7 @@ const MembersModal: React.FC<MembersModalProps> = (
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleClose}>Fechar modal</Button>
+          <Button onClick={props.handleClose}>Fechar</Button>
         </DialogActions>
       </div>
     </Dialog>
