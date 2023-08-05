@@ -60,6 +60,10 @@ export default function Notifications() {
       const responseObj = await response.json();
       if (response.ok) {
         await notificationsContext?.fetchNotifications();
+        console.log("===================");
+        console.log("notification=", notificationsContext);
+        console.log("===================");
+
         setIsDeleting(false);
       } else {
         throw responseObj.error;
