@@ -4,6 +4,7 @@ import IUser from "../interfaces/user";
 import IMessage from "../interfaces/message";
 import INotification, { NotificationTypes } from "../interfaces/notification";
 import IProduct from "../interfaces/product";
+import IInvite from "../interfaces/invite";
 
 export default class Schemas {
   private _productSchema: mongoose.Schema<IProduct>;
@@ -11,6 +12,7 @@ export default class Schemas {
   private _userSchema: mongoose.Schema<IUser>;
   private _messageSchema: mongoose.Schema<IMessage>;
   private _notificationSchema: mongoose.Schema<INotification>;
+  private _inviteSchema: mongoose.Schema<IInvite>;
 
   constructor() {
     this._productSchema = this.setProductSchema();
@@ -18,6 +20,7 @@ export default class Schemas {
     this._userSchema = this.setUserSchema();
     this._messageSchema = this.setMessageSchema();
     this._notificationSchema = this.setNotificationSchema();
+    this._inviteSchema = this.setInviteSchema();
   }
 
   private setProductSchema(): mongoose.Schema<IProduct> {
@@ -80,6 +83,14 @@ export default class Schemas {
     });
   }
 
+  private setInviteSchema(): mongoose.Schema<IInvite> {
+    return new mongoose.Schema<IInvite>({
+      userId: { type: Schema.Types.ObjectId, required: true },
+      listId: { type: Schema.Types.ObjectId, required: true },
+      createdAt: { type: Date, required: true, deafult: Date.now() },
+    });
+  }
+
   public get productSchema() {
     return this._productSchema;
   }
@@ -98,5 +109,9 @@ export default class Schemas {
 
   public get notificationSchema() {
     return this._notificationSchema;
+  }
+
+  public get intiveSchema() {
+    return this._inviteSchema;
   }
 }
