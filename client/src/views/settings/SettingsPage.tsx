@@ -1,15 +1,47 @@
-import { CssBaseline, Typography } from "@mui/material";
+import { Container, CssBaseline, Typography } from "@mui/material";
 import PageStructure from "../../components/PageStructure";
 import UserForm from "../../components/UserForm";
 import Box from "@mui/material/Box";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import { useMediaQuery } from "@mui/material";
+
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+});
 
 export default function Settings() {
+  const theme = useTheme();
+  const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between("md", "xl")); // Verifica se está no breakpoint "md" personalizado
+  const isBetweenLgAndXl = useMediaQuery(theme.breakpoints.between("lg", "xl"));
+  const screenWidth = window.innerWidth;
+
+  let calculatedMargin = "0px"; // Valor padrão
+
+  if (isBetweenMdAndLg) {
+    calculatedMargin = `${
+      (screenWidth - theme.breakpoints.values.md) *
+      (100 / (theme.breakpoints.values.lg - theme.breakpoints.values.md))
+    }px`;
+  } else if (isBetweenLgAndXl) {
+    calculatedMargin = `${
+      (screenWidth - theme.breakpoints.values.lg) *
+      (100 / (theme.breakpoints.values.xl - theme.breakpoints.values.lg))
+    }px`;
+  }
+
   return (
     <>
       <PageStructure>
         <CssBaseline>
-          <Box sx={{ margin: "0px 350px 0px 350px" }}>
+          <Box margin={`50px ${calculatedMargin}`}>
             <Box
               sx={{
                 width: "100%",

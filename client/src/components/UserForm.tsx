@@ -112,7 +112,7 @@ export default function UserForm() {
         required
         fullWidth
         name="newPassword"
-        label="Nova senha (caso não deseje alterar a senha, repita a senha anterior)"
+        label="Nova senha (ou repita a atual)"
         type="password"
         id="newPassword"
         autoComplete="new-password"
@@ -139,7 +139,14 @@ export default function UserForm() {
         type="submit"
         fullWidth
         variant="contained"
-        sx={{ backgroundColor: "#FF9900", mt: 3, mb: 2 }}
+        sx={{
+          backgroundColor: "#FF9900",
+          mt: 3,
+          mb: 2,
+          textTransform: "capitalize",
+          fontWeight: "bold",
+          color: "#FFF",
+        }}
       >
         Confirmar
       </Button>
