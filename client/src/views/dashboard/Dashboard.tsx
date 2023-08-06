@@ -19,7 +19,9 @@ export default function Dashboard() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
+
   const userContext = useContext(UserContext);
+
 
   useEffect(() => {
     const fetchLists = async () => {
@@ -182,6 +184,7 @@ export default function Dashboard() {
               deleteAction={() => {
                 deleteList(list._id, list.listName);
               }}
+
               exitAction={() =>
                 exitList(
                   list._id,
@@ -191,6 +194,7 @@ export default function Dashboard() {
                 )
               }
               showButton={list.owner === userContext?.user?._id}
+
             />
           ))}
       </PageStructure>

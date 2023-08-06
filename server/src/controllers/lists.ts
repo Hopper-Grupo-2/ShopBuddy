@@ -369,4 +369,24 @@ export default class ListsController {
       next(error);
     }
   }
+
+  public static async searchProductByTerm(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+      const searchTerm: string = req.params.searchTerm;
+
+      const products = await ListsServices.searchProducts(
+        searchTerm,
+        user?._id?.toString() ?? ""
+      );
+
+      res.status(200).json({ error: null, data: products });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
