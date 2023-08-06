@@ -47,7 +47,11 @@ export default class MessagesController {
 
       // clear cached data about MESSAGES
       await RedisCaching.clearCache("messages");
-      await RedisCaching.clearCache(`messages/listId/${listId}`);
+      //await RedisCaching.clearCache(`messages/listId/${listId}`);
+      await RedisCaching.insertAtEndCashedList<IMessage>(
+        `messages/listId/${listId}`,
+        createdMessage
+      );
     } catch (error) {
       next(error);
     }

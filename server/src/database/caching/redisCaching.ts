@@ -51,4 +51,17 @@ export default class RedisCaching {
       return null;
     }
   }
+  public static async insertAtEndCashedList<T>(keyName: string, value: T) {
+    console.log(`Saving at End this List redis cache: ${keyName}`);
+    const TTL = 60 * 60 * 24; //time to live in seconds
+
+    try {
+      const redis = await RedisDatabase.getInstance();
+
+      await redis.rpush(keyName, JSON.stringify(value), "EX", TTL);
+      console.log("Save completed!");
+    } catch (error) {
+      console.error("Error about insert at end of List cache redis:", error);
+    }
+  }
 }
