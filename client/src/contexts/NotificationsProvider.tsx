@@ -21,6 +21,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (response.ok) {
       const notificationsData = await response.json();
+      console.log(notificationsData);
       setNotifications(notificationsData.data);
       //console.log(notificationsData);
     }
@@ -37,7 +38,6 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       socketContext.socket.on(
         "listNotification",
         async (notification: INotification) => {
-          console.log("list notification from backend");
           if (params.listId === notification.listId) {
             readListNotifications(params.listId);
           } else {

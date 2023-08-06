@@ -23,6 +23,7 @@ export default class NotificationsController {
   public static async sendNewUserNotification(
     listId: string,
     userId: string,
+    senderId: string,
     type: NotificationTypes,
     textContent: string
   ) {
@@ -31,6 +32,7 @@ export default class NotificationsController {
         await NotificationsServices.createNewListNotification(
           listId,
           userId,
+          senderId,
           type,
           textContent
         );
@@ -63,6 +65,7 @@ export default class NotificationsController {
             await NotificationsServices.createNewListNotification(
               listId,
               member._id?.toString() ?? "",
+              senderId,
               type,
               textContent
             );
