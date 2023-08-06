@@ -20,6 +20,9 @@ export default function Dashboard() {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
 
+  const userContext = useContext(UserContext);
+
+
   useEffect(() => {
     const fetchLists = async () => {
       const response = await fetch(`/api/lists/user/${context?.user?._id}`, {
@@ -102,6 +105,44 @@ export default function Dashboard() {
     }
   };
 
+  const exitList = async (
+    listId: string,
+    listName: string,
+    listOwner: string,
+    memberId: string | undefined
+  ) => {
+    let message = "";
+
+    if (memberId === listOwner) {
+      message = `Deseja realmente sair da lista ${listName}? Se houver outros usuários, sua liderança passará para o primeiro, senão, a lista será apagada.`;
+    } else {
+      message = `Deseja realmente sair da lista ${listName}?`;
+    }
+
+    if (!confirm(`${message}`)) return;
+
+    try {
+      const response = await fetch(`/api/lists/${listId}/members/${memberId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const responseObj = await response.json();
+
+      if (response.ok) {
+        setFetchTrigger(!fetchTrigger);
+        setDialogMessage("Você saiu da lista com sucesso!");
+        setOpenDialog(true);
+      } else {
+        throw responseObj.error;
+      }
+    } catch (error: any) {
+      console.error(error.name, error.message);
+    }
+  };
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
@@ -143,6 +184,17 @@ export default function Dashboard() {
               deleteAction={() => {
                 deleteList(list._id, list.listName);
               }}
+
+              exitAction={() =>
+                exitList(
+                  list._id,
+                  list.listName,
+                  list.owner,
+                  userContext?.user?._id
+                )
+              }
+              showButton={list.owner === userContext?.user?._id}
+
             />
           ))}
       </PageStructure>

@@ -124,10 +124,7 @@ export default class ListsRepositories {
     }
   }
 
-  public static async deleteList(
-    listId: string,
-    ownerId: string
-  ): Promise<void> {
+  public static async deleteList(listId: string): Promise<void> {
     try {
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {

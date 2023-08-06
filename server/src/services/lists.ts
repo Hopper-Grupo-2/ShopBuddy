@@ -104,8 +104,9 @@ export default class ListsServices {
           "Cannot delete list with members"
         );
       }
+      
+      await this.Repository.deleteList(listId);
 
-      await this.Repository.deleteList(listId, userId);
     } catch (error) {
       throw error;
     }
@@ -196,7 +197,7 @@ export default class ListsServices {
   public static async deleteMemberFromList(
     listId: string,
     memberId: string,
-    ownerId: string
+    userId: string
   ): Promise<IUser[] | null> {
     try {
       const listBody: IList | null = await ListsRepositories.getListById(
@@ -206,17 +207,10 @@ export default class ListsServices {
       if (listBody === null)
         throw ErrorHandler.createError("NotFoundError", "List not found");
 
-      if (String(listBody.owner) !== ownerId) {
+      if (String(listBody.owner) !== userId && memberId !== userId) {
         throw ErrorHandler.createError(
           "UnauthorizedError",
           "User is not the owner of the list"
-        );
-      }
-
-      if (ownerId === memberId) {
-        throw ErrorHandler.createError(
-          "UnauthorizedError",
-          "Owner can not be deleted from their list"
         );
       }
 
@@ -243,6 +237,26 @@ export default class ListsServices {
         memberId,
         listId
       );
+
+      const remainingMembers = listBody.members.filter(
+        (member) => String(member.userId) !== memberId
+      );
+
+      if (remainingMembers.length === 0) {
+        await this.Repository.deleteList(listId);
+        return null;
+      } else if (
+        remainingMembers.length !== 0 &&
+        memberId === String(listBody.owner)
+      ) {
+        const nextOwnerId = remainingMembers[0].userId;
+
+        await this.Repository.changeListOwner(
+          listId,
+          userId,
+          String(nextOwnerId)
+        );
+      }
 
       const updatedList = await this.Repository.deleteMemberFromList(
         listId,
