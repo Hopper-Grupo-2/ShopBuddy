@@ -544,6 +544,7 @@ describe("PATCH /api/users/:userId", () => {
 
       const expectedUserReturned = {
         ...userReturnedWithoutCreatedAt,
+        _id: String(userReturnedWithoutCreatedAt._id),
         updatedAt,
       };
 
