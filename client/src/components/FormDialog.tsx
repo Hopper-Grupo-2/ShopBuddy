@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -23,7 +23,6 @@ const unitsOfMeasure = [
   { value: "und", label: "Unidade (und)" },
 ];
 
-
 interface FormField {
   id: string;
   label: string;
@@ -36,14 +35,32 @@ interface FormDialogProps {
   open: boolean;
   handleClose: () => void;
   handleSubmit: (formData: Record<string, string>) => Promise<boolean>;
+  initialValues?: Record<string, string>;
 }
 
 const FormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
-  const initialFormData: Record<string, string> = props.fields.reduce(
+  const emptyFormData: Record<string, string> = {
+    name: "",
+    unit: "",
+    quantity: "",
+    price: "",
+  };
+
+  let initialFormData: Record<string, string> = props.fields.reduce(
     (acc, field) => ({ ...acc, [field.id]: "" }),
     {}
   );
-  const [formData, setFormData] = useState<Record<string, string>>(initialFormData);
+
+  if (props.initialValues) {
+    initialFormData = props.initialValues;
+  }
+
+  const [formData, setFormData] =
+    useState<Record<string, string>>(initialFormData);
+
+  useEffect(() => {
+    setFormData(props.initialValues || initialFormData);
+  }, [props.initialValues]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({
@@ -70,7 +87,7 @@ const FormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     event.preventDefault();
     const success = await props.handleSubmit(formData);
     if (success) {
-      setFormData(initialFormData);
+      setFormData(emptyFormData);
       props.handleClose();
     }
   };
@@ -90,7 +107,9 @@ const FormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                   id={field.id}
                   name={field.id} // Adicionado o nome do campo para o handler funcionar corretamente
                   value={formData[field.id] || ""}
-                  onChange={(event) => handleSelectChange(event as SelectChangeEvent)}
+                  onChange={(event) =>
+                    handleSelectChange(event as SelectChangeEvent)
+                  }
                 >
                   <MenuItem value="">Selecione a unidade de medida</MenuItem>
                   {unitsOfMeasure.map((unit) => (
