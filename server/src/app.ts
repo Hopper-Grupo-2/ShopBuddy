@@ -11,8 +11,7 @@ import { Server } from "socket.io";
 import Websocket from "./websocket";
 import { notificationsRouter } from "./routers/notifications";
 import { invitesRouter } from "./routers/invites";
-// import { Server } from "socket.io";
-// import WebsocketController from "./websocket/controller";
+import { cacheRouter } from "./routers/cache";
 
 export default class App {
   public app: express.Application;
@@ -40,6 +39,7 @@ export default class App {
     this.app.use("/api/messages", messagesRouter);
     this.app.use("/api/notifications", notificationsRouter);
     this.app.use("/api/invites", invitesRouter);
+    this.app.use("/api/cache", cacheRouter);
     this.app.use(handleAllErrors);
   }
 

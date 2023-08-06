@@ -503,7 +503,7 @@ describe("PATCH /api/users/:userId", () => {
     });
   });
 
-  it("should return status 200 and update user info", async () => {
+  it("should return status 200, update user info and return updated user info", async () => {
     const userInfo: IUser = {
       username: "lets",
       password: await bcrypt.hash("123", 10),
@@ -528,9 +528,29 @@ describe("PATCH /api/users/:userId", () => {
         lastName: "updated",
       });
 
-    expect(response.status).toBe(200);
-    expect(response.body.data).toBe(
-      `User with id ${userExample._id} updated successfully!`
+    const userReturned: IUser | null = await UsersRepositories.getUserById(
+      String(userExample._id)
     );
+
+    expect(response.status).toBe(200);
+
+    if (userReturned) {
+      const { createdAt, ...userReturnedWithoutCreatedAt } = userReturned;
+
+      const updatedAt =
+        userReturnedWithoutCreatedAt.updatedAt instanceof Date
+          ? userReturnedWithoutCreatedAt.updatedAt.toISOString()
+          : userReturnedWithoutCreatedAt.updatedAt;
+
+      const expectedUserReturned = {
+        ...userReturnedWithoutCreatedAt,
+        _id: String(userReturnedWithoutCreatedAt._id),
+        updatedAt,
+      };
+
+      expect(response.body.data).toEqual(expectedUserReturned);
+    } else {
+      expect(userReturned).not.toBeNull();
+    }
   });
 });

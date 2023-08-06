@@ -5,6 +5,7 @@ import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
 import IUser from "../interfaces/user";
 import UsersRepositories from "./users";
+import mongoose from "mongoose";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -123,10 +124,7 @@ export default class ListsRepositories {
     }
   }
 
-  public static async deleteList(
-    listId: string,
-    ownerId: string
-  ): Promise<void> {
+  public static async deleteList(listId: string): Promise<void> {
     try {
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {
@@ -221,24 +219,22 @@ export default class ListsRepositories {
         }
       );
 
-        const list = await this.getListById(listId)
+      const list = await this.getListById(listId);
 
-        if(list){
+      if (list) {
+        let members: IUser[] = [];
 
-      let members: IUser[] = [];
+        for (const element of list.members) {
+          const userId = element.userId.toString();
+          const member = await UsersRepositories.getUserById(userId);
 
-      for (const element of list.members) {
-        const userId = element.userId.toString();
-        const member = await UsersRepositories.getUserById(userId);
+          if (member !== null) members.push(member);
+        }
 
-        if (member !== null) members.push(member);
+        return members;
+      } else {
+        throw "Error";
       }
-
-      return members;
-    } else{
-      throw "Error"
-    }
-
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
@@ -325,6 +321,45 @@ export default class ListsRepositories {
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error updating info of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
+
+  public static async searchListsWithProducts(
+    searchTerm: string,
+    userId: string
+  ): Promise<IProduct[]> {
+    try {
+      const matchingProducts = await this.Model.aggregate([
+        {
+          $match: {
+            "members.userId": new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $sort: { updatedAt: -1 },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            "products.name": {
+              $regex: new RegExp(searchTerm, "i"),
+            },
+          },
+        },
+        {
+          $replaceRoot: { newRoot: "$products" },
+        },
+      ]);
+
+      return matchingProducts;
+    } catch (error) {
+      console.error(this.name, "searchProducts error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error searching for the term ${searchTerm}`
       );
     }
   }
