@@ -104,8 +104,9 @@ export default class ListsServices {
           "Cannot delete list with members"
         );
       }
-
+      
       await this.Repository.deleteList(listId);
+
     } catch (error) {
       throw error;
     }
@@ -399,6 +400,38 @@ export default class ListsServices {
       );
 
       return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async searchProducts(searchTerm: string, userId: string) {
+    try {
+      const user: IUser | null = await UsersRepositories.getUserById(userId);
+
+      if (user === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Member user not found"
+        );
+
+      const matchedProducts = await this.Repository.searchListsWithProducts(
+        searchTerm,
+        userId
+      );
+
+      const latestProducts: IProduct[] = [];
+
+      matchedProducts.forEach((product) => {
+        if (
+          !latestProducts.find(
+            (p) => p.name === product.name && p.market === product.market
+          )
+        ) {
+          latestProducts.push(product);
+        }
+      });
+      return latestProducts;
     } catch (error) {
       throw error;
     }

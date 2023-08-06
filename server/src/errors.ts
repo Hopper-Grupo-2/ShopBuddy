@@ -16,6 +16,7 @@ const errorNameToHttpStatusCode = {
   BadRequest: 410,
   UnprocessableEntity: 422,
   Conflict: 409,
+  Gone: 410,
 };
 
 export type ErrorNames = keyof typeof errorNameToHttpStatusCode;
