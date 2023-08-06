@@ -533,6 +533,23 @@ describe("PATCH /api/users/:userId", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.body.data).toEqual(userReturned);
+
+    if (userReturned) {
+      const { createdAt, ...userReturnedWithoutCreatedAt } = userReturned;
+
+      const updatedAt =
+        userReturnedWithoutCreatedAt.updatedAt instanceof Date
+          ? userReturnedWithoutCreatedAt.updatedAt.toISOString()
+          : userReturnedWithoutCreatedAt.updatedAt;
+
+      const expectedUserReturned = {
+        ...userReturnedWithoutCreatedAt,
+        updatedAt,
+      };
+
+      expect(response.body.data).toEqual(expectedUserReturned);
+    } else {
+      expect(userReturned).not.toBeNull();
+    }
   });
 });
