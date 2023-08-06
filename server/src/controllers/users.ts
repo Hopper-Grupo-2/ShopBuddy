@@ -130,7 +130,7 @@ export default class UsersController {
 
       res.status(200).json({
         error: null,
-        data: `User with id ${updatedUser._id} updated successfully!`,
+        data: updatedUser,
       });
 
       // clear cached data about USERS

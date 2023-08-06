@@ -87,6 +87,7 @@ export default function UserForm() {
         name="email"
         autoComplete="email"
         autoFocus
+        defaultValue={context?.user?.email}
       />
       <TextField
         margin="normal"
@@ -96,6 +97,7 @@ export default function UserForm() {
         label="Nome de usuário"
         type="text"
         id="username"
+        defaultValue={context?.user?.username}
       />
       <TextField
         margin="normal"
@@ -125,6 +127,7 @@ export default function UserForm() {
         label="Primeiro nome"
         type="text"
         id="firstName"
+        defaultValue={context?.user?.firstName}
       />
       <TextField
         margin="normal"
@@ -134,6 +137,7 @@ export default function UserForm() {
         label="Sobrenome"
         type="text"
         id="lastName"
+        defaultValue={context?.user?.lastName}
       />
       <Button
         type="submit"

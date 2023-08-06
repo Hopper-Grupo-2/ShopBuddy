@@ -123,10 +123,7 @@ export default class ListsRepositories {
     }
   }
 
-  public static async deleteList(
-    listId: string,
-    ownerId: string
-  ): Promise<void> {
+  public static async deleteList(listId: string): Promise<void> {
     try {
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {
@@ -221,24 +218,22 @@ export default class ListsRepositories {
         }
       );
 
-        const list = await this.getListById(listId)
+      const list = await this.getListById(listId);
 
-        if(list){
+      if (list) {
+        let members: IUser[] = [];
 
-      let members: IUser[] = [];
+        for (const element of list.members) {
+          const userId = element.userId.toString();
+          const member = await UsersRepositories.getUserById(userId);
 
-      for (const element of list.members) {
-        const userId = element.userId.toString();
-        const member = await UsersRepositories.getUserById(userId);
+          if (member !== null) members.push(member);
+        }
 
-        if (member !== null) members.push(member);
+        return members;
+      } else {
+        throw "Error";
       }
-
-      return members;
-    } else{
-      throw "Error"
-    }
-
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
