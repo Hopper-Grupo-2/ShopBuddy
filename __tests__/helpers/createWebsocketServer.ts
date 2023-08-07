@@ -21,6 +21,12 @@ function createWebSocketServer(server: http.Server) {
           for (let i = 1; i <= 3; i++) {
             webSocket.send(data.value);
           }
+          break;
+        }
+        //server send a message to all connected clients
+        case "ECHO_TO_ALL": {
+          myIo.emit("message", data.value);
+          break;
         }
       }
     });

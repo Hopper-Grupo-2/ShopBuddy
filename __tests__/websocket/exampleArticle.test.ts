@@ -60,4 +60,26 @@ describe("WebSocket Server", () => {
     expect(messages).toStrictEqual(expectedMessages);
     expect(messages.length).toBe(3);
   });
+
+  // ...
+  test("When given an ECHO_TO_ALL message, the server sends the message it receives to all clients", async () => {
+    // Create test clients
+    const [client1, messages1] = await createSocketClient(port, 1);
+    const [client2, messages2] = await createSocketClient(port, 1);
+    const [client3, messages3] = await createSocketClient(port, 1);
+    const testMessage = {
+      type: "ECHO_TO_ALL",
+      value: "This is a test message sent to all clients",
+    };
+    // Send client message - basta um client mandar uma mensagem, esse teste
+    // verifica se o server emite a mensagem para todos os clients
+    client1.send(JSON.stringify(testMessage));
+    // Perform assertions on the responses
+    await waitForSocketState(client1, false);
+    await waitForSocketState(client2, false);
+    await waitForSocketState(client3, false);
+    expect(messages1[0]).toBe(testMessage.value);
+    expect(messages2[0]).toBe(testMessage.value);
+    expect(messages3[0]).toBe(testMessage.value);
+  });
 });
