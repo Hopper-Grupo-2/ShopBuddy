@@ -7,6 +7,7 @@ import LoginPage from "./views/login/Login";
 import Settings from "./views/settings/SettingsPage";
 import SignupPage from "./views/signup/Signup";
 import Notifications from "./views/notifications/Notifications";
+import InvitePage from "./views/invites/Invites";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -39,6 +40,14 @@ export default function App() {
       element: (
         <RequireAuth>
           <Settings />
+        </RequireAuth>
+      ),
+    },
+    {
+      path: "/invites/:inviteId",
+      element: (
+        <RequireAuth>
+          <InvitePage />
         </RequireAuth>
       ),
     },
