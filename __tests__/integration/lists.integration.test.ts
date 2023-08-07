@@ -118,6 +118,6 @@ describe("POST /api/lists", () => {
       .set("Cookie", `session=${jtwCookie}`)
       .send(newListData);
 
-    expect(response.status).toBe(4229);
+    expect(response.status).toBe(422);
   });
 });
