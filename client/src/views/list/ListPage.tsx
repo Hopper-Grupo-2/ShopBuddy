@@ -58,6 +58,9 @@ export default function List() {
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<
+    Record<string, string>
+  >({});
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const notificationsContext = useContext(NotificationsContext);
@@ -183,10 +186,25 @@ export default function List() {
 
   const handleOpenEditItemForm = (itemId: string) => {
     setProductIdToEdit(itemId);
-    setOpenEditItemForm(true);
+
+    const productToEdit = items.find((item) => item._id === itemId);
+
+    if (productToEdit) {
+      const initialValues: Record<string, string> = {
+        name: productToEdit.name,
+        unit: productToEdit.unit,
+        quantity: productToEdit.quantity.toString(),
+        price: productToEdit.price.toString(),
+        market: productToEdit.market,
+      };
+
+      setInitialFormData(initialValues);
+      setOpenEditItemForm(true);
+    }
   };
 
   const handleCloseEditItemForm = () => {
+    setInitialFormData({});
     setOpenEditItemForm(false);
   };
 
@@ -351,6 +369,10 @@ export default function List() {
       removeItem(productId);
     });
 
+    socketContext.socket.on("deleteMember", (members: Array<IUser>) => {
+      setMembers(members);
+    });
+
     /* socketContext.socket.on("listNotification", (_) => {
       notificationsContext?.readListNotifications(params.listId ?? "");
     }) */
@@ -359,9 +381,9 @@ export default function List() {
       socketContext.socket?.off("addProduct");
       socketContext.socket?.off("checkProduct");
       socketContext.socket?.off("deleteProduct");
-      socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("deleteMember");
     };
-  }, [socketContext?.socket, items]);
+  }, [socketContext?.socket, items, members]);
 
   function checkItem(itemId: string) {
     const currentItem = items.filter((item) => item._id === itemId)[0];
@@ -387,11 +409,11 @@ export default function List() {
           <h1>{list?.listName}</h1>
           <ButtonContainer>
             <Button variant="contained" onClick={handleShowMembers}>
-              Members
+              Membros
             </Button>
             {isListOwner && (
               <Button variant="contained" onClick={handleOpenMemberForm}>
-                + Add member
+                + Adicionar membros
               </Button>
             )}
           </ButtonContainer>
@@ -472,6 +494,7 @@ export default function List() {
         open={openEditItemForm}
         handleClose={handleCloseEditItemForm}
         handleSubmit={handleEditProduct}
+        initialValues={initialFormData}
       />
       <AlertDialog
         open={openDialog}

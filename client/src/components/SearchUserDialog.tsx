@@ -97,6 +97,7 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
                     }));
                   }
                 }}
+                noOptionsText=""
               />
             ) : (
               <TextField
