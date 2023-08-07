@@ -58,6 +58,9 @@ export default function List() {
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
+  const [initialFormData, setInitialFormData] = useState<
+    Record<string, string>
+  >({});
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const notificationsContext = useContext(NotificationsContext);
@@ -183,10 +186,25 @@ export default function List() {
 
   const handleOpenEditItemForm = (itemId: string) => {
     setProductIdToEdit(itemId);
-    setOpenEditItemForm(true);
+
+    const productToEdit = items.find((item) => item._id === itemId);
+
+    if (productToEdit) {
+      const initialValues: Record<string, string> = {
+        name: productToEdit.name,
+        unit: productToEdit.unit,
+        quantity: productToEdit.quantity.toString(),
+        price: productToEdit.price.toString(),
+        market: productToEdit.market,
+      };
+
+      setInitialFormData(initialValues);
+      setOpenEditItemForm(true);
+    }
   };
 
   const handleCloseEditItemForm = () => {
+    setInitialFormData({});
     setOpenEditItemForm(false);
   };
 
@@ -462,6 +480,7 @@ export default function List() {
         open={openEditItemForm}
         handleClose={handleCloseEditItemForm}
         handleSubmit={handleEditProduct}
+        initialValues={initialFormData}
       />
       <AlertDialog
         open={openDialog}
