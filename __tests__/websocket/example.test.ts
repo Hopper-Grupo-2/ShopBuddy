@@ -50,3 +50,25 @@ describe("my awesome project", () => {
     });
   });
 });
+
+/*
+
+// createWebSocketServer.test.js
+
+// https://thomason-isaiah.medium.com/writing-integration-tests-for-websocket-servers-using-jest-and-ws-8e5c61726b2a
+
+describe("WebSocket Server", () => {
+  beforeAll(() => {
+    // Start server
+  });
+  afterAll(() => {
+    // Close server
+  });
+  test("Server echoes the message it receives from client", () => {
+    // 1. Create test client
+    // 2. Send client message
+    // 3. Close the client after it receives the response
+    // 4. Perform assertions on the response
+  });
+});
+*/
