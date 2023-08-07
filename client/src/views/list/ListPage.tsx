@@ -7,7 +7,6 @@ import { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
 import { ItemFormDialog } from "../../components/ItemFormDialog";
-import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
 import { MembersModal } from "../../components/MembersModal";
@@ -16,6 +15,7 @@ import { SocketContext } from "../../contexts/SocketContext";
 import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import { NotificationsContext } from "../../contexts/NotificationsContext";
+import { MemberFormDialog } from "../../components/MemberFormDialog";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -387,11 +387,11 @@ export default function List() {
           <h1>{list?.listName}</h1>
           <ButtonContainer>
             <Button variant="contained" onClick={handleShowMembers}>
-              Members
+              Membros
             </Button>
             {isListOwner && (
               <Button variant="contained" onClick={handleOpenMemberForm}>
-                + Add member
+                + Adicionar membros
               </Button>
             )}
           </ButtonContainer>
@@ -435,7 +435,7 @@ export default function List() {
         handleClose={handleCloseItemForm}
         handleSubmit={createNewItem}
       />
-      <FormDialog
+      <MemberFormDialog
         title="Adicionar membro"
         fields={[{ id: "username", label: "Nome do usuário", type: "text" }]}
         open={openMemberForm}
