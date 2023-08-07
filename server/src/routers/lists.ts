@@ -34,6 +34,13 @@ listsRouter.get(
   ListsController.getMembersByListId
 );
 
+// GET /api/lists/products/search/:searchTerm - get products filtered by term
+listsRouter.get(
+  "/products/search/:searchTerm",
+  authenticate,
+  ListsController.searchProductByTerm
+);
+
 // POST /api/lists - add a new list
 listsRouter.post(
   "/",

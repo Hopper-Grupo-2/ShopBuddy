@@ -46,8 +46,12 @@ export default class MessagesController {
       res.status(200).json({ error: null, data: createdMessage });
 
       // clear cached data about MESSAGES
-      await RedisCaching.clearCache("messages");
-      await RedisCaching.clearCache(`messages/listId/${listId}`);
+      await RedisCaching.clearCacheByKeyName("messages");
+      //await RedisCaching.clearCacheByKeyName(`messages/listId/${listId}`);
+      await RedisCaching.insertOneAtEndCashedListType<IMessage>(
+        `messages/listId/${listId}`,
+        createdMessage
+      );
     } catch (error) {
       next(error);
     }
@@ -60,7 +64,9 @@ export default class MessagesController {
   ): Promise<void> {
     try {
       const messagesFromCache: IMessage[] | null =
-        await RedisCaching.getCacheByKeyname<IMessage[]>("messages");
+        await RedisCaching.getCacheFromKeyValueTypeByKeyname<IMessage>(
+          "messages"
+        );
 
       if (messagesFromCache !== null) {
         res.status(200).json({ error: null, data: messagesFromCache });
@@ -71,7 +77,10 @@ export default class MessagesController {
       res.status(200).json({ error: null, data: allMessages });
 
       if (allMessages && allMessages.length > 0) {
-        await RedisCaching.setCache<IMessage[]>("messages", allMessages);
+        await RedisCaching.setCacheKeyValueType<IMessage>(
+          "messages",
+          allMessages
+        );
       }
     } catch (error) {
       next(error);
@@ -96,7 +105,7 @@ export default class MessagesController {
 
       // checking cache
       const listMessagesFromCache: IMessage[] | null =
-        await RedisCaching.getCacheByKeyname<IMessage[]>(
+        await RedisCaching.getAllElementsFromListType<IMessage>(
           `messages/listId/${listId}`
         );
 
@@ -116,7 +125,7 @@ export default class MessagesController {
       res.status(200).json({ error: null, data: listMessages });
 
       if (listMessages && listMessages.length > 0) {
-        await RedisCaching.setCache<IMessage[]>(
+        await RedisCaching.insertManyAtEndCashedListType<IMessage>(
           `messages/listId/${listId}`,
           listMessages
         );
