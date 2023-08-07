@@ -369,6 +369,10 @@ export default function List() {
       removeItem(productId);
     });
 
+    socketContext.socket.on("deleteMember", (members: Array<IUser>) => {
+      setMembers(members);
+    });
+
     /* socketContext.socket.on("listNotification", (_) => {
       notificationsContext?.readListNotifications(params.listId ?? "");
     }) */
@@ -377,9 +381,9 @@ export default function List() {
       socketContext.socket?.off("addProduct");
       socketContext.socket?.off("checkProduct");
       socketContext.socket?.off("deleteProduct");
-      socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("deleteMember");
     };
-  }, [socketContext?.socket, items]);
+  }, [socketContext?.socket, items, members]);
 
   function checkItem(itemId: string) {
     const currentItem = items.filter((item) => item._id === itemId)[0];
