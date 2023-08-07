@@ -195,6 +195,7 @@ export default function List() {
         unit: productToEdit.unit,
         quantity: productToEdit.quantity.toString(),
         price: productToEdit.price.toString(),
+        market: productToEdit.market,
       };
 
       setInitialFormData(initialValues);
@@ -203,6 +204,7 @@ export default function List() {
   };
 
   const handleCloseEditItemForm = () => {
+    setInitialFormData({});
     setOpenEditItemForm(false);
   };
 

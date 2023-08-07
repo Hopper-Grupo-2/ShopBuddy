@@ -42,13 +42,6 @@ interface FormDialogProps {
 }
 
 const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
-  const emptyFormData: Record<string, string> = {
-    name: "",
-    unit: "",
-    quantity: "",
-    price: "",
-  };
-
   let initialFormData: Record<string, string> = props.fields.reduce(
     (acc, field) => ({ ...acc, [field.id]: "" }),
     {}
@@ -64,6 +57,12 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   useEffect(() => {
     setFormData(props.initialValues || initialFormData);
   }, [props.initialValues]);
+
+  useEffect(() => {
+    if (!props.open) {
+      setFormData({});
+    }
+  }, [props.open]);
 
   const [items, setItems] = useState<IItem[]>([]);
   //const [autocompleteOptions, setAutocompleteOptions] = useState<string[]>([]);
@@ -92,7 +91,6 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     event.preventDefault();
     const success = await props.handleSubmit(formData);
     if (success) {
-      setFormData(emptyFormData);
       props.handleClose();
     }
   };
