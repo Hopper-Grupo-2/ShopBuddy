@@ -25,42 +25,41 @@ afterAll(async () => {
 describe("GET /api/lists:listid", () => {
   it("should return status 200 and the list with the given ID", async () => {
     const userInfo: IUser = {
-        username: "joaoteste12",
-        password: "123",
-        email: "joaots@alpha.com",
-        firstName: "joao",
-        lastName: "test",
-      };
-  
-      const userExample: IUser = await UsersRepositories.createNewUser(userInfo);
+      username: "joaoteste12",
+      password: "123",
+      email: "joaots@alpha.com",
+      firstName: "joao",
+      lastName: "test",
+    };
 
-      const listName = "Listinha";
+    const userExample: IUser = await UsersRepositories.createNewUser(userInfo);
 
-      const jtwCookie = generateCookieForUser(userExample);
+    const listName = "Listinha";
 
-      const userid = userExample._id?.toString() || "";
+    const jtwCookie = generateCookieForUser(userExample);
+
+    const userid = userExample._id?.toString() || "";
 
     const createdList = await ListRepositories.createNewList(listName, userid);
     const response = await request
       .get(`/api/lists/${createdList._id}`)
       .set("Cookie", `session=${jtwCookie}`);
 
-      expect(response.status).toBe(200);
-      expect(response.body.data).toMatchObject(createdList);
-     
+    expect(response.status).toBe(200);
+    expect(response.body.data).toMatchObject(createdList);
   });
   it("should return status 422 if the provided list ID is invalid", async () => {
     const userInfo: IUser = {
-        username: "joaoteste12",
-        password: "123",
-        email: "joaots@alpha.com",
-        firstName: "joao",
-        lastName: "test",
-      };
-      const userExample: IUser = await UsersRepositories.createNewUser(userInfo);
-      const listName = "Listinha";
-      const jtwCookie = generateCookieForUser(userExample);
-      const userid = userExample._id?.toString() || "";
+      username: "joaoteste12",
+      password: "123",
+      email: "joaots@alpha.com",
+      firstName: "joao",
+      lastName: "test",
+    };
+    const userExample: IUser = await UsersRepositories.createNewUser(userInfo);
+    const listName = "Listinha";
+    const jtwCookie = generateCookieForUser(userExample);
+    const userid = userExample._id?.toString() || "";
 
     const createdList = await ListRepositories.createNewList(listName, userid);
     const invalidListId = "88888888888d";
@@ -70,7 +69,8 @@ describe("GET /api/lists:listid", () => {
       .set("Cookie", `session=${jtwCookie}`);
 
     expect(response.status).toBe(422);
-})});
+  });
+});
 
 describe("POST /api/lists", () => {
   it("should create a new list with valid data", async () => {
@@ -94,9 +94,9 @@ describe("POST /api/lists", () => {
       .post("/api/lists")
       .set("Cookie", `session=${jtwCookie}`)
       .send(newListData);
-      expect(response.status).toBe(200);
-      expect(response.body);
-  })
+    expect(response.status).toBe(200);
+    expect(response.body);
+  });
   it("should return status 422 if listName is missing", async () => {
     const userInfo = {
       username: "joaoteste12",
@@ -118,6 +118,6 @@ describe("POST /api/lists", () => {
       .set("Cookie", `session=${jtwCookie}`)
       .send(newListData);
 
-    expect(response.status).toBe(422);
+    expect(response.status).toBe(4229);
   });
 });
