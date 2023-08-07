@@ -44,6 +44,7 @@ export default class ListsController {
     next: NextFunction
   ): Promise<void> {
     const listId = req.params.listId;
+    const user = req.user;
 
     try {
       const listById = await ListsServices.getListByListId(listId);

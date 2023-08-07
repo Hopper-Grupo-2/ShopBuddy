@@ -20,6 +20,7 @@ listsRouter.get(
 // GET /api/lists/:listId - get a list by list id
 listsRouter.get(
   "/:listId",
+  authenticate,
   validate("getListByListId"),
   handleValidation,
   ListsController.getListByListId
