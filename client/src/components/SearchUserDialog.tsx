@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,6 +8,7 @@ import {
   Button,
   Autocomplete,
 } from "@mui/material";
+import { IUserAll } from "../interfaces/iUser";
 
 
 interface FormField {
@@ -15,7 +16,7 @@ interface FormField {
   label: string;
   type: string;
   autocomplete?: {
-    options: any[];
+    members: any[];
     getOptionLabel: (option: any) => string;
   };
 }
@@ -34,6 +35,23 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
     {}
   );
   const [formData, setFormData] = useState<Record<string, string>>(initialFormData);
+  const [allUsers, setallUsers] = useState<Array<IUserAll>>([]);
+
+  const usersList = async () => {
+    const response = await fetch(`/api/users`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const userList = await response.json();
+      setallUsers(userList.data)
+      return 
+      
+    } else {
+      throw "Error";
+    }
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({
@@ -51,43 +69,47 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
     }
   };
 
+  useEffect(() => {
+    usersList()
+  }, []);
+
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
       <DialogTitle>{props.title}</DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-        {props.fields.map((field) =>
+          {props.fields.map((field) =>
             field.autocomplete ? (
               <Autocomplete
                 id={field.id}
-                options={field.autocomplete.options}
-                getOptionLabel={field.autocomplete.getOptionLabel}
+                options={allUsers.filter(
+                  user => !field.autocomplete!.members.some(member => member.username === user.username)
+                )}
+                getOptionLabel={(option: IUserAll) => option.username}
                 renderInput={(params) => (
                   <TextField {...params} label={field.label} variant="standard" fullWidth />
                 )}
-                onChange={(_, newValue) => {
-                  setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    [field.id]: newValue.username,
-                  }));
+                onChange={(_, newValue: IUserAll | null) => {
+                  if (newValue) {
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      [field.id]: newValue.username,
+                    }));
+                  }
                 }}
               />
             ) : (
-              // Outros campos de texto permanecem iguais
               <TextField
-                autoFocus
-                margin="dense"
-                key={field.id}
                 id={field.id}
                 label={field.label}
                 type={field.type}
                 fullWidth
-                variant="standard"
                 value={formData[field.id] || ""}
                 onChange={handleChange}
               />
             )
           )}
+
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleClose}>Cancelar</Button>

@@ -7,7 +7,6 @@ import { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
 import { ItemFormDialog } from "../../components/ItemFormDialog";
-import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
 import { MembersModal } from "../../components/MembersModal";
@@ -17,7 +16,6 @@ import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import { NotificationsContext } from "../../contexts/NotificationsContext";
 import { SearchUserDialog } from "../../components/SearchUserDialog";
-import { IUserAll } from "../../interfaces/iUser";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -60,7 +58,6 @@ export default function List() {
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
-  const [allUsers, setallUsers] = useState<Array<IUserAll>>([]);
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const notificationsContext = useContext(NotificationsContext);
@@ -105,7 +102,6 @@ export default function List() {
   useEffect(() => {
     fetchList();
     fetchMembers();
-    usersList()
     notificationsContext?.readListNotifications(params.listId ?? "");
   }, []);
 
@@ -384,22 +380,6 @@ export default function List() {
     setOpenDialog(false);
   };
 
-  const usersList = async () => {
-    const response = await fetch(`/api/users`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (response.ok) {
-      const userList = await response.json();
-      setallUsers(userList.data)
-      return 
-      
-    } else {
-      throw "Error";
-    }
-  };
-
   return (
     <>
       <PageStructure>
@@ -463,7 +443,7 @@ export default function List() {
             label: "Nome do usuário", 
             type: "text", 
             autocomplete: {
-              options: allUsers,
+              members: members, 
               getOptionLabel: (option) => option.username,
             } 
           }
