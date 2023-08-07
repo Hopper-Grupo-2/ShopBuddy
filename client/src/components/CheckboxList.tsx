@@ -80,6 +80,8 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             inputProps={{ "aria-labelledby": props.labelId }}
           />
         </ListItemIcon>
+        {/* Aqui está um comentário para quem for fazer esse componente:
+            O PREÇO DEVE SER ESCONDIDO CASO SEJA ZERO REAIS */}
         <ListItemText
           sx={{
             textDecoration: props.item.checked ? "line-through" : "none",
@@ -87,9 +89,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
           id={props.labelId}
           primary={`${props.item.name} ${props.item.quantity} ${
             props.item.unit
-          } R$${(props.item.price * props.item.quantity)
-            .toFixed(2)
-            .replace(".", ",")}`}
+          } R$${props.item.price.toFixed(2).replace(".", ",")}`}
         />
       </ListItemButton>
     </ListItem>

@@ -6,6 +6,7 @@ import IItem from "../../interfaces/iItem";
 import { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import IList from "../../interfaces/iList";
+import { ItemFormDialog } from "../../components/ItemFormDialog";
 import { FormDialog } from "../../components/FormDialog";
 import ChatBox from "../../components/ChatBox";
 import styled from "@emotion/styled";
@@ -204,7 +205,8 @@ export default function List() {
           name: formData["name"],
           quantity: formData["quantity"],
           unit: formData["unit"],
-          price: formData["price"],
+          price: formData["price"] === "" ? 0 : formData["price"],
+          market: formData["market"],
           checked: false,
         }),
       });
@@ -317,7 +319,8 @@ export default function List() {
             name: formData["name"],
             quantity: formData["quantity"],
             unit: formData["unit"],
-            price: formData["price"],
+            price: formData["price"] === "" ? 0 : formData["price"],
+            market: formData["market"],
           }),
         }
       );
@@ -439,13 +442,14 @@ export default function List() {
           {list ? <ChatBox listId={list._id} /> : null}
         </ContentContainer>
       </PageStructure>
-      <FormDialog
+      <ItemFormDialog
         title="Adicionar novo item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
           { id: "unit", label: "Unidade de medida", type: "select" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openItemForm}
         handleClose={handleCloseItemForm}
@@ -476,13 +480,14 @@ export default function List() {
         handleMember={handleRemoveMember}
         isOwner={isListOwner}
       />
-      <FormDialog
+      <ItemFormDialog
         title="Editar item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
           { id: "unit", label: "Unidade de medida", type: "text" },
           { id: "quantity", label: "Quantidade", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openEditItemForm}
         handleClose={handleCloseEditItemForm}

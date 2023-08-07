@@ -49,7 +49,7 @@ export default class UsersController {
       });
 
       // clear cached data about USERS
-      await RedisCaching.clearCache("users");
+      await RedisCaching.clearCacheByKeyName("users");
     } catch (error) {
       next(error);
     }
@@ -61,7 +61,7 @@ export default class UsersController {
   ): Promise<void> {
     try {
       const usersFromCache: IUser[] | null =
-        await RedisCaching.getCacheByKeyname<IUser[]>("users");
+        await RedisCaching.getCacheFromKeyValueTypeByKeyname<IUser>("users");
 
       if (usersFromCache !== null) {
         res.status(200).json({ error: null, data: usersFromCache });
@@ -72,7 +72,7 @@ export default class UsersController {
       res.status(200).json({ error: null, data: allUsers });
 
       if (allUsers && allUsers.length > 0) {
-        await RedisCaching.setCache<IUser[]>("users", allUsers);
+        await RedisCaching.setCacheKeyValueType<IUser>("users", allUsers);
       }
     } catch (error) {
       next(error);
@@ -130,11 +130,11 @@ export default class UsersController {
 
       res.status(200).json({
         error: null,
-        data: `User with id ${updatedUser._id} updated successfully!`,
+        data: updatedUser,
       });
 
       // clear cached data about USERS
-      await RedisCaching.clearCache("users");
+      await RedisCaching.clearCacheByKeyName("users");
     } catch (error) {
       next(error);
     }
@@ -165,7 +165,7 @@ export default class UsersController {
       });
 
       // clear cached data about USERS
-      await RedisCaching.clearCache("users");
+      await RedisCaching.clearCacheByKeyName("users");
     } catch (error) {
       next(error);
     }
