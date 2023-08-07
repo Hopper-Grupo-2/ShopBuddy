@@ -72,7 +72,7 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
   useEffect(() => {
     usersList()
   }, []);
-
+  
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
       <DialogTitle>{props.title}</DialogTitle>
@@ -97,6 +97,7 @@ const SearchUserDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => 
                     }));
                   }
                 }}
+                noOptionsText=""
               />
             ) : (
               <TextField
