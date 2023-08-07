@@ -6,12 +6,14 @@ import MessagesRepositories from "../../server/src/repositories/messages";
 import UsersRepositories from "../../server/src/repositories/users";
 import IUser from "../../server/src/interfaces/user";
 import ListsRepositories from "../../server/src/repositories/lists";
+import { connectRedis, closeRedis } from "../helpers/cache";
 
 const applicationObj = new App();
 const request = supertest(applicationObj.app);
 
 beforeAll(async () => {
     await connectDatabase();
+    await connectRedis();
 });
 
 beforeEach(async () => {
@@ -20,6 +22,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
     await closeDatabase();
+    await closeRedis();
 });
 
 describe("GET /api/messages/:listId", () => {
