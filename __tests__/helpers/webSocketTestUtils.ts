@@ -31,7 +31,7 @@ function waitForSocketState(socket: SocketClient, waitIsConnected: boolean) {
 // essa função permite retornar o client e todas as mensagens recebidas
 async function createSocketClient(
   port: number,
-  closeAfter: number
+  closeAfter?: number
 ): Promise<[SocketClient, string[]]> {
   const clientSocket: SocketClient = Client(`http://localhost:${port}`);
 
@@ -41,8 +41,10 @@ async function createSocketClient(
 
   clientSocket.on("message", (data: string) => {
     messages.push(data);
+    console.log("OLHA MESSAGES->", messages, data);
     // troquei de === por >= com medo de algum loop infinito
-    if (messages.length >= closeAfter) {
+    if (messages.length === closeAfter) {
+      console.log("Fechou alguem!", data);
       clientSocket.close();
     }
   });
