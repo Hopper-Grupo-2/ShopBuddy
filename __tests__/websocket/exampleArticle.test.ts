@@ -23,21 +23,41 @@ describe("WebSocket Server", () => {
 
   test("Server echoes the message it receives from client", async () => {
     // 1. Create test client
-    //const clientSocket: SocketClient = Client(`http://localhost:${port}`);
-    //await waitForSocketState(clientSocket, true);
-
     const [clientSocket, messages] = await createSocketClient(port, 1);
 
-    const testMessage = "This is a test message";
+    const testMessage = { type: "ECHO", value: "This is a test message" };
 
     // 2. Send client message
-    clientSocket.send(testMessage);
+    clientSocket.send(JSON.stringify(testMessage));
 
     // 4. Perform assertions on the response
+    //como quero esperar o socket está fechado, para iniciar os testes, passo FALSE
+    // pois assim ele vai esperar até que disconnect(connect===false)
     await waitForSocketState(clientSocket, false);
     //como passei (port,1), então só uma mensagem foi enviada e só quero receber
     // uma string
     const [responseMessage] = messages;
-    expect(responseMessage).toBe(testMessage);
+    expect(responseMessage).toBe(testMessage.value);
+  });
+
+  //
+  test("When given an ECHO_TIMES_3 message, the server echoes the message it receives from client 3 times", async () => {
+    // Create test client
+    const [client, messages] = await createSocketClient(port, 3);
+    const testMessage = {
+      type: "ECHO_TIMES_3",
+      value: "This is a test message send 3 times",
+    };
+    const expectedMessages: string[] = [...Array(3)].map(
+      () => testMessage.value
+    );
+
+    // Send client message
+    client.send(JSON.stringify(testMessage));
+    // Perform assertions on the response
+    await waitForSocketState(client, false);
+
+    expect(messages).toStrictEqual(expectedMessages);
+    expect(messages.length).toBe(3);
   });
 });
