@@ -23,6 +23,14 @@ interface FormDialogProps {
   handleSubmit: (formData: Record<string, string>) => Promise<boolean>;
 }
 
+//style DialogTitle
+const dialogTitleStyle = {
+  backgroundColor: "#FF9900",
+  color: "#FFF",
+  fontWeight: "bold",
+  padding: "5px 10px",
+};
+
 const MemberFormDialog: React.FC<FormDialogProps> = (
   props: FormDialogProps
 ) => {
@@ -82,10 +90,7 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
     >
       <DialogTitle
         sx={{
-          backgroundColor: "#FF9900",
-          color: "#FFF",
-          fontWeight: "bold",
-          padding: "5px 10px",
+          ...dialogTitleStyle,
         }}
       >
         {props.title}
