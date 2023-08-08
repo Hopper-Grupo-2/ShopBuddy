@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -34,7 +34,7 @@ const dialogTitleStyle = {
 const MemberFormDialog: React.FC<FormDialogProps> = (
   props: FormDialogProps
 ) => {
-  const [inviteLink, setInviteLink] = React.useState("");
+  const [inviteLink, setInviteLink] = useState("");
   //const [inviteButtonColor, setInviteButtonColor] = React.useState("");
   const params = useParams();
 
