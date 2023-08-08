@@ -465,7 +465,7 @@ export default function List() {
         handleSubmit={addMember}
       />
       <MembersModal
-        title="Todos os membros da lista"
+        title="Membros"
         members={members}
         open={showMembers}
         handleClose={handleHideMembers}

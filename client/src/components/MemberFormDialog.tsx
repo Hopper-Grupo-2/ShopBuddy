@@ -23,6 +23,14 @@ interface FormDialogProps {
   handleSubmit: (formData: Record<string, string>) => Promise<boolean>;
 }
 
+//style DialogTitle
+const dialogTitleStyle = {
+  backgroundColor: "#FF9900",
+  color: "#FFF",
+  fontWeight: "bold",
+  padding: "5px 10px",
+};
+
 const MemberFormDialog: React.FC<FormDialogProps> = (
   props: FormDialogProps
 ) => {
@@ -75,8 +83,18 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
   };
 
   return (
-    <Dialog open={props.open} onClose={props.handleClose}>
-      <DialogTitle>{props.title}</DialogTitle>
+    <Dialog
+      open={props.open}
+      onClose={props.handleClose}
+      sx={{ borderRadius: "3px" }}
+    >
+      <DialogTitle
+        sx={{
+          ...dialogTitleStyle,
+        }}
+      >
+        {props.title}
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {props.fields.map((field) => (
@@ -93,13 +111,31 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
               onChange={handleChange}
             />
           ))}
+          <DialogActions sx={{ paddingRight: "0px" }}>
+            <Button
+              variant="outlined"
+              onClick={props.handleClose}
+              sx={{
+                fontWeight: "bold",
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{
+                backgroundColor: "#FF9900",
+                color: "#FFF",
+                fontWeight: "bold",
+              }}
+            >
+              Confirmar
+            </Button>
+          </DialogActions>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button type="submit">Confirmar</Button>
-        </DialogActions>
       </form>
-      <DialogTitle>...ou gerar link de convite</DialogTitle>
+      <DialogTitle>Convide através do link</DialogTitle>
       <DialogContent>
         <Typography
           variant="body1"
@@ -111,7 +147,12 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
           type="button"
           fullWidth
           variant="contained"
-          sx={{ mt: 3, mb: 2 }}
+          sx={{
+            mt: 3,
+            mb: 2,
+            color: "#FFF",
+            fontWeight: "bold",
+          }}
           onClick={generateInviteLink}
         >
           Gerar link de convite
