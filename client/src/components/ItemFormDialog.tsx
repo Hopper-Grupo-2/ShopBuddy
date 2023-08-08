@@ -111,7 +111,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       const responseObj = await response.json();
       if (response.ok) {
         const products: IItem[] = responseObj.data;
-        const newAutocompleteOptions = products.map((product) => product.name);
+        const newAutocompleteOptions = products;
         console.log(newAutocompleteOptions);
         setItems(products);
       } else {
@@ -174,6 +174,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                 id="autocomplete"
                 freeSolo
                 disableClearable
+                value={formData[field.id] || ""}
                 getOptionLabel={(option) =>
                   typeof option === "string" ? option : option.name
                 }
