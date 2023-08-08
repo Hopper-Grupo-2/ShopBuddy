@@ -228,14 +228,6 @@ export default class ListsController {
           user._id?.toString() ?? ""
         );
 
-      const websocket = Websocket.getIstance();
-      websocket.broadcastToList(
-        listId,
-        user._id?.toString() ?? "",
-        "deleteMember",
-        updatedMembers
-      );
-
       // pending tests, but the logic should be: if the removed member was the one
       // who made the request, don't send them a notification
       // (we will have to implement a different notification for the other users

@@ -6,7 +6,7 @@ import ListsRepositories from "../repositories/lists";
 import MessagesRepositories from "../repositories/messages";
 import UsersRepositories from "../repositories/users";
 
-export default class MessagesServices {
+export default class ListsServices {
 	private static Repository = MessagesRepositories;
 
 	public static async createMessage(

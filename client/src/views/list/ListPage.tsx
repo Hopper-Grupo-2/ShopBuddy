@@ -462,7 +462,7 @@ export default function List() {
         fields={[
           { 
             id: "username", 
-            label: "Nome do usuário", 
+            label: "Nome do Usuário", 
             type: "text", 
             autocomplete: {
               members: members, 

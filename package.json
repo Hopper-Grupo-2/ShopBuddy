@@ -9,8 +9,7 @@
         "build": "tsc && cd client && yarn --cwd ./ build",
         "dev": "nodemon -L ./server/server.ts",
         "test": "jest --runInBand --detectOpenHandles --verbose __tests__/",
-        "test:services": "jest __tests__/unit/services",
-        "test:websocket": "jest --runInBand --detectOpenHandles --verbose __tests__/websocket"
+        "test:services": "jest __tests__/unit/services"
     },
     "repository": {
         "type": "git",
@@ -32,8 +31,7 @@
         "ioredis": "^5.3.2",
         "jsonwebtoken": "^9.0.1",
         "mongoose": "^7.3.1",
-        "socket.io": "^4.7.1",
-        "socket.io-client": "^4.7.2"
+        "socket.io": "^4.7.1"
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.0",

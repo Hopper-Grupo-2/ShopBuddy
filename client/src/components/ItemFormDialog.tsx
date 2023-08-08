@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -42,27 +42,12 @@ interface FormDialogProps {
 }
 
 const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
-  let initialFormData: Record<string, string> = props.fields.reduce(
+  const initialFormData: Record<string, string> = props.fields.reduce(
     (acc, field) => ({ ...acc, [field.id]: "" }),
     {}
   );
-
-  if (props.initialValues) {
-    initialFormData = props.initialValues;
-  }
-
   const [formData, setFormData] =
     useState<Record<string, string>>(initialFormData);
-
-  useEffect(() => {
-    setFormData(props.initialValues || initialFormData);
-  }, [props.initialValues]);
-
-  useEffect(() => {
-    if (!props.open) {
-      setFormData({});
-    }
-  }, [props.open]);
 
   const [items, setItems] = useState<IItem[]>([]);
   //const [autocompleteOptions, setAutocompleteOptions] = useState<string[]>([]);
@@ -91,6 +76,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     event.preventDefault();
     const success = await props.handleSubmit(formData);
     if (success) {
+      setFormData(initialFormData);
       props.handleClose();
     }
   };
