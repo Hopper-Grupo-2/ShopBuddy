@@ -11,7 +11,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
 import { useState } from "react";
 import AlertDialog from "./AlertDialog";
-import { CardMedia } from "@mui/material";
+import { Avatar, CardMedia } from "@mui/material";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -139,48 +139,106 @@ export default function SignUp() {
             >
               Cadastre-se!
             </Typography>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Endereço de e-mail"
-              name="email"
-              autoComplete="email"
-              autoFocus
-			  sx={{
-                width: "400px",
-				border: "1px solid black",
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Senha"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-			  sx={{
-                width: "400px",
-				border: "1px solid black",
+            >
+              <Avatar
+                src="./src/assets/icons/email-icon.svg"
+                alt="Ícone"
+                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Endereço de e-mail"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                sx={{
+                  width: "93%",
+                  border: "2px solid #000000",
+                  marginBottom: "2vh",
+                }}
+              />
+            </Box>
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="username"
-              label="Nome de usuário"
-              type="text"
-              id="username"
-			  sx={{
-                width: "400px",
-				border: "1px solid black",
+            >
+              <Avatar
+                src="./src/assets/icons/lock-icon.svg"
+                alt="Ícone"
+                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Senha"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                sx={{
+                  width: "93%",
+                  border: "2px solid #000000",
+                  marginBottom: "2vh",
+                }}
+              />
+            </Box>
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-            <TextField
+            >
+              <Avatar
+                src="./src/assets/icons/user-setting-icon.svg"
+                alt="Ícone"
+                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="username"
+                label="Nome de usuário"
+                type="text"
+                id="username"
+                sx={{
+                  width: "93%",
+                  border: "2px solid #000000",
+                  marginBottom: "2vh",
+                }}
+              />
+            </Box>
+			<Box
+			component="div"
+			sx={{
+			  width: "90%",
+			  display: "flex",
+			  alignItems: "center",
+			  justifyContent: "center",
+			}}>
+				<Box sx={{ width: 24, height: 24, marginRight: "0.5vw" }}>
+				</Box>
+			<TextField
               margin="normal"
               required
               fullWidth
@@ -188,12 +246,23 @@ export default function SignUp() {
               label="Primeiro nome"
               type="text"
               id="firstName"
-			  sx={{
-                width: "400px",
-				border: "1px solid black",
+              sx={{
+                width: "93%",
+                border: "2px solid #000000",
+                marginBottom: "2vh",
               }}
             />
-            <TextField
+			</Box>
+            <Box
+			component="div"
+			sx={{
+			  width: "90%",
+			  display: "flex",
+			  alignItems: "center",
+			  justifyContent: "center",
+			}}>
+				<Box sx={{ width: 24, height: 24, marginRight: "0.5vw" }}></Box>
+			<TextField
               margin="normal"
               required
               fullWidth
@@ -201,12 +270,15 @@ export default function SignUp() {
               label="Sobrenome"
               type="text"
               id="lastName"
-			  sx={{
-                width: "400px",
-				border: "1px solid black",
+              sx={{
+                width: "93%",
+                border: "2px solid #000000",
+                marginBottom: "2vh",
               }}
             />
-			<Grid container justifyContent="center">
+			</Box>
+            
+            <Grid container justifyContent="center">
               <Grid item>
                 <Typography>
                   Já tem uma conta?{" "}
@@ -221,11 +293,17 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{
-				background: "orange",
-				marginTop: "3vh",
-				marginBottom: "2vh",
-				width: "350px",
-			  }}
+                background: "orange",
+                display: "flex",
+                alignItems: "center",
+                marginTop: "3vh",
+                marginBottom: "2vh",
+                fontSize: "1.3rem",
+                fontWeight: "600",
+                width: "350px",
+                height: "4rem",
+                padding: "1rem"
+              }}
             >
               Cadastrar
             </Button>
