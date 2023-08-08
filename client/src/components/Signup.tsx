@@ -151,7 +151,7 @@ export default function SignUp() {
               <Avatar
                 src="./src/assets/icons/email-icon.svg"
                 alt="Ícone"
-                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
                 margin="normal"
@@ -166,6 +166,7 @@ export default function SignUp() {
                   width: "93%",
                   border: "2px solid #000000",
                   marginBottom: "2vh",
+				  borderRadius: "8px"
                 }}
               />
             </Box>
@@ -181,7 +182,7 @@ export default function SignUp() {
               <Avatar
                 src="./src/assets/icons/lock-icon.svg"
                 alt="Ícone"
-                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
                 margin="normal"
@@ -196,6 +197,7 @@ export default function SignUp() {
                   width: "93%",
                   border: "2px solid #000000",
                   marginBottom: "2vh",
+				  borderRadius: "8px"
                 }}
               />
             </Box>
@@ -211,7 +213,7 @@ export default function SignUp() {
               <Avatar
                 src="./src/assets/icons/user-setting-icon.svg"
                 alt="Ícone"
-                sx={{ width: 24, height: 24, marginRight: "0.5vw" }}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
                 margin="normal"
@@ -225,59 +227,63 @@ export default function SignUp() {
                   width: "93%",
                   border: "2px solid #000000",
                   marginBottom: "2vh",
+				  borderRadius: "8px"
                 }}
               />
             </Box>
-			<Box
-			component="div"
-			sx={{
-			  width: "90%",
-			  display: "flex",
-			  alignItems: "center",
-			  justifyContent: "center",
-			}}>
-				<Box sx={{ width: 24, height: 24, marginRight: "0.5vw" }}>
-				</Box>
-			<TextField
-              margin="normal"
-              required
-              fullWidth
-              name="firstName"
-              label="Primeiro nome"
-              type="text"
-              id="firstName"
-              sx={{
-                width: "93%",
-                border: "2px solid #000000",
-                marginBottom: "2vh",
-              }}
-            />
-			</Box>
             <Box
-			component="div"
-			sx={{
-			  width: "90%",
-			  display: "flex",
-			  alignItems: "center",
-			  justifyContent: "center",
-			}}>
-				<Box sx={{ width: 24, height: 24, marginRight: "0.5vw" }}></Box>
-			<TextField
-              margin="normal"
-              required
-              fullWidth
-              name="lastName"
-              label="Sobrenome"
-              type="text"
-              id="lastName"
+              component="div"
               sx={{
-                width: "93%",
-                border: "2px solid #000000",
-                marginBottom: "2vh",
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-			</Box>
-            
+            >
+              <Box sx={{ width: 40, height: 40, marginRight: "0.5vw" }}></Box>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="firstName"
+                label="Primeiro nome"
+                type="text"
+                id="firstName"
+                sx={{
+                  width: "93%",
+                  border: "2px solid #000000",
+                  marginBottom: "2vh",
+				  borderRadius: "8px"
+                }}
+              />
+            </Box>
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Box sx={{ width: 40, height: 40, marginRight: "0.5vw" }}></Box>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="lastName"
+                label="Sobrenome"
+                type="text"
+                id="lastName"
+                sx={{
+                  width: "93%",
+                  border: "2px solid #000000",
+                  marginBottom: "2vh",
+				  borderRadius: "8px"
+                }}
+              />
+            </Box>
+
             <Grid container justifyContent="center">
               <Grid item>
                 <Typography>
@@ -302,7 +308,7 @@ export default function SignUp() {
                 fontWeight: "600",
                 width: "350px",
                 height: "4rem",
-                padding: "1rem"
+                padding: "1rem",
               }}
             >
               Cadastrar

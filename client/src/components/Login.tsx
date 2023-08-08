@@ -110,7 +110,7 @@ export default function LogIn() {
                 whiteSpace: "nowrap"
               }}
             >
-              Seja Bem vindo!
+              Seja Bem-vindo!
             </Typography>
             <Box
               component="div"
@@ -124,7 +124,7 @@ export default function LogIn() {
               <Avatar
                 src="./src/assets/icons/email-icon.svg"
                 alt="Ícone"
-                sx={{ width: 24, height: 24,marginRight: "0.5vw" }}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
                 margin="normal"
@@ -137,8 +137,9 @@ export default function LogIn() {
                 autoFocus
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
-                  marginBottom: "2vh"
+                  border: "3px solid #000000",
+                  marginBottom: "2vh",
+                  borderRadius: "8px"
                 }}
               />
             </Box>
@@ -154,7 +155,7 @@ export default function LogIn() {
               <Avatar
                 src="./src/assets/icons/lock-icon.svg"
                 alt="Ícone"
-                sx={{ width: 24, height: 24, marginRight: "0.5vw"}}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
                 margin="normal"
@@ -167,8 +168,10 @@ export default function LogIn() {
                 autoComplete="current-password"
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
-                  marginBottom: "2vh"
+                  border: "3px solid #000000",
+                  fontSize: "28px",
+                  marginBottom: "2vh",
+                  borderRadius: "8px"
                 }}
               />
             </Box>
@@ -199,7 +202,7 @@ export default function LogIn() {
                 padding: "1rem"
               }}
             >
-              entrar
+              Entrar
             </Button>
           </Box>
         </Box>
