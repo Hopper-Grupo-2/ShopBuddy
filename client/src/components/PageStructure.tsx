@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,6 +21,7 @@ import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { NotificationsContext } from "../contexts/NotificationsContext";
+import { useContext, useState } from "react";
 
 const drawerWidth = 240;
 
@@ -36,9 +36,9 @@ interface Props {
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const userContext = React.useContext(UserContext);
-  const notificationsContext = React.useContext(NotificationsContext);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const userContext = useContext(UserContext);
+  const notificationsContext = useContext(NotificationsContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

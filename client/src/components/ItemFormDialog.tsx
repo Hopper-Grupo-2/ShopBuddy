@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 import IItem from "../interfaces/iItem";
 
+// this has to be redone at a later date to
+// always be compatible with the backend
 const unitsOfMeasure = [
   { value: "Kg", label: "Quilograma (Kg)" },
   { value: "Ml", label: "Mililitro (Ml)" },
@@ -65,7 +67,6 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   }, [props.open]);
 
   const [items, setItems] = useState<IItem[]>([]);
-  //const [autocompleteOptions, setAutocompleteOptions] = useState<string[]>([]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({

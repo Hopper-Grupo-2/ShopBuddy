@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import IUser from "../interfaces/iUser";
 import { Box, CircularProgress } from "@mui/material";
@@ -17,7 +17,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const fetchCurrentUser = async () => {
       const response = await fetch("/api/users/me", {
         method: "GET",
-        credentials: "include", // Ensure credentials are sent
+        credentials: "include",
       });
 
       if (response.ok) {
