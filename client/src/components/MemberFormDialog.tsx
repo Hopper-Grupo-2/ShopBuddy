@@ -72,7 +72,7 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
       if (response.ok) {
         const inviteUrl: string = inviteData.data.url;
         const host = window.location.host;
-        await navigator.clipboard.writeText(host + inviteUrl);
+        ////await navigator.clipboard.writeText(host + inviteUrl);
         setInviteLink(host + inviteUrl);
       } else {
         throw inviteData.error;
