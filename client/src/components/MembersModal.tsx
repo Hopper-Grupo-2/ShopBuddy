@@ -8,10 +8,12 @@ import {
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import IUser from "../interfaces/iUser";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 
 interface MembersModalProps {
   title: string;
@@ -22,33 +24,69 @@ interface MembersModalProps {
   isOwner: boolean;
 }
 
+//style DialogTitle
+const dialogTitleStyle = {
+  backgroundColor: "#FF9900",
+  color: "#FFF",
+  fontWeight: "bold",
+  padding: "5px 10px",
+};
+
 const MembersModal: React.FC<MembersModalProps> = (
   props: MembersModalProps
 ) => {
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
-      <DialogTitle>{props.title}</DialogTitle>
+      <DialogTitle sx={{ ...dialogTitleStyle }}>{props.title}</DialogTitle>
       <div>
-        <DialogContent>
+        <DialogContent sx={{ minWidth: "300px" }}>
           <List>
             {props.members.map((user) => (
               <ListItem key={user._id.toString()}>
-                <ListItemText primary={user.username} />
-                {props.isOwner && user !== props.members[0] && (
+                <ListItemText
+                  primary={
+                    <Typography
+                      sx={
+                        user.username === props.members[0].username
+                          ? {
+                              fontWeight: "bolder",
+                            }
+                          : { fontWeight: "bold", color: "#757575" }
+                      }
+                    >
+                      {user.username}
+                    </Typography>
+                  }
+                />
+                {props.isOwner && user !== props.members[0] ? (
                   <IconButton
                     edge="end"
                     aria-label="delete"
                     onClick={() => props.handleMember(user._id.toString())}
                   >
-                    <DeleteIcon />
+                    <HighlightOffRoundedIcon />
                   </IconButton>
+                ) : (
+                  user.username === props.members[0].username && (
+                    <ManageAccountsIcon />
+                  )
                 )}
               </ListItem>
             ))}
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleClose}>Fechar modal</Button>
+          <Button
+            onClick={props.handleClose}
+            sx={{
+              backgroundColor: "#FF9900",
+              color: "#FFF",
+              fontWeight: "bold",
+            }}
+            variant="contained"
+          >
+            Fechar
+          </Button>
         </DialogActions>
       </div>
     </Dialog>

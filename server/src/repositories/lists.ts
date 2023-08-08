@@ -5,6 +5,7 @@ import IList from "../interfaces/list";
 import IProduct from "../interfaces/product";
 import IUser from "../interfaces/user";
 import UsersRepositories from "./users";
+import mongoose from "mongoose";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -73,22 +74,26 @@ export default class ListsRepositories {
     userId: string
   ): Promise<IList> {
     try {
+      const timestamp = Date.now();
+      const dateWithoutMS = new Date(Math.floor(timestamp / 1000) * 1000);
       const response = await this.Model.create({
         listName: listName,
         products: [],
-        owner: userId,
-        members: [{ userId: userId }],
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+        owner: userId.toString(),
+        members: [{ userId: userId.toString() }],
+        createdAt: dateWithoutMS,
+        updatedAt: dateWithoutMS,
       });
+      let createdAt = new Date(response.createdAt?.toString() || "");
+      let updatedAt = new Date(response.updatedAt?.toString() || "");
       const createdList: IList = {
-        _id: response._id,
+        _id: response._id.toString(),
         listName: response.listName,
         products: response.products,
-        owner: response.owner,
-        members: [{ userId: response.members[0].userId }],
-        createdAt: response.createdAt,
-        updatedAt: response.createdAt,
+        owner: response.owner.toString(),
+        members: [{ userId: response.members[0].userId.toString() }],
+        createdAt: createdAt?.toISOString(),
+        updatedAt: updatedAt?.toISOString(),
       };
       return createdList;
     } catch (error) {
@@ -119,20 +124,8 @@ export default class ListsRepositories {
     }
   }
 
-  public static async deleteList(
-    listId: string,
-    ownerId: string
-  ): Promise<void> {
+  public static async deleteList(listId: string): Promise<void> {
     try {
-      const list = await this.Model.findOne({ _id: listId });
-      if (!list) {
-        throw ErrorHandler.createError("BadRequest", "List not found");
-      }
-
-      if (list.owner.toString() !== ownerId) {
-        throw ErrorHandler.createError("UnauthorizedError", "forbiddenError");
-      }
-
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {
       console.error(this.name, "deleteList error: ", error);
@@ -226,24 +219,22 @@ export default class ListsRepositories {
         }
       );
 
-        const list = await this.getListById(listId)
+      const list = await this.getListById(listId);
 
-        if(list){
+      if (list) {
+        let members: IUser[] = [];
 
-      let members: IUser[] = [];
+        for (const element of list.members) {
+          const userId = element.userId.toString();
+          const member = await UsersRepositories.getUserById(userId);
 
-      for (const element of list.members) {
-        const userId = element.userId.toString();
-        const member = await UsersRepositories.getUserById(userId);
+          if (member !== null) members.push(member);
+        }
 
-        if (member !== null) members.push(member);
+        return members;
+      } else {
+        throw "Error";
       }
-
-      return members;
-    } else{
-      throw "Error"
-    }
-
     } catch (error) {
       console.error(this.name, "deleteMemberFromList error: ", error);
       throw ErrorHandler.createError(
@@ -330,6 +321,45 @@ export default class ListsRepositories {
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error updating info of the product with id ${productId} from list with id: ${listId}`
+      );
+    }
+  }
+
+  public static async searchListsWithProducts(
+    searchTerm: string,
+    userId: string
+  ): Promise<IProduct[]> {
+    try {
+      const matchingProducts = await this.Model.aggregate([
+        {
+          $match: {
+            "members.userId": new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $sort: { updatedAt: -1 },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $match: {
+            "products.name": {
+              $regex: new RegExp(searchTerm, "i"),
+            },
+          },
+        },
+        {
+          $replaceRoot: { newRoot: "$products" },
+        },
+      ]);
+
+      return matchingProducts;
+    } catch (error) {
+      console.error(this.name, "searchProducts error: ", error);
+      throw ErrorHandler.createError(
+        "InternalServerError",
+        `Error searching for the term ${searchTerm}`
       );
     }
   }

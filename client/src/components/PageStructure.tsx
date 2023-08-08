@@ -105,7 +105,7 @@ export default function ResponsiveDrawer(props: Props) {
                         (notification) => notification.read === false
                       ).length
                     }
-                    color="primary"
+                    color="secondary"
                   >
                     {page.icon}
                   </Badge>
@@ -144,7 +144,17 @@ export default function ResponsiveDrawer(props: Props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography
+            variant="h2"
+            noWrap
+            component="div"
+            sx={{
+              margin: "0px auto",
+              padding: "0px 0px 15px 0px",
+              fontFamily: "'Just Me Again Down Here', cursive",
+              color: "white",
+            }}
+          >
             ShopBuddy
           </Typography>
         </Toolbar>
