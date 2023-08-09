@@ -1,5 +1,4 @@
 import PageStructure from "../../components/PageStructure";
-import Card from "../../components/Card";
 import Button from "@mui/material/Button";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +7,9 @@ import { FormDialog } from "../../components/FormDialog";
 import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
+import ListCard from "../../components/ListCard";
+import { Grid } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -21,7 +23,6 @@ export default function Dashboard() {
   const [dialogMessage, setDialogMessage] = useState("");
 
   const userContext = useContext(UserContext);
-
 
   useEffect(() => {
     const fetchLists = async () => {
@@ -150,53 +151,72 @@ export default function Dashboard() {
   return (
     <>
       <PageStructure>
-        <h1>Bem vindo(a) ao ShopBuddy!</h1>
         <Button
-          sx={{ marginBottom: "30px" }}
           variant="contained"
           onClick={handleOpenListForm}
+          sx={{
+            backgroundColor: "#FF9900",
+            textTransform: "capitalize",
+            fontWeight: "bold",
+            fontSize: "1.25rem",
+            color: "#FFF",
+            margin: "30px 0px",
+          }}
         >
-          Adicionar nova lista
+          <AddIcon sx={{ fontWeight: "bold", mr: "10px", fontSize: "2rem" }} />
+          Nova lista
         </Button>
-        {lists
-          .slice()
-          .reverse()
-          .map((list) => (
-            <Card
-              key={list._id}
-              title={list.listName}
-              date={new Date(list.createdAt)}
-              total={list.products.reduce((acc, product) => {
-                if (
-                  product.unit === "Kg" ||
-                  product.unit === "L" ||
-                  product.unit === "Ml" ||
-                  product.unit === "und"
-                ) {
-                  return acc + product.price * product.quantity;
-                } else {
-                  return acc + product.price;
-                }
-              }, 0)}
-              action={() => {
-                navigate("/list/" + list._id);
-              }}
-              deleteAction={() => {
-                deleteList(list._id, list.listName);
-              }}
-
-              exitAction={() =>
-                exitList(
-                  list._id,
-                  list.listName,
-                  list.owner,
-                  userContext?.user?._id
-                )
-              }
-              showButton={list.owner === userContext?.user?._id}
-
-            />
-          ))}
+        <Grid container spacing={4} justifyContent="center">
+          {lists
+            .slice()
+            .reverse()
+            .map((list) => (
+              <Grid
+                item
+                sm={12}
+                md={6}
+                lg={4}
+                xl={3}
+                key={list._id}
+                sx={{ minWidth: "375px" }}
+              >
+                <ListCard
+                  key={list._id}
+                  title={list.listName}
+                  date={new Date(list.createdAt)}
+                  total={list.products.reduce((acc, product) => {
+                    if (
+                      product.unit === "Kg" ||
+                      product.unit === "L" ||
+                      product.unit === "Ml" ||
+                      product.unit === "und"
+                    ) {
+                      return acc + product.price * product.quantity;
+                    } else {
+                      return acc + product.price;
+                    }
+                  }, 0)}
+                  products={list.products}
+                  memberCount={list.members.length}
+                  action={() => {
+                    navigate("/list/" + list._id);
+                  }}
+                  deleteAction={() => {
+                    deleteList(list._id, list.listName);
+                  }}
+                  exitAction={() =>
+                    exitList(
+                      list._id,
+                      list.listName,
+                      list.owner,
+                      userContext?.user?._id
+                    )
+                  }
+                  isOwner={list.owner === userContext?.user?._id}
+                />
+              </Grid>
+            ))}
+        </Grid>
       </PageStructure>
       <FormDialog
         title="Adicionar nova lista"
