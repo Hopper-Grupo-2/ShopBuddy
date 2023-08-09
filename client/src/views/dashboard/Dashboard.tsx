@@ -8,8 +8,9 @@ import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import ListCard from "../../components/ListCard";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import SearchBar from "../../components/SearchBar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [lists, setLists] = useState<IList[]>([]);
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const [openListForm, setOpenListForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const context = useContext(UserContext);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -28,7 +30,7 @@ export default function Dashboard() {
     const fetchLists = async () => {
       const response = await fetch(`/api/lists/user/${context?.user?._id}`, {
         method: "GET",
-        credentials: "include", // Ensure credentials are sent
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -151,71 +153,86 @@ export default function Dashboard() {
   return (
     <>
       <PageStructure>
-        <Button
-          variant="contained"
-          onClick={handleOpenListForm}
-          sx={{
-            backgroundColor: "#FF9900",
-            textTransform: "capitalize",
-            fontWeight: "bold",
-            fontSize: "1.25rem",
-            color: "#FFF",
-            margin: "30px 0px",
-          }}
+        <Box
+          display="flex"
+          justifyContent="center"
+          flexWrap="wrap"
+          sx={{ flex: 1, width: "100%", margin: "30px 0px", gap: "30px" }}
         >
-          <AddIcon sx={{ fontWeight: "bold", mr: "10px", fontSize: "2rem" }} />
-          Nova lista
-        </Button>
+          <SearchBar onChange={setSearchTerm} />
+          <Button
+            variant="contained"
+            onClick={handleOpenListForm}
+            sx={{
+              backgroundColor: "#FF9900",
+              textTransform: "capitalize",
+              fontWeight: "bold",
+              fontSize: "1.25rem",
+              whiteSpace: "nowrap",
+              color: "#FFF",
+            }}
+          >
+            <AddIcon
+              sx={{ fontWeight: "bold", mr: "15px", fontSize: "2rem" }}
+            />
+            Nova lista
+          </Button>
+        </Box>
         <Grid container spacing={4} justifyContent="center">
           {lists
             .slice()
             .reverse()
-            .map((list) => (
-              <Grid
-                item
-                sm={12}
-                md={6}
-                lg={4}
-                xl={3}
-                key={list._id}
-                sx={{ minWidth: "375px" }}
-              >
-                <ListCard
-                  key={list._id}
-                  title={list.listName}
-                  date={new Date(list.createdAt)}
-                  total={list.products.reduce((acc, product) => {
-                    if (
-                      product.unit === "Kg" ||
-                      product.unit === "L" ||
-                      product.unit === "Ml" ||
-                      product.unit === "und"
-                    ) {
-                      return acc + product.price * product.quantity;
-                    } else {
-                      return acc + product.price;
-                    }
-                  }, 0)}
-                  products={list.products}
-                  memberCount={list.members.length}
-                  action={() => {
-                    navigate("/list/" + list._id);
-                  }}
-                  deleteAction={() => {
-                    deleteList(list._id, list.listName);
-                  }}
-                  exitAction={() =>
-                    exitList(
-                      list._id,
-                      list.listName,
-                      list.owner,
-                      userContext?.user?._id
-                    )
-                  }
-                  isOwner={list.owner === userContext?.user?._id}
-                />
-              </Grid>
-            ))}
+            .map((list) => {
+              if (
+                list.listName.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+                return (
+                  <Grid
+                    item
+                    sm={12}
+                    md={6}
+                    lg={4}
+                    xl={3}
+                    key={list._id}
+                    sx={{ minWidth: "375px" }}
+                  >
+                    <ListCard
+                      key={list._id}
+                      title={list.listName}
+                      date={new Date(list.createdAt)}
+                      total={list.products.reduce((acc, product) => {
+                        if (
+                          product.unit === "Kg" ||
+                          product.unit === "L" ||
+                          product.unit === "Ml" ||
+                          product.unit === "und"
+                        ) {
+                          return acc + product.price * product.quantity;
+                        } else {
+                          return acc + product.price;
+                        }
+                      }, 0)}
+                      products={list.products}
+                      memberCount={list.members.length}
+                      action={() => {
+                        navigate("/list/" + list._id);
+                      }}
+                      deleteAction={() => {
+                        deleteList(list._id, list.listName);
+                      }}
+                      exitAction={() =>
+                        exitList(
+                          list._id,
+                          list.listName,
+                          list.owner,
+                          userContext?.user?._id
+                        )
+                      }
+                      isOwner={list.owner === userContext?.user?._id}
+                    />
+                  </Grid>
+                );
+            })}
         </Grid>
       </PageStructure>
       <FormDialog
