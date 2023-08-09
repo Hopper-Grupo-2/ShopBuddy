@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import GroupIcon from "@mui/icons-material/Group";
-import { Box, CssBaseline, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import IItem from "../interfaces/iItem";
 
 interface CardProps {
@@ -34,24 +34,6 @@ export default function ListCard(props: CardProps) {
     second: "2-digit",
   }).format(props.date);
 
-  const theme = useTheme();
-  const isBetweenMdAndLg = useMediaQuery(theme.breakpoints.between("md", "xl")); // Verifica se está no breakpoint "md" personalizado
-  const isBetweenLgAndXl = useMediaQuery(theme.breakpoints.between("lg", "xl"));
-  const screenWidth = window.innerWidth;
-
-  let calculatedMargin = "0px"; // Valor padrão
-
-  if (isBetweenMdAndLg) {
-    calculatedMargin = `${
-      (screenWidth - theme.breakpoints.values.md) *
-      (100 / (theme.breakpoints.values.lg - theme.breakpoints.values.md))
-    }px`;
-  } else if (isBetweenLgAndXl) {
-    calculatedMargin = `${
-      (screenWidth - theme.breakpoints.values.lg) *
-      (100 / (theme.breakpoints.values.xl - theme.breakpoints.values.lg))
-    }px`;
-  }
   return (
     <CssBaseline>
       <Box
