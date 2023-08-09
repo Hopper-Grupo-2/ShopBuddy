@@ -16,6 +16,7 @@ import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import { NotificationsContext } from "../../contexts/NotificationsContext";
 import { MemberFormDialog } from "../../components/MemberFormDialog";
+import { Box } from "@mui/material";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -405,44 +406,51 @@ export default function List() {
   return (
     <>
       <PageStructure>
-        <HeaderContainer>
-          <h1>{list?.listName}</h1>
-          <ButtonContainer>
-            <Button variant="contained" onClick={handleShowMembers}>
-              Membros
-            </Button>
-            {isListOwner && (
-              <Button variant="contained" onClick={handleOpenMemberForm}>
-                + Adicionar membros
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          margin="30px"
+        >
+          <HeaderContainer>
+            <h1>{list?.listName}</h1>
+            <ButtonContainer>
+              <Button variant="contained" onClick={handleShowMembers}>
+                Membros
               </Button>
-            )}
-          </ButtonContainer>
-        </HeaderContainer>
-        <ContentContainer>
-          <SimplePaper>
-            {items.length === 0 ? (
-              <p style={{ textAlign: "center" }}>A lista está vazia...</p>
-            ) : (
-              <CheckboxList
-                items={items}
-                onCheck={handleCheckProduct}
-                onRemove={handleDeleteProduct}
-                onEdit={handleOpenEditItemForm}
-              />
-            )}
-            <Button
-              sx={{
-                margin: "0px auto 15px auto",
-                display: "block",
-              }}
-              variant="contained"
-              onClick={handleOpenItemForm}
-            >
-              Adicionar item
-            </Button>
-          </SimplePaper>
-          {list ? <ChatBox listId={list._id} /> : null}
-        </ContentContainer>
+              {isListOwner && (
+                <Button variant="contained" onClick={handleOpenMemberForm}>
+                  + Adicionar membros
+                </Button>
+              )}
+            </ButtonContainer>
+          </HeaderContainer>
+          <ContentContainer>
+            <SimplePaper>
+              {items.length === 0 ? (
+                <p style={{ textAlign: "center" }}>A lista está vazia...</p>
+              ) : (
+                <CheckboxList
+                  items={items}
+                  onCheck={handleCheckProduct}
+                  onRemove={handleDeleteProduct}
+                  onEdit={handleOpenEditItemForm}
+                />
+              )}
+              <Button
+                sx={{
+                  margin: "0px auto 15px auto",
+                  display: "block",
+                }}
+                variant="contained"
+                onClick={handleOpenItemForm}
+              >
+                Adicionar item
+              </Button>
+            </SimplePaper>
+            {list ? <ChatBox listId={list._id} /> : null}
+          </ContentContainer>
+        </Box>
       </PageStructure>
       <ItemFormDialog
         title="Adicionar novo item"

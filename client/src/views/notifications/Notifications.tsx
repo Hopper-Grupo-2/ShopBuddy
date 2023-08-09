@@ -2,8 +2,6 @@ import { Fragment, useContext, useState } from "react";
 import PageStructure from "../../components/PageStructure";
 import {
   Box,
-  Grid,
-  Button,
   IconButton,
   List,
   ListItem,
@@ -87,7 +85,6 @@ export default function Notifications() {
       <PageStructure>
         <Box
           sx={{
-            width: "80vw",
             mt: "50px",
             display: "flex",
             flexDirection: "column",
@@ -95,41 +92,44 @@ export default function Notifications() {
             justifyContent: "center",
           }}
         >
-          <Box>
-            <Grid
-              container
+          <Box
+            sx={{
+              boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.2)",
+              borderRadius: "10px 10px 10px 10px",
+            }}
+          >
+            <Box
               alignItems="center"
               justifyContent="center"
-              spacing={1}
-              p={2}
-              sx={{ backgroundColor: "#FF9900", borderRadius: "10px 10px 0 0" }}
+              //spacing={1}
+              //p={2}
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+                backgroundColor: "#FF9900",
+                borderRadius: "10px 10px 0px 0px",
+                color: "white",
+                height: "3.5rem",
+                padding: "10px 20px",
+              }}
             >
-              <Grid item>
-                <Typography variant="h4" color="#FFF" fontWeight="bold">
-                  Notificações
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Button
-                  variant="contained"
-                  onClick={handleClearNotifications}
-                  endIcon={<ClearAllIcon />}
-                  sx={{ boxShadow: "none" }}
+              <Typography variant="h5" color="#FFF" fontWeight="bold">
+                Notificações
+              </Typography>
+
+              <IconButton onClick={handleClearNotifications}>
+                <Typography
+                  variant="subtitle2"
+                  fontSize="0.7rem"
+                  sx={{ fontWeight: "bold" }}
                 >
-                  <Typography
-                    textTransform="capitalize"
-                    fontSize="12px"
-                    sx={{
-                      whiteSpace: "break-word",
-                      textAlign: "right",
-                      maxWidth: "50px",
-                    }}
-                  >
-                    Limpar notificações
-                  </Typography>
-                </Button>
-              </Grid>
-            </Grid>
+                  Limpar notificações
+                </Typography>
+                <ClearAllIcon />
+              </IconButton>
+            </Box>
 
             {/* Everything below here will be a dedicated component */}
             <List
@@ -139,76 +139,82 @@ export default function Notifications() {
                 padding: "10px 20px",
               }}
             >
-              {notificationsContext?.notifications
-                ?.slice()
-                .reverse()
-                .map((notification) => (
-                  <ListItem
-                    key={notification._id}
-                    sx={
-                      notification.read
-                        ? {
-                            backgroundColor: "#FFF",
-                            mb: "10px",
-                            boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.1)",
-                          }
-                        : {
-                            backgroundColor: "#FFCC80",
-                            mb: "10px",
-                            boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.1)",
-                          }
-                    }
-                    disablePadding
-                    //component={Link}
-                    //to={"/list/" + notification.listId}
-                    secondaryAction={
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={async () => {
-                          setIsDeleting(true);
-                          await handleClearNotification(notification._id);
+              {notificationsContext?.notifications?.length === 0 ? (
+                <Typography variant="h6">
+                  Você não possui nenhuma notificação nova.
+                </Typography>
+              ) : (
+                notificationsContext?.notifications
+                  ?.slice()
+                  .reverse()
+                  .map((notification) => (
+                    <ListItem
+                      key={notification._id}
+                      sx={
+                        notification.read
+                          ? {
+                              backgroundColor: "#FFF",
+                              mb: "10px",
+                              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.1)",
+                            }
+                          : {
+                              backgroundColor: "#FFCC80",
+                              mb: "10px",
+                              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.1)",
+                            }
+                      }
+                      disablePadding
+                      //component={Link}
+                      //to={"/list/" + notification.listId}
+                      secondaryAction={
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={async () => {
+                            setIsDeleting(true);
+                            await handleClearNotification(notification._id);
+                          }}
+                        >
+                          {isDeleting ? <PendingIcon /> : <DeleteIcon />}
+                        </IconButton>
+                      }
+                    >
+                      <ListItemButton
+                        onClick={() => {
+                          navigate("/list/" + notification.listId);
                         }}
                       >
-                        {isDeleting ? <PendingIcon /> : <DeleteIcon />}
-                      </IconButton>
-                    }
-                  >
-                    <ListItemButton
-                      onClick={() => {
-                        navigate("/list/" + notification.listId);
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <Fragment>
-                            De:
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              sx={{ fontWeight: "bold" }}
-                            >
-                              {" "}
-                              {notification.listName}
-                            </Typography>
-                          </Fragment>
-                        }
-                        secondary={
-                          <Fragment>
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              sx={{ fontWeight: "bold" }}
-                            >
-                              {notification.senderName}
-                            </Typography>{" "}
-                            {getNotificationMessage(notification.type)}
-                          </Fragment>
-                        }
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
+                        <ListItemText
+                          primary={
+                            <Fragment>
+                              De:
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                sx={{ fontWeight: "bold" }}
+                              >
+                                {" "}
+                                {notification.listName}
+                              </Typography>
+                            </Fragment>
+                          }
+                          secondary={
+                            <Fragment>
+                              <Typography
+                                component="span"
+                                variant="body2"
+                                sx={{ fontWeight: "bold" }}
+                              >
+                                {notification.senderName}
+                              </Typography>{" "}
+                              {getNotificationMessage(notification.type)}
+                            </Fragment>
+                          }
+                        />
+                      </ListItemButton>
+                    </ListItem>
+                  ))
+              )}
             </List>
           </Box>
         </Box>
