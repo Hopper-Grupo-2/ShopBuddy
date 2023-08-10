@@ -1,16 +1,16 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
+import MailIcon from '@mui/icons-material/Mail';
+import HttpsIcon from '@mui/icons-material/Https';
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { UserContext } from "../contexts/UserContext";
 import AlertDialog from "./AlertDialog";
-import { Avatar, CardMedia, ThemeProvider, createTheme } from "@mui/material";
-const defaultTheme = createTheme();
+import { CardMedia } from "@mui/material";
 export default function LogIn() {
   const context = React.useContext(UserContext);
   const navigate = useNavigate();
@@ -52,8 +52,6 @@ export default function LogIn() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
       <Box
         component="main"
         sx={{
@@ -79,7 +77,7 @@ export default function LogIn() {
             component="img"
             alt="Imagem de fundo"
             height="auto"
-            image="../src/assets/VERSAO01_SHOP.png"
+            image="./VERSAO01_SHOP.png"
             sx={{
               width: "61rem",
               maxWidth: "100%",
@@ -121,9 +119,7 @@ export default function LogIn() {
                 justifyContent: "center",
               }}
             >
-              <Avatar
-                src="./src/assets/icons/email-icon.svg"
-                alt="Ícone"
+              <MailIcon
                 sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
@@ -137,7 +133,6 @@ export default function LogIn() {
                 autoFocus
                 sx={{
                   width: "93%",
-                  border: "3px solid #000000",
                   marginBottom: "2vh",
                   borderRadius: "8px"
                 }}
@@ -152,9 +147,7 @@ export default function LogIn() {
                 justifyContent: "center",
               }}
             >
-              <Avatar
-                src="./src/assets/icons/lock-icon.svg"
-                alt="Ícone"
+              <HttpsIcon
                 sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
@@ -168,7 +161,6 @@ export default function LogIn() {
                 autoComplete="current-password"
                 sx={{
                   width: "93%",
-                  border: "3px solid #000000",
                   fontSize: "28px",
                   marginBottom: "2vh",
                   borderRadius: "8px"
@@ -213,6 +205,5 @@ export default function LogIn() {
           buttonText="Fechar"
         />
       </Box>
-    </ThemeProvider>
   );
 }
