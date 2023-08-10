@@ -1,20 +1,18 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { Link } from "react-router-dom";
+import MailIcon from '@mui/icons-material/Mail';
+import HttpsIcon from '@mui/icons-material/Https';
+import PersonIcon from '@mui/icons-material/Person';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
 import { useState } from "react";
 import AlertDialog from "./AlertDialog";
-import { Avatar, CardMedia } from "@mui/material";
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
+import { CardMedia } from "@mui/material";
 
 export default function SignUp() {
   const context = React.useContext(UserContext);
@@ -80,8 +78,6 @@ export default function SignUp() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <CssBaseline />
       <Box
         component="main"
         sx={{
@@ -107,7 +103,7 @@ export default function SignUp() {
             component="img"
             alt="Imagem de fundo"
             height="auto"
-            image="../src/assets/VERSAO01_SHOP.png"
+            image="./VERSAO01_SHOP.png"
             sx={{
               width: "61rem",
               maxWidth: "100%",
@@ -148,9 +144,7 @@ export default function SignUp() {
                 justifyContent: "center",
               }}
             >
-              <Avatar
-                src="./src/assets/icons/email-icon.svg"
-                alt="Ícone"
+              <MailIcon
                 sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
@@ -164,9 +158,8 @@ export default function SignUp() {
                 autoFocus
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
                   marginBottom: "2vh",
-				  borderRadius: "8px"
+                  borderRadius: "8px",
                 }}
               />
             </Box>
@@ -179,9 +172,7 @@ export default function SignUp() {
                 justifyContent: "center",
               }}
             >
-              <Avatar
-                src="./src/assets/icons/lock-icon.svg"
-                alt="Ícone"
+              <HttpsIcon
                 sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
@@ -195,9 +186,8 @@ export default function SignUp() {
                 autoComplete="current-password"
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
                   marginBottom: "2vh",
-				  borderRadius: "8px"
+                  borderRadius: "8px",
                 }}
               />
             </Box>
@@ -210,9 +200,7 @@ export default function SignUp() {
                 justifyContent: "center",
               }}
             >
-              <Avatar
-                src="./src/assets/icons/user-setting-icon.svg"
-                alt="Ícone"
+              <PersonIcon
                 sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
               />
               <TextField
@@ -225,9 +213,8 @@ export default function SignUp() {
                 id="username"
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
                   marginBottom: "2vh",
-				  borderRadius: "8px"
+                  borderRadius: "8px",
                 }}
               />
             </Box>
@@ -251,9 +238,8 @@ export default function SignUp() {
                 id="firstName"
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
                   marginBottom: "2vh",
-				  borderRadius: "8px"
+                  borderRadius: "8px",
                 }}
               />
             </Box>
@@ -277,9 +263,8 @@ export default function SignUp() {
                 id="lastName"
                 sx={{
                   width: "93%",
-                  border: "2px solid #000000",
                   marginBottom: "2vh",
-				  borderRadius: "8px"
+                  borderRadius: "8px",
                 }}
               />
             </Box>
@@ -322,6 +307,5 @@ export default function SignUp() {
           buttonText="Fechar"
         />
       </Box>
-    </ThemeProvider>
   );
 }
