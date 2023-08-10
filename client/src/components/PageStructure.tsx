@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,14 +15,15 @@ import Typography from "@mui/material/Typography";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import LogoutIcon from "@mui/icons-material/Logout";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Badge from "@mui/material/Badge";
 import { Link } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { NotificationsContext } from "../contexts/NotificationsContext";
+import { useContext, useState } from "react";
 
-const drawerWidth = 240;
+const drawerWidth = 320;
 
 interface Props {
   /**
@@ -36,9 +36,9 @@ interface Props {
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const userContext = React.useContext(UserContext);
-  const notificationsContext = React.useContext(NotificationsContext);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const userContext = useContext(UserContext);
+  const notificationsContext = useContext(NotificationsContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -52,39 +52,69 @@ export default function ResponsiveDrawer(props: Props) {
 
   const user = {
     username: userContext?.user?.username || "",
+    firstName: userContext?.user?.firstName || "",
+    lastName: userContext?.user?.lastName || "",
+  };
+
+  const iconSx = {
+    fontSize: "2em",
+    ml: "10px",
+    mr: "30px",
+    color: "#444444",
   };
 
   const links = [
     {
       text: "Listas",
       route: "/",
-      icon: <ViewListIcon />,
+      icon: <ViewListIcon sx={iconSx} />,
     },
     {
       text: "Notificações",
       route: "/notifications",
-      icon: <NotificationsIcon />,
+      icon: <NotificationsIcon sx={iconSx} />,
     },
     {
       text: "Configurações",
       route: "/settings",
-      icon: <SettingsIcon />,
+      icon: <SettingsIcon sx={iconSx} />,
     },
     {
       text: "Sair",
       route: "/login",
-      icon: <LogoutIcon />,
+      icon: <LogoutIcon sx={iconSx} />,
     },
   ];
 
   const drawer = (
-    <div>
-      <ListItemButton sx={{ paddingTop: 2, paddingBottom: 2 }}>
+    <Box sx={{ backgroundColor: "#FF9900" }}>
+      <ListItem sx={{ paddingTop: 2, paddingBottom: 2, height: "5.5rem" }}>
         <ListItemIcon>
-          <AccountBoxIcon />
+          <AccountCircleIcon
+            sx={{ fontSize: "4.5rem", mr: "10px", color: "#444444" }}
+          />
         </ListItemIcon>
-        <ListItemText primary={user.username} />
-      </ListItemButton>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
+          <Typography variant="h5" fontWeight="bold">
+            {user.username}
+          </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: "#333333",
+              letterSpacing: "0.5px",
+            }}
+          >
+            {user.firstName + " " + user.lastName}
+          </Typography>
+        </Box>
+      </ListItem>
       <Divider />
       <List>
         {links.map((page) => (
@@ -93,9 +123,15 @@ export default function ResponsiveDrawer(props: Props) {
             disablePadding
             component={Link}
             to={page.route}
+            sx={{
+              color: "#444444",
+            }}
           >
             <ListItemButton
               onClick={() => (page.text === "Sair" ? handleLogout() : null)}
+              sx={{
+                height: "4.5rem",
+              }}
             >
               <ListItemIcon>
                 {page.text === "Notificações" ? (
@@ -113,12 +149,17 @@ export default function ResponsiveDrawer(props: Props) {
                   page.icon
                 )}
               </ListItemIcon>
-              <ListItemText primary={page.text} />
+              <ListItemText
+                primaryTypographyProps={{
+                  sx: { fontSize: "1.2rem", fontWeight: "bold" },
+                }}
+                primary={page.text}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-    </div>
+    </Box>
   );
 
   const container =
@@ -132,6 +173,7 @@ export default function ResponsiveDrawer(props: Props) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          backgroundColor: "#F9B344",
         }}
       >
         <Toolbar>
@@ -142,7 +184,12 @@ export default function ResponsiveDrawer(props: Props) {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
+            <MenuIcon
+              sx={{
+                fontSize: "2em",
+                color: "#ffffff",
+              }}
+            />
           </IconButton>
           <Typography
             variant="h2"
@@ -161,10 +208,12 @@ export default function ResponsiveDrawer(props: Props) {
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { sm: drawerWidth },
+          flexShrink: { sm: 0 },
+        }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
           variant="temporary"
@@ -178,6 +227,7 @@ export default function ResponsiveDrawer(props: Props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              backgroundColor: "#FF9900",
             },
           }}
         >
@@ -190,6 +240,7 @@ export default function ResponsiveDrawer(props: Props) {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              backgroundColor: "#FF9900",
             },
           }}
           open

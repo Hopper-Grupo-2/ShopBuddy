@@ -309,6 +309,7 @@ export default class ListsRepositories {
             "products.$.quantity": newProductInfo.quantity,
             "products.$.unit": newProductInfo.unit,
             "products.$.price": newProductInfo.price,
+            "products.$.market": newProductInfo.market,
             updatedAt: new Date(),
           },
         },
