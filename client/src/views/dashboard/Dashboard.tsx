@@ -100,9 +100,16 @@ export default function Dashboard() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      setDialogMessage(
-        "Desculpe, apenas administradores da lista podem deleta-la."
-      );
+      let errorMessage = "";
+      if (
+        error.name === "BadRequest" &&
+        error.message === "Cannot delete list with members"
+      ) {
+        errorMessage = "Lista com membro não pode ser excluída";
+      } else {
+        errorMessage = "Erro ao tentar apagar a lista";
+      }
+      setDialogMessage(errorMessage);
       setOpenDialog(true);
       //return false;
     }
