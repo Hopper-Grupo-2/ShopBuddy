@@ -1,6 +1,7 @@
 import PageStructure from "../../components/PageStructure";
 import { useParams } from "react-router-dom";
 import SimplePaper from "../../components/Paper";
+import { useNavigate } from 'react-router-dom';
 import CheckboxList from "../../components/CheckboxList";
 import IItem from "../../interfaces/iItem";
 import { useState, useEffect, useContext } from "react";
@@ -58,8 +59,6 @@ export default function List() {
   const [openEditItemForm, setOpenEditItemForm] = useState(false);
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
-  const [isListMember, setIsListMember] = useState(false);
-  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
   const [initialFormData, setInitialFormData] = useState<
     Record<string, string>
@@ -75,7 +74,7 @@ export default function List() {
   const [members, setMembers] = useState<Array<IUser>>([]);
   // members
   const [showMembers, setShowMembers] = useState(false);
-
+  const navigate = useNavigate();
   const fetchMembers = async () => {
     console.log("esse é o list id:", params.listId);
     const response = await fetch(`/api/lists/${params.listId}/members`, {
@@ -89,22 +88,46 @@ export default function List() {
       setMembers(membersData.data as IUser[]);
     }
   };
-
   const fetchList = async () => {
-    const response = await fetch(`/api/lists/${params.listId}`, {
-      method: "GET",
-      credentials: "include", // Ensure credentials are sent
-    });
-
-    if (response.ok) {
+    try {
+      const response = await fetch(`/api/lists/${params.listId}`, {
+        method: "GET",
+        credentials: "include", // Ensure credentials are sent
+      });
+  
+      if (!response.ok) {
+        if (response.status === 401) {
+          navigate("/");
+        } else {
+          const errorData = await response.json();
+          const errorMessage = errorData.message || "Erro desconhecido";
+  
+          setDialogMessage(errorMessage);
+          setOpenDialog(true);
+        }
+        return;
+      }
+  
       const listData = await response.json();
-      //console.log(listData);
-      console.log(listData.data.products);
-      setList(listData.data);
-      setItems(listData.data.products);
+      const userId = userContext?.user?._id;
+      if (!listData.data) {
+        navigate("/");
+        return;
+      }
+  
+      if (listData.data.members.some((member: { userId: string }) => member.userId === userId)) {
+        setList(listData.data);
+        setItems(listData.data.products);
+      } else {
+        setDialogMessage("Você não é membro da lista. Tente novamente.");
+        setOpenDialog(true);
+        navigate("/");
+      }
+    } catch (error) {
+      setDialogMessage("Erro na requisição. Tente novamente.");
+      setOpenDialog(true);
     }
   };
-
   useEffect(() => {
     fetchList();
     fetchMembers();
@@ -115,23 +138,7 @@ export default function List() {
     fetchList();
     fetchMembers();
     notificationsContext?.readListNotifications(params.listId ?? "");
-
-    // Check if the user is a member of the list
-    if (members.some(member => member._id === userContext?.user?._id)) {
-      setIsListMember(true);
-    } else {
-      setIsListMember(false);
-    }
-  }, []);
-  useEffect(() => {
-    if (!isListMember) {
-      setRedirectToDashboard(true);
-      console.log("User is not a member of the list. Redirecting...");
-    }
-  }, [isListMember]);
-  if (redirectToDashboard) {
-    // return <direct to="/dashboard" />;
-  }
+})
   useEffect(() => {
     if (list && userContext?.user?._id === list.owner) {
       setIsListOwner(true);
