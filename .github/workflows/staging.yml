@@ -1,5 +1,5 @@
 name: Workflow to build, test and staging deploy
-run-name: Run Workflow build, test and staging deploy
+run-name: Staging
 on:
     push:
         branches-ignore:
