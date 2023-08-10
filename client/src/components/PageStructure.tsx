@@ -59,7 +59,7 @@ export default function ResponsiveDrawer(props: Props) {
   const iconSx = {
     fontSize: "2em",
     ml: "10px",
-    mr: "30px",
+    mr: "0px",
     color: "#444444",
   };
 
