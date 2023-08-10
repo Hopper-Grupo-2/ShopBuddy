@@ -95,39 +95,29 @@ export default function List() {
         credentials: "include", // Ensure credentials are sent
       });
   
-      if (!response.ok) {
-        if (response.status === 401) {
-          navigate("/");
-        } else {
-          const errorData = await response.json();
-          const errorMessage = errorData.message || "Erro desconhecido";
-  
-          setDialogMessage(errorMessage);
-          setOpenDialog(true);
-        }
-        return;
-      }
-  
-      const listData = await response.json();
-      const userId = userContext?.user?._id;
-      if (!listData.data) {
+      if (response.status === 403) {
+        console.log("Usuário não é membro da lista.");
+        setDialogMessage("Erro: você não é membro da lista.");
+        setOpenDialog(true);
         navigate("/");
         return;
       }
   
-      if (listData.data.members.some((member: { userId: string }) => member.userId === userId)) {
+      if (response.ok) {
+        const listData = await response.json();
         setList(listData.data);
         setItems(listData.data.products);
       } else {
-        setDialogMessage("Você não é membro da lista. Tente novamente.");
+        console.log("Erro na resposta:", response);
+        setDialogMessage("Erro na requisição. Tente novamente.");
         setOpenDialog(true);
-        navigate("/");
       }
     } catch (error) {
       setDialogMessage("Erro na requisição. Tente novamente.");
       setOpenDialog(true);
     }
   };
+  
   useEffect(() => {
     fetchList();
     fetchMembers();
