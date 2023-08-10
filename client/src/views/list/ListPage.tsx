@@ -57,6 +57,8 @@ export default function List() {
   const [openEditItemForm, setOpenEditItemForm] = useState(false);
   const [productId, setProductIdToEdit] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
+  const [isListMember, setIsListMember] = useState(false);
+  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
   const [initialFormData, setInitialFormData] = useState<
     Record<string, string>
@@ -108,6 +110,27 @@ export default function List() {
     notificationsContext?.readListNotifications(params.listId ?? "");
   }, []);
 
+  useEffect(() => {
+    fetchList();
+    fetchMembers();
+    notificationsContext?.readListNotifications(params.listId ?? "");
+
+    // Check if the user is a member of the list
+    if (members.some(member => member._id === userContext?.user?._id)) {
+      setIsListMember(true);
+    } else {
+      setIsListMember(false);
+    }
+  }, []);
+  useEffect(() => {
+    if (!isListMember) {
+      setRedirectToDashboard(true);
+      console.log("User is not a member of the list. Redirecting...");
+    }
+  }, [isListMember]);
+  if (redirectToDashboard) {
+    // return <direct to="/dashboard" />;
+  }
   useEffect(() => {
     if (list && userContext?.user?._id === list.owner) {
       setIsListOwner(true);
