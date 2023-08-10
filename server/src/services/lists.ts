@@ -29,12 +29,28 @@ export default class ListsServices {
     }
   }
 
-  public static async getListByListId(listId: string): Promise<IList> {
+  public static async getListByListId(
+    listId: string,
+    userId: string
+  ): Promise<IList> {
     try {
+      if (userId === "") {
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "usuario não logado"
+        );
+      }
       const list = await this.Repository.getListById(listId);
       if (list === null)
         throw ErrorHandler.createError("NotFoundError", "List does not exist");
 
+      const isMember = list.members.find((member) => member.userId.toString() === userId);
+      if (!isMember) {
+        throw ErrorHandler.createError(
+          "ForbiddenError",
+          "You are not a member of this list"
+        );
+      }
       return list;
     } catch (error) {
       throw error;
@@ -104,9 +120,8 @@ export default class ListsServices {
           "Cannot delete list with members"
         );
       }
-      
-      await this.Repository.deleteList(listId);
 
+      await this.Repository.deleteList(listId);
     } catch (error) {
       throw error;
     }

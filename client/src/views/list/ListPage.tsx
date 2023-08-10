@@ -1,6 +1,7 @@
 import PageStructure from "../../components/PageStructure";
 import { useParams } from "react-router-dom";
 import SimplePaper from "../../components/Paper";
+import { useNavigate } from 'react-router-dom';
 import CheckboxList from "../../components/CheckboxList";
 import IItem from "../../interfaces/iItem";
 import { useState, useEffect, useContext } from "react";
@@ -16,6 +17,7 @@ import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import { NotificationsContext } from "../../contexts/NotificationsContext";
 import { MemberFormDialog } from "../../components/MemberFormDialog";
+import { Box } from "@mui/material";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -72,7 +74,7 @@ export default function List() {
   const [members, setMembers] = useState<Array<IUser>>([]);
   // members
   const [showMembers, setShowMembers] = useState(false);
-
+  const navigate = useNavigate();
   const fetchMembers = async () => {
     console.log("esse é o list id:", params.listId);
     const response = await fetch(`/api/lists/${params.listId}/members`, {
@@ -86,28 +88,47 @@ export default function List() {
       setMembers(membersData.data as IUser[]);
     }
   };
-
   const fetchList = async () => {
-    const response = await fetch(`/api/lists/${params.listId}`, {
-      method: "GET",
-      credentials: "include", // Ensure credentials are sent
-    });
-
-    if (response.ok) {
-      const listData = await response.json();
-      //console.log(listData);
-      console.log(listData.data.products);
-      setList(listData.data);
-      setItems(listData.data.products);
+    try {
+      const response = await fetch(`/api/lists/${params.listId}`, {
+        method: "GET",
+        credentials: "include", // Ensure credentials are sent
+      });
+  
+      if (response.status === 403) {
+        console.log("Usuário não é membro da lista.");
+        setDialogMessage("Erro: você não é membro da lista.");
+        setOpenDialog(true);
+        navigate("/");
+        return;
+      }
+  
+      if (response.ok) {
+        const listData = await response.json();
+        setList(listData.data);
+        setItems(listData.data.products);
+      } else {
+        console.log("Erro na resposta:", response);
+        setDialogMessage("Erro na requisição. Tente novamente.");
+        setOpenDialog(true);
+      }
+    } catch (error) {
+      setDialogMessage("Erro na requisição. Tente novamente.");
+      setOpenDialog(true);
     }
   };
-
+  
   useEffect(() => {
     fetchList();
     fetchMembers();
     notificationsContext?.readListNotifications(params.listId ?? "");
   }, []);
 
+  useEffect(() => {
+    fetchList();
+    fetchMembers();
+    notificationsContext?.readListNotifications(params.listId ?? "");
+})
   useEffect(() => {
     if (list && userContext?.user?._id === list.owner) {
       setIsListOwner(true);
@@ -405,44 +426,51 @@ export default function List() {
   return (
     <>
       <PageStructure>
-        <HeaderContainer>
-          <h1>{list?.listName}</h1>
-          <ButtonContainer>
-            <Button variant="contained" onClick={handleShowMembers}>
-              Membros
-            </Button>
-            {isListOwner && (
-              <Button variant="contained" onClick={handleOpenMemberForm}>
-                + Adicionar membros
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          margin="30px"
+        >
+          <HeaderContainer>
+            <h1>{list?.listName}</h1>
+            <ButtonContainer>
+              <Button variant="contained" onClick={handleShowMembers}>
+                Membros
               </Button>
-            )}
-          </ButtonContainer>
-        </HeaderContainer>
-        <ContentContainer>
-          <SimplePaper>
-            {items.length === 0 ? (
-              <p style={{ textAlign: "center" }}>A lista está vazia...</p>
-            ) : (
-              <CheckboxList
-                items={items}
-                onCheck={handleCheckProduct}
-                onRemove={handleDeleteProduct}
-                onEdit={handleOpenEditItemForm}
-              />
-            )}
-            <Button
-              sx={{
-                margin: "0px auto 15px auto",
-                display: "block",
-              }}
-              variant="contained"
-              onClick={handleOpenItemForm}
-            >
-              Adicionar item
-            </Button>
-          </SimplePaper>
-          {list ? <ChatBox listId={list._id} /> : null}
-        </ContentContainer>
+              {isListOwner && (
+                <Button variant="contained" onClick={handleOpenMemberForm}>
+                  + Adicionar membros
+                </Button>
+              )}
+            </ButtonContainer>
+          </HeaderContainer>
+          <ContentContainer>
+            <SimplePaper>
+              {items.length === 0 ? (
+                <p style={{ textAlign: "center" }}>A lista está vazia...</p>
+              ) : (
+                <CheckboxList
+                  items={items}
+                  onCheck={handleCheckProduct}
+                  onRemove={handleDeleteProduct}
+                  onEdit={handleOpenEditItemForm}
+                />
+              )}
+              <Button
+                sx={{
+                  margin: "0px auto 15px auto",
+                  display: "block",
+                }}
+                variant="contained"
+                onClick={handleOpenItemForm}
+              >
+                Adicionar item
+              </Button>
+            </SimplePaper>
+            {list ? <ChatBox listId={list._id} /> : null}
+          </ContentContainer>
+        </Box>
       </PageStructure>
       <ItemFormDialog
         title="Adicionar novo item"

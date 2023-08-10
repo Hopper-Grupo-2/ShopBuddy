@@ -111,7 +111,8 @@ describe("Lists Services", () => {
 
             // call the function under test
             const list = await ListsServices.getListByListId(
-                "64bc28f2e97fdb0fbd61c076"
+                "64bc28f2e97fdb0fbd61c076",
+                "64baecd19a6976beff14b5db"
             );
 
             // assertions
@@ -130,11 +131,11 @@ describe("Lists Services", () => {
 
             // call the function under test
             await expect(() => {
-                return ListsServices.getListByListId("1234567890ab");
+                return ListsServices.getListByListId("1234567890ab","1920392913bdea");
             }).rejects.toMatchObject({ name: "NotFoundError" });
 
             await expect(() => {
-                return ListsServices.getListByListId("1234567890ab");
+                return ListsServices.getListByListId("1234567890ab","aaaaaaaaaaaa12");
             }).rejects.toMatchObject({
                 message: "List does not exist",
             });

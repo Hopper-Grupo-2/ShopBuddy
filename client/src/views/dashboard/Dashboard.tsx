@@ -1,5 +1,4 @@
 import PageStructure from "../../components/PageStructure";
-import Card from "../../components/Card";
 import Button from "@mui/material/Button";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +7,10 @@ import { FormDialog } from "../../components/FormDialog";
 import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
+import ListCard from "../../components/ListCard";
+import { Box, Grid } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import SearchBar from "../../components/SearchBar";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -15,6 +18,7 @@ export default function Dashboard() {
   const [lists, setLists] = useState<IList[]>([]);
   const [fetchTrigger, setFetchTrigger] = useState(false);
   const [openListForm, setOpenListForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const context = useContext(UserContext);
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -22,12 +26,11 @@ export default function Dashboard() {
 
   const userContext = useContext(UserContext);
 
-
   useEffect(() => {
     const fetchLists = async () => {
       const response = await fetch(`/api/lists/user/${context?.user?._id}`, {
         method: "GET",
-        credentials: "include", // Ensure credentials are sent
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -97,9 +100,16 @@ export default function Dashboard() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      setDialogMessage(
-        "Desculpe, apenas administradores da lista podem deleta-la."
-      );
+      let errorMessage = "";
+      if (
+        error.name === "BadRequest" &&
+        error.message === "Cannot delete list with members"
+      ) {
+        errorMessage = "Lista com membro não pode ser excluída";
+      } else {
+        errorMessage = "Erro ao tentar apagar a lista";
+      }
+      setDialogMessage(errorMessage);
       setOpenDialog(true);
       //return false;
     }
@@ -150,53 +160,87 @@ export default function Dashboard() {
   return (
     <>
       <PageStructure>
-        <h1>Bem vindo(a) ao ShopBuddy!</h1>
-        <Button
-          sx={{ marginBottom: "30px" }}
-          variant="contained"
-          onClick={handleOpenListForm}
+        <Box
+          display="flex"
+          justifyContent="center"
+          flexWrap="wrap"
+          sx={{ flex: 1, width: "100%", margin: "30px 0px", gap: "30px" }}
         >
-          Adicionar nova lista
-        </Button>
-        {lists
-          .slice()
-          .reverse()
-          .map((list) => (
-            <Card
-              key={list._id}
-              title={list.listName}
-              date={new Date(list.createdAt)}
-              total={list.products.reduce((acc, product) => {
-                if (
-                  product.unit === "Kg" ||
-                  product.unit === "L" ||
-                  product.unit === "Ml" ||
-                  product.unit === "und"
-                ) {
-                  return acc + product.price * product.quantity;
-                } else {
-                  return acc + product.price;
-                }
-              }, 0)}
-              action={() => {
-                navigate("/list/" + list._id);
-              }}
-              deleteAction={() => {
-                deleteList(list._id, list.listName);
-              }}
-
-              exitAction={() =>
-                exitList(
-                  list._id,
-                  list.listName,
-                  list.owner,
-                  userContext?.user?._id
-                )
-              }
-              showButton={list.owner === userContext?.user?._id}
-
+          <SearchBar onChange={setSearchTerm} />
+          <Button
+            variant="contained"
+            onClick={handleOpenListForm}
+            sx={{
+              backgroundColor: "#FF9900",
+              textTransform: "capitalize",
+              fontWeight: "bold",
+              fontSize: "1.25rem",
+              whiteSpace: "nowrap",
+              color: "#FFF",
+            }}
+          >
+            <AddIcon
+              sx={{ fontWeight: "bold", mr: "15px", fontSize: "2rem" }}
             />
-          ))}
+            Nova lista
+          </Button>
+        </Box>
+        <Grid container spacing={4} justifyContent="center">
+          {lists
+            .slice()
+            .reverse()
+            .map((list) => {
+              if (
+                list.listName.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+                return (
+                  <Grid
+                    item
+                    sm={12}
+                    md={6}
+                    lg={4}
+                    xl={3}
+                    key={list._id}
+                    sx={{ minWidth: "375px" }}
+                  >
+                    <ListCard
+                      key={list._id}
+                      title={list.listName}
+                      date={new Date(list.createdAt)}
+                      total={list.products.reduce((acc, product) => {
+                        if (
+                          product.unit === "Kg" ||
+                          product.unit === "L" ||
+                          product.unit === "Ml" ||
+                          product.unit === "und"
+                        ) {
+                          return acc + product.price * product.quantity;
+                        } else {
+                          return acc + product.price;
+                        }
+                      }, 0)}
+                      products={list.products}
+                      memberCount={list.members.length}
+                      action={() => {
+                        navigate("/list/" + list._id);
+                      }}
+                      deleteAction={() => {
+                        deleteList(list._id, list.listName);
+                      }}
+                      exitAction={() =>
+                        exitList(
+                          list._id,
+                          list.listName,
+                          list.owner,
+                          userContext?.user?._id
+                        )
+                      }
+                      isOwner={list.owner === userContext?.user?._id}
+                    />
+                  </Grid>
+                );
+            })}
+        </Grid>
       </PageStructure>
       <FormDialog
         title="Adicionar nova lista"
