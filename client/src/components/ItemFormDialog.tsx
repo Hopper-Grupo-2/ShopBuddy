@@ -44,25 +44,21 @@ interface FormDialogProps {
 }
 
 const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
-  let initialFormData: Record<string, string> = props.fields.reduce(
-    (acc, field) => ({ ...acc, [field.id]: "" }),
-    {}
-  );
-
-  if (props.initialValues) {
-    initialFormData = props.initialValues;
-  }
+  const initialFormData: Record<string, string> =
+    props.initialValues ??
+    props.fields.reduce((acc, field) => ({ ...acc, [field.id]: "" }), {});
 
   const [formData, setFormData] =
     useState<Record<string, string>>(initialFormData);
 
   useEffect(() => {
-    setFormData(props.initialValues || initialFormData);
+    if (!props.initialValues) return;
+    setFormData(props.initialValues);
   }, [props.initialValues]);
 
   useEffect(() => {
     if (!props.open) {
-      setFormData({});
+      setFormData(initialFormData);
     }
   }, [props.open]);
 
@@ -128,8 +124,10 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     selectedProduct: IItem | string | null
   ) => {
     const product = items.find((item) => item === selectedProduct);
+
     if (!product) return;
 
+    console.log(formData);
     setFormData((prevFormData) => {
       let newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
