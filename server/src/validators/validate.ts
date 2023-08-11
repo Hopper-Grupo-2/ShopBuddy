@@ -37,7 +37,7 @@ const allFieldsToValidate: {
   patchProduct: [
     { title: "listId", type: "mongoid" },
     { title: "name", type: "list" },
-    { title: "quantity", type: "integer" },
+    { title: "quantity", type: "float" },
     { title: "unit", type: "measureunit" },
     { title: "price", type: "float" },
     { title: "market", type: "optional-name" },
@@ -64,7 +64,7 @@ const allFieldsToValidate: {
     { title: "listId", type: "mongoid" },
     { title: "productId", type: "mongoid" },
     { title: "name", type: "list" },
-    { title: "quantity", type: "integer" },
+    { title: "quantity", type: "float" },
     { title: "unit", type: "measureunit" },
     { title: "price", type: "float" },
     { title: "market", type: "optional-name" },
