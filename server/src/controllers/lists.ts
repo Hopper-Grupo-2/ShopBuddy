@@ -44,10 +44,10 @@ export default class ListsController {
     next: NextFunction
   ): Promise<void> {
     const listId = req.params.listId;
-    const userId = req.user?._id?.toString() || ""
+    const userId = req.user?._id?.toString() || "";
 
     try {
-      const listById = await ListsServices.getListByListId(listId,userId);
+      const listById = await ListsServices.getListByListId(listId, userId);
       res.status(200).json({ error: null, data: listById });
     } catch (error) {
       next(error);
