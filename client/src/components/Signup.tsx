@@ -78,18 +78,6 @@ export default function SignUp() {
   };
 
   return (
-      <Box
-        component="main"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          padding: 0,
-          minHeight: "100vh",
-        }}
-      >
         <Box
           sx={{
             display: "flex",
@@ -97,28 +85,43 @@ export default function SignUp() {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
+            height: "100vh",
           }}
         >
-          <CardMedia
-            component="img"
-            alt="Imagem de fundo"
-            height="auto"
-            image="./VERSAO01_SHOP.png"
-            sx={{
-              width: "61rem",
-              maxWidth: "100%",
-            }}
-          />
-
+          <Box
+        sx={{
+          height: "100%",
+          overflow: "hidden",
+        }}
+      >
+        <CardMedia
+          component="img"
+          alt="Imagem de fundo"
+          image="./VERSAO01_SHOP.png"
+          sx={{
+            height: "100%",
+          }}
+        />
+      </Box>
+      <Box
+          sx={{
+            height: "100%",
+            width: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+          >
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
             sx={{
-              flex: "50%",
-              padding: "5rem",
+              width: "75%",
+              height: "100%",
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
               alignItems: "center",
             }}
           >
@@ -126,11 +129,12 @@ export default function SignUp() {
               component="h1"
               variant="h5"
               sx={{
-                marginTop: "3vh",
-                height: "160px",
-                fontSize: "64px",
+                marginTop: { xs: "3vh", md: 0 },
+                fontSize: {xs: "6vw", md: "4vw" },
                 fontWeight: "bold",
                 fontFamily: "'Open Sans'",
+                whiteSpace: "nowrap",
+                marginBottom: "10%"
               }}
             >
               Cadastre-se!
@@ -299,13 +303,14 @@ export default function SignUp() {
               Cadastrar
             </Button>
           </Box>
-        </Box>
+          </Box>
+       
         <AlertDialog
           open={openDialog}
           onClose={handleCloseDialog}
           contentText={dialogMessage}
           buttonText="Fechar"
         />
-      </Box>
+         </Box>
   );
 }
