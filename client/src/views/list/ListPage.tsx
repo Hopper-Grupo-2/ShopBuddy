@@ -1,7 +1,7 @@
 import PageStructure from "../../components/PageStructure";
 import { useParams } from "react-router-dom";
 import SimplePaper from "../../components/Paper";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import CheckboxList from "../../components/CheckboxList";
 import IItem from "../../interfaces/iItem";
 import { useState, useEffect, useContext } from "react";
@@ -94,30 +94,30 @@ export default function List() {
         method: "GET",
         credentials: "include", // Ensure credentials are sent
       });
-  
-      if (response.status === 403) {
-        console.log("Usuário não é membro da lista.");
-        setDialogMessage("Erro: você não é membro da lista.");
-        setOpenDialog(true);
-        navigate("/");
-        return;
-      }
-  
+
+      // if (response.status === 403) {
+      //   console.log("Usuário não é membro da lista.");
+      //   setDialogMessage("Erro: você não é membro da lista.");
+      //   setOpenDialog(true);
+      //   navigate("/");
+      //   return;
+      // }
+
       if (response.ok) {
         const listData = await response.json();
         setList(listData.data);
         setItems(listData.data.products);
       } else {
-        console.log("Erro na resposta:", response);
-        setDialogMessage("Erro na requisição. Tente novamente.");
-        setOpenDialog(true);
+        navigate("/");
       }
     } catch (error) {
-      setDialogMessage("Erro na requisição. Tente novamente.");
-      setOpenDialog(true);
+      console.error(error);
+      // setDialogMessage("Erro na requisição. Tente novamente.");
+      // setOpenDialog(true);
+      navigate("/");
     }
   };
-  
+
   useEffect(() => {
     fetchList();
     fetchMembers();
@@ -128,7 +128,8 @@ export default function List() {
     fetchList();
     fetchMembers();
     notificationsContext?.readListNotifications(params.listId ?? "");
-})
+  }, []);
+
   useEffect(() => {
     if (list && userContext?.user?._id === list.owner) {
       setIsListOwner(true);

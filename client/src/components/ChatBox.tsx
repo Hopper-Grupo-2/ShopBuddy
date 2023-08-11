@@ -39,7 +39,7 @@ const MessageBox = styled(Paper)<{ sender: string }>`
   align-self: ${(props) =>
     props.sender === "user" ? "flex-end" : "flex-start"};
   background-color: ${(props) =>
-    props.sender === "user" ? "#4caf50" : "#f1f1f1"};
+    props.sender === "user" ? "#FF9900" : "#f1f1f1"};
   color: ${(props) => (props.sender === "user" ? "white" : "black")};
   word-wrap: break-word;
 `;
