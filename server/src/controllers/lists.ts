@@ -394,6 +394,14 @@ export default class ListsController {
         newProductInfo
       );
 
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToList(
+        listId,
+        user._id?.toString() ?? "",
+        "editProduct",
+        updatedList?.products
+      );
+
       res.status(200).json({ error: null, data: updatedList });
     } catch (error) {
       next(error);
