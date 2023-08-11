@@ -52,48 +52,50 @@ export default function LogIn() {
   };
 
   return (
-      <Box
-        component="main"
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          padding: 0,
-          minHeight: "100vh",
-        }}
-      >
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column-reverse", md: "row" },
             justifyContent: "center",
             alignItems: "center",
-            width: "100%",
+            width: "100vw",
+            height: "100vh",
           }}
-        >
+          >
+          <Box
+          sx={{
+            height: "100%",
+            overflow: "hidden"
+          }}
+          >
           <CardMedia
             component="img"
             alt="Imagem de fundo"
-            height="auto"
             image="./VERSAO01_SHOP.png"
             sx={{
-              width: "61rem",
-              maxWidth: "100%",
+              height: "100%"
             }}
           />
-
+          </Box>
+          <Box
+          sx={{
+            height: "100%",
+            width: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+          >
           <Box
             component="form"
             onSubmit={handleSubmit}
             noValidate
             sx={{
-              width: "500px",
-              flex: "50%",
-              padding: "5rem",
+              width: "70%",
+              height: "100%",
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
               alignItems: "center",
             }}
             >
@@ -101,11 +103,11 @@ export default function LogIn() {
               variant="h5"
               sx={{
                 marginTop: { xs: "3vh", md: 0 },
-                marginBottom: "10vh",
                 fontSize: {xs: "6vw", md: "4vw" },
                 fontWeight: "bold",
                 fontFamily: "'Open Sans'",
-                whiteSpace: "nowrap"
+                whiteSpace: "nowrap",
+                marginBottom: "10%"
               }}
             >
               Seja Bem-vindo!
@@ -120,7 +122,7 @@ export default function LogIn() {
               }}
             >
               <MailIcon
-                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
+                sx={{ width: 40, height: 40, marginRight: "0.5vw", marginBottom: "4%"}}
               />
               <TextField
                 margin="normal"
@@ -133,7 +135,7 @@ export default function LogIn() {
                 autoFocus
                 sx={{
                   width: "93%",
-                  marginBottom: "2vh",
+                  height: "100%",
                   borderRadius: "8px"
                 }}
               />
@@ -162,7 +164,6 @@ export default function LogIn() {
                 sx={{
                   width: "93%",
                   fontSize: "28px",
-                  marginBottom: "2vh",
                   borderRadius: "8px"
                 }}
               />
@@ -197,8 +198,8 @@ export default function LogIn() {
               Entrar
             </Button>
           </Box>
-        </Box>
-        <AlertDialog
+          </Box>
+          <AlertDialog
           open={openDialog}
           onClose={handleCloseDialog}
           contentText={dialogMessage}
