@@ -11,6 +11,7 @@ import ListCard from "../../components/ListCard";
 import { Box, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchBar from "../../components/SearchBar";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ export default function Dashboard() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
+
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [onConfirm, setOnConfirm] = useState(() => () => {});
 
   const userContext = useContext(UserContext);
 
@@ -78,9 +82,7 @@ export default function Dashboard() {
     }
   };
 
-  const deleteList = async (listId: string, listName: string) => {
-    if (!confirm(`Deseja realmente apagar a lista ${listName}?`)) return;
-
+  const deleteList = async (listId: string) => {
     try {
       const response = await fetch(`/api/lists/${listId}`, {
         method: "DELETE",
@@ -105,7 +107,7 @@ export default function Dashboard() {
         error.name === "BadRequest" &&
         error.message === "Cannot delete list with members"
       ) {
-        errorMessage = "Lista com membro não pode ser excluída";
+        errorMessage = "Lista com membros não pode ser excluída";
       } else {
         errorMessage = "Erro ao tentar apagar a lista";
       }
@@ -115,22 +117,7 @@ export default function Dashboard() {
     }
   };
 
-  const exitList = async (
-    listId: string,
-    listName: string,
-    listOwner: string,
-    memberId: string | undefined
-  ) => {
-    let message = "";
-
-    if (memberId === listOwner) {
-      message = `Deseja realmente sair da lista ${listName}? Se houver outros usuários, sua liderança passará para o primeiro, senão, a lista será apagada.`;
-    } else {
-      message = `Deseja realmente sair da lista ${listName}?`;
-    }
-
-    if (!confirm(`${message}`)) return;
-
+  const exitList = async (listId: string, memberId: string | undefined) => {
     try {
       const response = await fetch(`/api/lists/${listId}/members/${memberId}`, {
         method: "DELETE",
@@ -155,6 +142,7 @@ export default function Dashboard() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setOpenConfirmDialog(false);
   };
 
   return (
@@ -225,16 +213,23 @@ export default function Dashboard() {
                         navigate("/list/" + list._id);
                       }}
                       deleteAction={() => {
-                        deleteList(list._id, list.listName);
+                        setDialogMessage(
+                          `Deseja realmente apagar a lista ${list.listName}?`
+                        );
+                        setOnConfirm(() => () => {
+                          deleteList(list._id);
+                        });
+                        setOpenConfirmDialog(true);
                       }}
-                      exitAction={() =>
-                        exitList(
-                          list._id,
-                          list.listName,
-                          list.owner,
-                          userContext?.user?._id
-                        )
-                      }
+                      exitAction={() => {
+                        setDialogMessage(
+                          `Deseja realmente sair da lista ${list.listName}?`
+                        );
+                        setOnConfirm(() => () => {
+                          exitList(list._id, userContext?.user?._id);
+                        });
+                        setOpenConfirmDialog(true);
+                      }}
                       isOwner={list.owner === userContext?.user?._id}
                     />
                   </Grid>
@@ -249,12 +244,17 @@ export default function Dashboard() {
         handleClose={handleCloseListForm}
         handleSubmit={createNewList}
       ></FormDialog>
-
       <AlertDialog
         open={openDialog}
         onClose={handleCloseDialog}
         contentText={dialogMessage}
         buttonText="Fechar"
+      />
+      <ConfirmDialog
+        open={openConfirmDialog}
+        onClose={handleCloseDialog}
+        onConfirm={onConfirm}
+        contentText={dialogMessage}
       />
     </>
   );
