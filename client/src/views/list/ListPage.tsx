@@ -391,6 +391,10 @@ export default function List() {
       removeItem(productId);
     });
 
+    socketContext.socket.on("addMember", (members: Array<IUser>) => {
+      setMembers(members);
+    });
+
     socketContext.socket.on("deleteMember", (members: Array<IUser>) => {
       setMembers(members);
     });
@@ -403,6 +407,7 @@ export default function List() {
       socketContext.socket?.off("addProduct");
       socketContext.socket?.off("checkProduct");
       socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("addMember");
       socketContext.socket?.off("deleteMember");
     };
   }, [socketContext?.socket, items, members]);

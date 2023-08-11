@@ -186,6 +186,27 @@ export default class ListsController {
         user?._id?.toString() ?? ""
       );
 
+      const websocket = Websocket.getIstance();
+
+      if (updatedList) {
+        const members: IUser[] = [];
+
+        for (const element of updatedList.members) {
+          const userId = element.userId.toString();
+          //console.log(userId);
+          const member = await UsersRepositories.getUserById(userId);
+
+          if (member !== null) members.push(member);
+        }
+
+        websocket.broadcastToList(
+          listId,
+          user._id as string,
+          "addMember",
+          members
+        );
+      }
+
       // this is dangerous, maybe we rework it?
       const newMember = await UsersRepositories.getUserByUsername(username);
 
