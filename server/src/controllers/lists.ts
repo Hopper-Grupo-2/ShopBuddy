@@ -212,6 +212,12 @@ export default class ListsController {
 
       console.log(newMember);
 
+      websocket.broadcastToUser(
+        newMember?._id?.toString() ?? "",
+        "addedToList",
+        "Added to list" + listId
+      );
+
       NotificationsController.sendNewUserNotification(
         listId,
         newMember?._id?.toString() ?? "",
@@ -263,6 +269,12 @@ export default class ListsController {
       // (we will have to implement a different notification for the other users
       //  to notify that a member left the list, but that will be done later)
       if (memberId !== user._id?.toString()) {
+        websocket.broadcastToUser(
+          memberId,
+          "deletedFromList",
+          "Deleted From list" + listId
+        );
+
         NotificationsController.sendNewUserNotification(
           listId,
           memberId,

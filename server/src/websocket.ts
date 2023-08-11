@@ -126,6 +126,7 @@ export default class Websocket {
     if (!this.io) return;
     this.connections.forEach((conn: IConnection) => {
       if (conn.userId === userId) {
+        console.log("websocket: sending a user message...");
         conn.connection.emit(eventName, data);
       }
     });
