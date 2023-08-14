@@ -90,7 +90,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
           id={props.labelId}
           primary={`${props.item.name} ${props.item.quantity} ${
             props.item.unit
-          } R$${props.item.price.toFixed(2).replace(".", ",")}`}
+          } R$${props.item.price.toFixed(2).replace(".", ",")} ${props.item.market}`}
         />
       </ListItemButton>
     </ListItem>
@@ -113,7 +113,14 @@ export default function CheckboxList(props: CheckboxListProps) {
       case "unit":
       return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
       case "market":
-        return [...items].sort((a, b) => a.market.localeCompare(b.market));
+      return [...items].sort((a, b) => {
+        const marketComparison = a.market.localeCompare(b.market);
+        if (marketComparison === 0) {
+          return a.name.localeCompare(b.name);
+        } else {
+          return marketComparison;
+        }
+      })
       default:
         return items;
     }
