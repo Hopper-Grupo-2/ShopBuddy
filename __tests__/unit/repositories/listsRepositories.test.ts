@@ -191,3 +191,19 @@ import {
       expect(createdList.products).toEqual([]);
     });
   });
+  describe("deleteList", () => {
+    it("should delete a list by ID", async () => {
+      const listModel = Models.getInstance().listModel;
+      const createdList = await listModel.create({
+        listName: "List to be deleted",
+        owner: "64baecd19a6976beff14b5db",
+      });
+  
+      await ListRepositories.deleteList(createdList.id);
+  
+      const deletedList = await listModel.findById(createdList._id);
+  
+      expect(deletedList).toBeNull();
+    });
+  });
+  
