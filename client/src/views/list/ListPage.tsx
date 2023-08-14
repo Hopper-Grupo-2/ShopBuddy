@@ -371,7 +371,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to edit item: " + error.message);
+      setDialogMessage("Erro ao editar o item. Tente novamente!");
+      setOpenDialog(true);
       return false;
     }
   };
