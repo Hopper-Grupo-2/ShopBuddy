@@ -1,11 +1,8 @@
-import React from "react";
+import { createContext } from "react";
 import { Socket } from "socket.io-client";
 
 interface SocketContextProps {
-	socket: Socket | null;
-	//setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+  socket: Socket | null;
 }
 
-export const SocketContext = React.createContext<SocketContextProps | null>(
-	null
-);
+export const SocketContext = createContext<SocketContextProps | null>(null);

@@ -20,6 +20,7 @@ listsRouter.get(
 // GET /api/lists/:listId - get a list by list id
 listsRouter.get(
   "/:listId",
+  authenticate,
   validate("getListByListId"),
   handleValidation,
   ListsController.getListByListId
@@ -31,6 +32,13 @@ listsRouter.get(
   validate("getMembersByListId"),
   handleValidation,
   ListsController.getMembersByListId
+);
+
+// GET /api/lists/products/search/:searchTerm - get products filtered by term
+listsRouter.get(
+  "/products/search/:searchTerm",
+  authenticate,
+  ListsController.searchProductByTerm
 );
 
 // POST /api/lists - add a new list

@@ -1,159 +1,210 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import ExternalLink from "@mui/material/Link";
+import MailIcon from '@mui/icons-material/Mail';
+import HttpsIcon from '@mui/icons-material/Https';
 import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { UserContext } from "../contexts/UserContext";
-import { useState } from "react";
-import AlertDialog from "./AlertDialog"
-
-function Copyright(props: any) {
-	return (
-		<Typography
-			variant="body2"
-			color="text.secondary"
-			align="center"
-			{...props}
-		>
-			{"Copyright © "}
-			<ExternalLink
-				color="inherit"
-				href="https://github.com/Hopper-Grupo-2"
-			>
-				Hopper Grupo 2
-			</ExternalLink>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
-
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme();
-
+import AlertDialog from "./AlertDialog";
+import { CardMedia } from "@mui/material";
 export default function LogIn() {
-	const context = React.useContext(UserContext);
-	const navigate = useNavigate();
+  const context = React.useContext(UserContext);
+  const navigate = useNavigate();
 
-	const [openDialog, setOpenDialog] = useState(false);
-  	const [dialogMessage, setDialogMessage] = useState("");
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [dialogMessage, setDialogMessage] = React.useState("");
 
-	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		/* console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		}); */
-		const credentials = {
-			email: data.get("email"),
-			password: data.get("password"),
-		};
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
 
-		if (credentials.email === null || credentials.email === "") {
-			setDialogMessage("Por favor, insira um e-mail");
-			setOpenDialog(true);
-			return;
-		}
+    const credentials = {
+      email: data.get("email"),
+      password: data.get("password"),
+    };
 
-		if (credentials.password === null || credentials.password === "") {
-			setDialogMessage("Por favor, insira uma senha");
-			setOpenDialog(true);
-			return;
-		}
+    if (!credentials.email) {
+      setDialogMessage("Por favor, insira um e-mail");
+      setOpenDialog(true);
+      return;
+    }
 
-		// i want to call login here
-		const loggedIn = await context?.login(
-			credentials.email.toString(),
-			credentials.password.toString()
-		);
+    if (!credentials.password) {
+      setDialogMessage("Por favor, insira uma senha");
+      setOpenDialog(true);
+      return;
+    }
 
-		if (loggedIn) navigate("/");
-	};
+    const loggedIn = await context?.login(
+      credentials.email.toString(),
+      credentials.password.toString()
+    );
 
-	const handleCloseDialog = () => {
-		setOpenDialog(false);
-	};
+    if (loggedIn) navigate("/");
+  };
 
-	return (
-		<ThemeProvider theme={defaultTheme}>
-			<Container component="main" maxWidth="xs">
-				<CssBaseline />
-				<Box
-					sx={{
-						marginTop: 8,
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
-					}}
-				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component="h1" variant="h5">
-						Bem vindo ao ShopBuddy!
-					</Typography>
-					<Box
-						component="form"
-						onSubmit={handleSubmit}
-						noValidate
-						sx={{ mt: 1 }}
-					>
-						<TextField
-							margin="normal"
-							required
-							fullWidth
-							id="email"
-							label="Endereço de e-mail"
-							name="email"
-							autoComplete="email"
-							autoFocus
-						/>
-						<TextField
-							margin="normal"
-							required
-							fullWidth
-							name="password"
-							label="Senha"
-							type="password"
-							id="password"
-							autoComplete="current-password"
-						/>
-						<Button
-							type="submit"
-							fullWidth
-							variant="contained"
-							sx={{ mt: 3, mb: 2 }}
-						>
-							entrar
-						</Button>
-						<Grid container justifyContent="center">
-							<Grid item>
-								<Link to="/signup">
-									{"Ainda não tem uma conta? Cadastre-se"}
-								</Link>
-							</Grid>
-						</Grid>
-					</Box>
-				</Box>
-				<Copyright sx={{ mt: 8, mb: 4 }} />
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
-				<AlertDialog
-					open={openDialog}
-					onClose={handleCloseDialog}
-					contentText={dialogMessage}
-					buttonText="Fechar"
-				/>
-			</Container>
-		</ThemeProvider>
-	);
+  return (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column-reverse", md: "row" },
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100vw",
+            height: "100vh",
+          }}
+          >
+          <Box
+          sx={{
+            height: "100%",
+            overflow: "hidden"
+          }}
+          >
+          <CardMedia
+            component="img"
+            alt="Imagem de fundo"
+            image="./VERSAO01_SHOP.png"
+            sx={{
+              height: "100%"
+            }}
+          />
+          </Box>
+          <Box
+          sx={{
+            height: "100%",
+            width: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+          >
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{
+              width: "70%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            >
+            <Typography
+              variant="h5"
+              sx={{
+                marginTop: { xs: "3vh", md: 0 },
+                fontSize: {xs: "6vw", md: "4vw" },
+                fontWeight: "bold",
+                fontFamily: "'Open Sans'",
+                whiteSpace: "nowrap",
+                marginBottom: "10%"
+              }}
+            >
+              Seja Bem-vindo!
+            </Typography>
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <MailIcon
+                sx={{ width: 40, height: 40, marginRight: "0.5vw", marginBottom: "4%"}}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Nome de Usuário"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                sx={{
+                  width: "93%",
+                  height: "100%",
+                  borderRadius: "8px"
+                }}
+              />
+            </Box>
+            <Box
+              component="div"
+              sx={{
+                width: "90%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <HttpsIcon
+                sx={{ width: 40, height: 40, marginRight: "0.5vw" }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Senha"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                sx={{
+                  width: "93%",
+                  fontSize: "28px",
+                  borderRadius: "8px"
+                }}
+              />
+            </Box>
+            <Grid container justifyContent="center">
+              <Grid item>
+                <Typography variant="body1">
+                  Ainda não tem uma conta?{" "}
+                  <Link to="/signup" style={{ color: "orange" }}>
+                    Cadastre-se
+                  </Link>
+                </Typography>
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                background: "orange",
+                display: "flex",
+                alignItems: "center",
+                marginTop: "3vh",
+                marginBottom: "2vh",
+                fontSize: "1.3rem",
+                fontWeight: "600",
+                width: "350px",
+                height: "4rem",
+                padding: "1rem"
+              }}
+            >
+              Entrar
+            </Button>
+          </Box>
+          </Box>
+          <AlertDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          contentText={dialogMessage}
+          buttonText="Fechar"
+        />
+      </Box>
+  );
 }

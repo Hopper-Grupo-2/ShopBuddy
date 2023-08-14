@@ -29,12 +29,28 @@ export default class ListsServices {
     }
   }
 
-  public static async getListByListId(listId: string): Promise<IList> {
+  public static async getListByListId(
+    listId: string,
+    userId: string
+  ): Promise<IList> {
     try {
+      if (userId === "") {
+        throw ErrorHandler.createError(
+          "UnauthorizedError",
+          "usuario não logado"
+        );
+      }
       const list = await this.Repository.getListById(listId);
       if (list === null)
         throw ErrorHandler.createError("NotFoundError", "List does not exist");
 
+      const isMember = list.members.find((member) => member.userId.toString() === userId);
+      if (!isMember) {
+        throw ErrorHandler.createError(
+          "ForbiddenError",
+          "You are not a member of this list"
+        );
+      }
       return list;
     } catch (error) {
       throw error;
@@ -89,7 +105,23 @@ export default class ListsServices {
     userId: string
   ): Promise<void> {
     try {
-      await this.Repository.deleteList(listId, userId);
+      const list = await this.Repository.getListById(listId);
+      if (!list) {
+        throw ErrorHandler.createError("BadRequest", "List not found");
+      }
+
+      if (list.owner.toString() !== userId) {
+        throw ErrorHandler.createError("UnauthorizedError", "Forbidden error");
+      }
+
+      if (list.members.length > 1) {
+        throw ErrorHandler.createError(
+          "BadRequest",
+          "Cannot delete list with members"
+        );
+      }
+
+      await this.Repository.deleteList(listId);
     } catch (error) {
       throw error;
     }
@@ -180,7 +212,7 @@ export default class ListsServices {
   public static async deleteMemberFromList(
     listId: string,
     memberId: string,
-    ownerId: string
+    userId: string
   ): Promise<IUser[] | null> {
     try {
       const listBody: IList | null = await ListsRepositories.getListById(
@@ -190,17 +222,10 @@ export default class ListsServices {
       if (listBody === null)
         throw ErrorHandler.createError("NotFoundError", "List not found");
 
-      if (String(listBody.owner) !== ownerId) {
+      if (String(listBody.owner) !== userId && memberId !== userId) {
         throw ErrorHandler.createError(
           "UnauthorizedError",
           "User is not the owner of the list"
-        );
-      }
-
-      if (ownerId === memberId) {
-        throw ErrorHandler.createError(
-          "UnauthorizedError",
-          "Owner can not be deleted from their list"
         );
       }
 
@@ -227,6 +252,26 @@ export default class ListsServices {
         memberId,
         listId
       );
+
+      const remainingMembers = listBody.members.filter(
+        (member) => String(member.userId) !== memberId
+      );
+
+      if (remainingMembers.length === 0) {
+        await this.Repository.deleteList(listId);
+        return null;
+      } else if (
+        remainingMembers.length !== 0 &&
+        memberId === String(listBody.owner)
+      ) {
+        const nextOwnerId = remainingMembers[0].userId;
+
+        await this.Repository.changeListOwner(
+          listId,
+          userId,
+          String(nextOwnerId)
+        );
+      }
 
       const updatedList = await this.Repository.deleteMemberFromList(
         listId,
@@ -370,6 +415,38 @@ export default class ListsServices {
       );
 
       return updatedList;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async searchProducts(searchTerm: string, userId: string) {
+    try {
+      const user: IUser | null = await UsersRepositories.getUserById(userId);
+
+      if (user === null)
+        throw ErrorHandler.createError(
+          "NotFoundError",
+          "Member user not found"
+        );
+
+      const matchedProducts = await this.Repository.searchListsWithProducts(
+        searchTerm,
+        userId
+      );
+
+      const latestProducts: IProduct[] = [];
+
+      matchedProducts.forEach((product) => {
+        if (
+          !latestProducts.find(
+            (p) => p.name === product.name && p.market === product.market
+          )
+        ) {
+          latestProducts.push(product);
+        }
+      });
+      return latestProducts;
     } catch (error) {
       throw error;
     }

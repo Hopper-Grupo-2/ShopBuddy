@@ -5,6 +5,8 @@ import UsersRepositories from "../repositories/users";
 import NotificationsRepositories from "../repositories/notifications";
 import ListsRepositories from "../repositories/lists";
 import IList from "../interfaces/list";
+import UsersServices from "./users";
+import ListsServices from "./lists";
 
 export default class NotificationsServices {
   private static Repository = NotificationsRepositories;
@@ -23,6 +25,26 @@ export default class NotificationsServices {
         userId,
         sevenDaysAgo
       );
+
+      try {
+        await Promise.all(
+          latestNotifications.map(async (notification) => {
+            if (!notification.senderId) return;
+            const sender = await UsersServices.getUserById(
+              notification.senderId.toString()
+            );
+            const list = await ListsServices.getListByListId(
+              notification.listId.toString(),
+              userId
+            );
+            notification.senderName = sender.username;
+            notification.listName = list?.listName;
+          })
+        );
+      } catch (error) {
+        console.error(error);
+      }
+
       return latestNotifications;
     } catch (error) {
       throw error;
@@ -32,6 +54,7 @@ export default class NotificationsServices {
   public static async createNewListNotification(
     listId: string,
     userId: string,
+    senderId: string,
     type: NotificationTypes,
     textContent: string
   ): Promise<INotification> {
@@ -46,6 +69,7 @@ export default class NotificationsServices {
       const newNotification = await this.Repository.createListNotification(
         listId,
         userId,
+        senderId,
         type,
         textContent
       );

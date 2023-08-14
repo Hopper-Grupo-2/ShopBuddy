@@ -1,5 +1,5 @@
 name: Deploy application to production
-run-name: Run Deploy application to production
+run-name: Production
 
 on:
     push:

@@ -3,89 +3,115 @@ import IList from "../interfaces/list";
 import IUser from "../interfaces/user";
 import IMessage from "../interfaces/message";
 import INotification, { NotificationTypes } from "../interfaces/notification";
+import IProduct from "../interfaces/product";
+import IInvite from "../interfaces/invite";
 
 export default class Schemas {
-	private _listSchema: mongoose.Schema<IList>;
-	private _userSchema: mongoose.Schema<IUser>;
-	private _messageSchema: mongoose.Schema<IMessage>;
-	private _notificationSchema: mongoose.Schema<INotification>;
+  private _productSchema: mongoose.Schema<IProduct>;
+  private _listSchema: mongoose.Schema<IList>;
+  private _userSchema: mongoose.Schema<IUser>;
+  private _messageSchema: mongoose.Schema<IMessage>;
+  private _notificationSchema: mongoose.Schema<INotification>;
+  private _inviteSchema: mongoose.Schema<IInvite>;
 
-	constructor() {
-		this._listSchema = this.setListSchema();
-		this._userSchema = this.setUserSchema();
-		this._messageSchema = this.setMessageSchema();
-		this._notificationSchema = this.setNotificationSchema();
-	}
+  constructor() {
+    this._productSchema = this.setProductSchema();
+    this._listSchema = this.setListSchema();
+    this._userSchema = this.setUserSchema();
+    this._messageSchema = this.setMessageSchema();
+    this._notificationSchema = this.setNotificationSchema();
+    this._inviteSchema = this.setInviteSchema();
+  }
 
-	private setListSchema(): mongoose.Schema<IList> {
-		return new mongoose.Schema<IList>({
-			listName: { type: String, required: true },
-			products: [
-				{
-					name: { type: String, required: true },
-					quantity: { type: Number, required: true },
-					unit: { type: String, required: true },
-					price: { type: Number, required: true },
-					checked: { type: Boolean, default: true },
-				},
-			],
-			owner: { type: Schema.Types.ObjectId, required: true },
-			members: [{ userId: { type: Schema.Types.ObjectId } }],
-			createdAt: { type: Date, default: Date.now() },
-			updatedAt: { type: Date, default: Date.now() },
-		});
-	}
+  private setProductSchema(): mongoose.Schema<IProduct> {
+    return new mongoose.Schema<IProduct>({
+      name: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      unit: { type: String, required: true },
+      price: { type: Number, required: true, default: 0 },
+      market: { type: String, required: true, default: "" },
+      checked: { type: Boolean, default: true },
+    });
+  }
 
-	private setUserSchema(): mongoose.Schema<IUser> {
-		return new mongoose.Schema<IUser>({
-			username: { type: String, unique: true, required: true },
-			email: { type: String, unique: true, required: true },
-			password: { type: String, required: true },
-			firstName: { type: String, required: true },
-			lastName: { type: String, required: true },
-			createdAt: { type: Date, required: true },
-			updatedAt: { type: Date, required: true },
-		});
-	}
+  private setListSchema(): mongoose.Schema<IList> {
+    return new mongoose.Schema<IList>({
+      listName: { type: String, required: true },
+      products: [this._productSchema],
+      owner: { type: Schema.Types.ObjectId, required: true },
+      members: [{ userId: { type: Schema.Types.ObjectId } }],
+      createdAt: { type: Date, default: Date.now() },
+      updatedAt: { type: Date, default: Date.now() },
+    });
+  }
 
-	private setMessageSchema(): mongoose.Schema<IMessage> {
-		return new mongoose.Schema<IMessage>({
-			listId: { type: Schema.Types.ObjectId, required: true },
-			userId: { type: Schema.Types.ObjectId, required: true },
-			textContent: { type: String, required: true },
-			createdAt: { type: Date, default: Date.now() },
-		});
-	}
+  private setUserSchema(): mongoose.Schema<IUser> {
+    return new mongoose.Schema<IUser>({
+      username: { type: String, unique: true, required: true },
+      email: { type: String, unique: true, required: true },
+      password: { type: String, required: true },
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      createdAt: { type: Date, required: true },
+      updatedAt: { type: Date, required: true },
+    });
+  }
 
-	private setNotificationSchema(): mongoose.Schema<INotification> {
-		return new mongoose.Schema<INotification>({
-			userId: { type: Schema.Types.ObjectId, required: true },
-			listId: { type: Schema.Types.ObjectId, required: false },
-			type: {
-				type: String,
-				enum: Object.values(NotificationTypes),
-				required: true,
-			},
-			textContent: { type: String, required: true },
-			read: { type: Boolean, required: true },
-			createdAt: { type: Date, default: Date.now() },
-			updatedAt: { type: Date, default: Date.now() },
-		});
-	}
+  private setMessageSchema(): mongoose.Schema<IMessage> {
+    return new mongoose.Schema<IMessage>({
+      listId: { type: Schema.Types.ObjectId, required: true },
+      userId: { type: Schema.Types.ObjectId, required: true },
+      textContent: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now() },
+    });
+  }
 
-	public get listSchema() {
-		return this._listSchema;
-	}
+  private setNotificationSchema(): mongoose.Schema<INotification> {
+    return new mongoose.Schema<INotification>({
+      userId: { type: Schema.Types.ObjectId, required: true },
+      listId: { type: Schema.Types.ObjectId, required: false },
+      senderId: { type: Schema.Types.ObjectId, required: true },
+      type: {
+        type: String,
+        enum: Object.values(NotificationTypes),
+        required: true,
+      },
+      textContent: { type: String, required: true },
+      read: { type: Boolean, required: true },
+      createdAt: { type: Date, default: Date.now() },
+      updatedAt: { type: Date, default: Date.now() },
+    });
+  }
 
-	public get userSchema() {
-		return this._userSchema;
-	}
+  private setInviteSchema(): mongoose.Schema<IInvite> {
+    return new mongoose.Schema<IInvite>({
+      userId: { type: Schema.Types.ObjectId, required: true },
+      listId: { type: Schema.Types.ObjectId, required: true },
+      createdAt: { type: Date, required: true, deafult: Date.now() },
+    });
+  }
 
-	public get messageSchema() {
-		return this._messageSchema;
-	}
+  public get productSchema() {
+    return this._productSchema;
+  }
 
-	public get notificationSchema() {
-		return this._notificationSchema;
-	}
+  public get listSchema() {
+    return this._listSchema;
+  }
+
+  public get userSchema() {
+    return this._userSchema;
+  }
+
+  public get messageSchema() {
+    return this._messageSchema;
+  }
+
+  public get notificationSchema() {
+    return this._notificationSchema;
+  }
+
+  public get intiveSchema() {
+    return this._inviteSchema;
+  }
 }

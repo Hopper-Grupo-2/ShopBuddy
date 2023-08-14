@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "./SocketContext";
 import { UserContext } from "./UserContext";
 import INotification from "../interfaces/iNotification";
@@ -16,13 +16,13 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchNotifications = async () => {
     const response = await fetch(`/api/notifications`, {
       method: "GET",
-      credentials: "include", // Ensure credentials are sent
+      credentials: "include",
     });
 
     if (response.ok) {
       const notificationsData = await response.json();
+      console.log(notificationsData);
       setNotifications(notificationsData.data);
-      //console.log(notificationsData);
     }
   };
 
@@ -37,7 +37,6 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       socketContext.socket.on(
         "listNotification",
         async (notification: INotification) => {
-          console.log("list notification from backend");
           if (params.listId === notification.listId) {
             readListNotifications(params.listId);
           } else {

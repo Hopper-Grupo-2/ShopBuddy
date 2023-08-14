@@ -44,9 +44,10 @@ export default class ListsController {
     next: NextFunction
   ): Promise<void> {
     const listId = req.params.listId;
+    const userId = req.user?._id?.toString() || ""
 
     try {
-      const listById = await ListsServices.getListByListId(listId);
+      const listById = await ListsServices.getListByListId(listId,userId);
       res.status(200).json({ error: null, data: listById });
     } catch (error) {
       next(error);
@@ -182,7 +183,7 @@ export default class ListsController {
       const updatedList: IList | null = await ListsServices.addNewMember(
         listId,
         username,
-        user._id as string
+        user?._id?.toString() ?? ""
       );
 
       // this is dangerous, maybe we rework it?
@@ -193,6 +194,7 @@ export default class ListsController {
       NotificationsController.sendNewUserNotification(
         listId,
         newMember?._id?.toString() ?? "",
+        user?._id?.toString() ?? "",
         NotificationTypes.ADDED_TO_LIST,
         "Added to list" + listId
       );
@@ -224,15 +226,31 @@ export default class ListsController {
         await ListsServices.deleteMemberFromList(
           listId,
           memberId,
-          user._id as string
+          user._id?.toString() ?? ""
         );
 
-      NotificationsController.sendNewUserNotification(
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToList(
         listId,
-        memberId,
-        NotificationTypes.REMOVED_FROM_LIST,
-        "Removed from list" + listId
+        user._id?.toString() ?? "",
+        "deleteMember",
+        updatedMembers
       );
+
+      // pending tests, but the logic should be: if the removed member was the one
+      // who made the request, don't send them a notification
+      // (we will have to implement a different notification for the other users
+      //  to notify that a member left the list, but that will be done later)
+      if (memberId !== user._id?.toString()) {
+        NotificationsController.sendNewUserNotification(
+          listId,
+          memberId,
+          user._id?.toString() ?? "",
+          NotificationTypes.REMOVED_FROM_LIST,
+          "Removed from list" + listId
+        );
+      }
+
       res.status(200).json({ error: null, data: updatedMembers });
     } catch (error) {
       next(error);
@@ -356,6 +374,26 @@ export default class ListsController {
       );
 
       res.status(200).json({ error: null, data: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async searchProductByTerm(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+      const searchTerm: string = req.params.searchTerm;
+
+      const products = await ListsServices.searchProducts(
+        searchTerm,
+        user?._id?.toString() ?? ""
+      );
+
+      res.status(200).json({ error: null, data: products });
     } catch (error) {
       next(error);
     }

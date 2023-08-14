@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { TextField, IconButton, Typography, Paper } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import styled from "@emotion/styled";
 import { UserContext } from "../contexts/UserContext";
 import IMessage from "../interfaces/iMessage";
-//import io, { Socket } from "socket.io-client";
 import { SocketContext } from "../contexts/SocketContext";
 
 const ChatContainer = styled.div`
@@ -40,7 +39,7 @@ const MessageBox = styled(Paper)<{ sender: string }>`
   align-self: ${(props) =>
     props.sender === "user" ? "flex-end" : "flex-start"};
   background-color: ${(props) =>
-    props.sender === "user" ? "#4caf50" : "#f1f1f1"};
+    props.sender === "user" ? "#FF9900" : "#f1f1f1"};
   color: ${(props) => (props.sender === "user" ? "white" : "black")};
   word-wrap: break-word;
 `;
@@ -59,20 +58,18 @@ export default function ChatBox(props: ChatProps) {
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [currentMessage, setCurrentMessage] = useState("");
   const chatRef = useRef<HTMLDivElement | null>(null);
-  //const socket = useRef<Socket | null>(null);
+  const currentMessageRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await fetch(`/api/messages/${props.listId}`, {
         method: "GET",
-        credentials: "include", // Ensure credentials are sent
+        credentials: "include",
       });
 
       if (response.ok) {
         const messages = await response.json();
-        //console.log(listData);
         setMessages(messages.data);
       }
     };
@@ -85,16 +82,6 @@ export default function ChatBox(props: ChatProps) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [messages]);
-
-  // useEffect(() => {
-  // 	if (socket.current) {
-  // 		socket.current.emit("enterList", props.listId, userContext?.user?._id);
-  // 	}
-
-  // 	return () => {
-  // 		if (socket.current) socket.current?.close();
-  // 	};
-  // }, []);
 
   useEffect(() => {
     if (!socketContext?.socket) return;
@@ -109,19 +96,10 @@ export default function ChatBox(props: ChatProps) {
     };
   }, []);
 
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentMessage(e.target.value);
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (currentMessage.trim() === "") return;
-
-    /* const newMessage: Message = {
-			//id: messages.length + 1,
-			text: currentMessage,
-			sender: "user", // just for demonstration, replace 'user' with actual user id or name
-		}; */
+    const currentMessage = currentMessageRef.current?.value;
+    if (!currentMessage || currentMessage.trim() === "") return;
 
     try {
       const response = await fetch(`/api/messages/${props.listId}`, {
@@ -145,8 +123,7 @@ export default function ChatBox(props: ChatProps) {
       console.error(error.name, error.message);
       alert("Failed to send message: " + error.message);
     }
-    //setMessages((prev) => [...prev, newMessage]);
-    setCurrentMessage("");
+    if (currentMessageRef.current) currentMessageRef.current.value = "";
   };
 
   return (
@@ -170,8 +147,7 @@ export default function ChatBox(props: ChatProps) {
 
       <MessageForm onSubmit={handleSubmit}>
         <TextField
-          value={currentMessage}
-          onChange={handleMessageChange}
+          inputRef={currentMessageRef}
           placeholder="Type your message..."
           fullWidth
         />
