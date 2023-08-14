@@ -8,7 +8,7 @@
         "start": "node dist/server.js",
         "build": "tsc && cd client && yarn --cwd ./ build",
         "dev": "nodemon -L ./server/server.ts",
-        "test": "jest --runInBand --detectOpenHandles --verbose __tests__/unit/repositories",
+        "test": "jest --runInBand --detectOpenHandles --verbose __tests__/",
         "test:services": "jest __tests__/unit/services",
         "test:websocket": "jest --runInBand --detectOpenHandles --verbose __tests__/websocket"
     },
