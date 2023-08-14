@@ -31,6 +31,8 @@ export default class Websocket {
     socket.on("login", (userId: string) => {
       try {
         this.setConnection(socket, userId);
+        this.broadcastToUser(userId, "loginSuccess", userId);
+        //socket.emit("loginSuccess", userId);
         console.log("Client logged in");
       } catch (error) {
         console.error("Error setting connection: " + error);
@@ -40,6 +42,8 @@ export default class Websocket {
     socket.on("enterList", (listId: string, userId: string) => {
       try {
         this.joinListRoom(socket, listId, userId);
+        this.broadcastToUser(userId, "enterSuccess", { userId, listId });
+        //socket.emit("enterSuccess", { userId, listId });
         console.log("Client joined list " + listId);
       } catch (error) {
         console.error("Error joining list room: " + error);
@@ -49,6 +53,8 @@ export default class Websocket {
     socket.on("exitList", (listId: string, userId: string) => {
       try {
         this.leaveListRoom(userId);
+        this.broadcastToUser(userId, "exitSuccess", { userId, listId });
+        //socket.emit("exitSuccess", { userId, listId });
         console.log("Client left list " + listId);
       } catch (error) {
         console.error("Error leaving list room: " + error);
