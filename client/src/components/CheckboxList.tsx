@@ -10,6 +10,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import EditIcon from "@mui/icons-material/Edit";
 import IItem from "../interfaces/iItem";
 import { useState } from "react";
+import { ButtonGroup, Button } from "@mui/material";
 
 interface CheckboxListProps {
   items: Array<IItem>;
@@ -97,28 +98,80 @@ function CheckboxListItem(props: CheckboxListItemProps) {
 }
 
 export default function CheckboxList(props: CheckboxListProps) {
+  const [sortOption, setSortOption] = useState("name");
+
+  const handleSort = (option: string) => {
+    setSortOption(option);
+  };
+
+  const sortItems = (items: Array<IItem>) => {
+    switch (sortOption) {
+      case "name":
+        return [...items].sort((a, b) => a.name.localeCompare(b.name));
+      case "price":
+        return [...items].sort((a, b) => a.price - b.price);
+      case "unit":
+      return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
+      case "market":
+        return [...items].sort((a, b) => a.market.localeCompare(b.market));
+      default:
+        return items;
+    }
+  };
   return (
-    <List
-      sx={{
-        width: "100%",
-        height: "calc(70vh - 120px)",
-        bgcolor: "background.paper",
-        overflowY: "auto",
-      }}
-    >
-      {props.items.map((item) => {
-        const labelId = `checkbox-list-label-${item._id}`;
-        return (
-          <CheckboxListItem
-            key={item._id}
-            item={item}
-            labelId={labelId}
-            onCheck={props.onCheck}
-            onRemove={props.onRemove}
-            onEdit={props.onEdit}
-          />
-        );
-      })}
-    </List>
+    <>
+      <ButtonGroup
+        color="primary"
+        aria-label="outlined primary button group"
+        sx={{ marginBottom: "10px" }}
+      >
+        <Button
+          variant={sortOption === "name" ? "contained" : "outlined"}
+          onClick={() => handleSort("name")}
+        >
+          Nome
+        </Button>
+        <Button
+          variant={sortOption === "price" ? "contained" : "outlined"}
+          onClick={() => handleSort("price")}
+        >
+          Preço
+        </Button>
+        <Button
+          variant={sortOption === "market" ? "contained" : "outlined"}
+          onClick={() => handleSort("market")}
+        >
+          Mercado
+        </Button>
+        <Button
+          variant={sortOption === "unit" ? "contained" : "outlined"}
+          onClick={() => handleSort("unit")}
+        >
+          Unidade
+        </Button>
+      </ButtonGroup>
+      <List
+        sx={{
+          width: "100%",
+          height: "calc(70vh - 120px)",
+          bgcolor: "background.paper",
+          overflowY: "auto",
+        }}
+      >
+        {sortItems(props.items).map((item) => {
+          const labelId = `checkbox-list-label-${item._id}`;
+          return (
+            <CheckboxListItem
+              key={item._id}
+              item={item}
+              labelId={labelId}
+              onCheck={props.onCheck}
+              onRemove={props.onRemove}
+              onEdit={props.onEdit}
+            />
+          );
+        })}
+      </List>
+    </>
   );
 }
