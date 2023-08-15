@@ -138,7 +138,7 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
         {props.title}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogContent>
+        <DialogContent sx={{ minWidth: "350px" }}>
           {props.fields.map((field) => (
             <Autocomplete
               {...autocompleteProps}
