@@ -86,9 +86,51 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const success = await props.handleSubmit(formData);
-    if (success) {
-      props.handleClose();
+    if (validateForm()) {
+      const success = await props.handleSubmit(formData);
+      if (success) {
+        props.handleClose();
+      }
+    }
+  };
+
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!props.open) {
+      setFormErrors({});
+    }
+  }, [props.open]);
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    props.fields.forEach((field) => {
+      if (!formData[field.id]) {
+        errors[field.id] = `${field.label} é obrigatório.`;
+      }
+
+      if ((field.id === "name" || field.id === "market") && ((formData[field.id].length < 3 && formData[field.id].length > 0) || formData[field.id].length > 30)) {
+        errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
+      } 
+
+      if ((field.id === "quantity" || field.id === "price") && formData[field.id].length > 0) {
+        if (!/^\d*(\.\d+)?$/.test(formData[field.id])) {
+          errors[field.id] = `${field.label} deve ser um número válido.`;
+
+        } else if (parseFloat(formData[field.id]) <= 0) {
+          errors[field.id] = `${field.label} deve ser um número positivo válido.`;
+        }
+      }
+    });
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  const preventExtraInput = (event: React.KeyboardEvent) => {
+    const target = event.target as HTMLInputElement;
+    if (event.key === ',' || (event.key === '.' && target.value.includes('.'))) {
+      event.preventDefault();
     }
   };
 
@@ -207,6 +249,9 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     type={field.type}
                     fullWidth
                     variant="standard"
+                    error={Boolean(formErrors[field.id])}
+                    helperText={formErrors[field.id]}
+                    onKeyPress={preventExtraInput}
                   />
                 )}
               />
@@ -222,6 +267,9 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                 variant="standard"
                 value={formData[field.id] || ""}
                 onChange={handleChange}
+                error={Boolean(formErrors[field.id])}
+                helperText={formErrors[field.id]}
+                onKeyPress={preventExtraInput}
               />
             )
           )}
