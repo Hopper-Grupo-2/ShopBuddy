@@ -14,9 +14,10 @@ import { CardMedia } from "@mui/material";
 export default function LogIn() {
   const context = React.useContext(UserContext);
   const navigate = useNavigate();
+  const dialogMessage = "";
 
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [dialogMessage, setDialogMessage] = React.useState("");
+  const [formErrors, setFormErrors] = React.useState<Record<string, string>>({});
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,24 +28,33 @@ export default function LogIn() {
       password: data.get("password"),
     };
 
-    if (!credentials.email) {
-      setDialogMessage("Por favor, insira um e-mail");
-      setOpenDialog(true);
-      return;
-    }
-
-    if (!credentials.password) {
-      setDialogMessage("Por favor, insira uma senha");
-      setOpenDialog(true);
+    const errors = validateCredentials(credentials);
+    setFormErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
     const loggedIn = await context?.login(
-      credentials.email.toString(),
-      credentials.password.toString()
+      credentials.email!.toString(),
+      credentials.password!.toString()
     );
 
     if (loggedIn) navigate("/");
+  };
+
+  const validateCredentials = (credentials: any): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
+    if (!credentials.email || !/^[^@]+@[^@]+\.[^@]+$/.test(credentials.email)) {
+      errors.email = "Por favor, insira um e-mail válido";
+    }
+
+    if (!credentials.password) {
+      errors.password = "Por favor, insira uma senha";
+    }
+
+    return errors;
   };
 
   const handleCloseDialog = () => {
@@ -129,7 +139,7 @@ export default function LogIn() {
                 required
                 fullWidth
                 id="email"
-                label="Nome de Usuário"
+                label="E-mail cadastrado"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -138,6 +148,8 @@ export default function LogIn() {
                   height: "100%",
                   borderRadius: "8px"
                 }}
+                error={Boolean(formErrors.email)}
+                helperText={formErrors.email}
               />
             </Box>
             <Box
@@ -166,6 +178,8 @@ export default function LogIn() {
                   fontSize: "28px",
                   borderRadius: "8px"
                 }}
+                error={Boolean(formErrors.password)}
+                helperText={formErrors.password}
               />
             </Box>
             <Grid container justifyContent="center">

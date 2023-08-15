@@ -17,9 +17,11 @@ import { CardMedia } from "@mui/material";
 export default function SignUp() {
   const context = React.useContext(UserContext);
   const navigate = useNavigate();
+  const dialogMessage = "";
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,10 +38,10 @@ export default function SignUp() {
       lastName: data.get("lastName"),
     };
 
-    const validation = validateCredentials(credentials);
-    if (validation !== null) {
-      setDialogMessage(validation);
-      setOpenDialog(true);
+    const errors = validateCredentials(credentials);
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
@@ -54,23 +56,30 @@ export default function SignUp() {
     if (signedUp) navigate("/login");
   };
 
-  const validateCredentials = (credentials: any) => {
-    if (credentials.email === null) {
-      return "Por favor, insira um e-mail";
+  const validateCredentials = (credentials: any): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
+    if (!credentials.email || !/^[^@]+@[^@]+\.[^@]+$/.test(credentials.email)) {
+      errors.email = "Por favor, insira um e-mail válido";
     }
-    if (credentials.password === null) {
-      return "Por favor, insira uma senha";
+
+    if (!credentials.password || credentials.password < 3 || credentials.password.length > 16) {
+      errors.password = "A senha deve ter entre 3 e 16 caracteres";
     }
-    if (credentials.username === null) {
-      return "Por favor, insira um nome de usuário";
+
+    if (!credentials.username || credentials.username.length < 3 || credentials.username.length > 15) {
+      errors.username = "Nome de usuário deve ter entre 3 e 15 caracteres";
     }
-    if (credentials.firstName === null) {
-      return "Por favor, insira seu nome";
+
+    if (!credentials.firstName || !/^[A-Za-z]+$/i.test(credentials.firstName) || credentials.firstName < 3 || credentials.firstName.length > 15) {
+      errors.firstName = "O primeiro nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
-    if (credentials.lastName === null) {
-      return "Por favor, insira seu sobrenome";
+
+    if (!credentials.lastName  || !/^[A-Za-z]+$/i.test(credentials.lastName) || credentials.lastName < 3 || credentials.lastName.length > 15) {
+      errors.lastName = "O último nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
-    return null;
+
+    return errors;
   };
 
   const handleCloseDialog = () => {
@@ -165,6 +174,8 @@ export default function SignUp() {
                   marginBottom: "2vh",
                   borderRadius: "8px",
                 }}
+                error={Boolean(formErrors.email)}
+                helperText={formErrors.email}
               />
             </Box>
             <Box
@@ -193,6 +204,8 @@ export default function SignUp() {
                   marginBottom: "2vh",
                   borderRadius: "8px",
                 }}
+                error={Boolean(formErrors.password)}
+                helperText={formErrors.password}
               />
             </Box>
             <Box
@@ -220,6 +233,8 @@ export default function SignUp() {
                   marginBottom: "2vh",
                   borderRadius: "8px",
                 }}
+                error={Boolean(formErrors.username)}
+                helperText={formErrors.username}
               />
             </Box>
             <Box
@@ -245,6 +260,8 @@ export default function SignUp() {
                   marginBottom: "2vh",
                   borderRadius: "8px",
                 }}
+                error={Boolean(formErrors.firstName)}
+                helperText={formErrors.firstName}
               />
             </Box>
             <Box
@@ -270,6 +287,8 @@ export default function SignUp() {
                   marginBottom: "2vh",
                   borderRadius: "8px",
                 }}
+                error={Boolean(formErrors.lastName)}
+                helperText={formErrors.lastName}
               />
             </Box>
 
