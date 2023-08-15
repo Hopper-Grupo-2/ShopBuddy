@@ -22,29 +22,6 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import IconButton from "@mui/material/IconButton";
 
-const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
-  @media (max-width: 350px) {
-    flex-direction: column;
-  }
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 10px;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
