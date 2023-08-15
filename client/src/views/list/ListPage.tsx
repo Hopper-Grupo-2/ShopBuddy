@@ -17,30 +17,10 @@ import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import { NotificationsContext } from "../../contexts/NotificationsContext";
 import { MemberFormDialog } from "../../components/MemberFormDialog";
-import { Box } from "@mui/material";
-
-const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
-  @media (max-width: 350px) {
-    flex-direction: column;
-  }
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 10px;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
-`;
+import { Box, Grid, Typography } from "@mui/material";
+import PeopleIcon from "@mui/icons-material/People";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import IconButton from "@mui/material/IconButton";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -371,7 +351,8 @@ export default function List() {
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to edit item: " + error.message);
+      setDialogMessage("Erro ao editar o item. Tente novamente!");
+      setOpenDialog(true);
       return false;
     }
   };
@@ -387,8 +368,16 @@ export default function List() {
       checkItem(productId);
     });
 
+    socketContext.socket.on("editProduct", (products: IItem[]) => {
+      setItems(products);
+    });
+
     socketContext.socket.on("deleteProduct", (productId: string) => {
       removeItem(productId);
+    });
+
+    socketContext.socket.on("addMember", (members: Array<IUser>) => {
+      setMembers(members);
     });
 
     socketContext.socket.on("deleteMember", (members: Array<IUser>) => {
@@ -402,7 +391,9 @@ export default function List() {
     return () => {
       socketContext.socket?.off("addProduct");
       socketContext.socket?.off("checkProduct");
+      socketContext.socket?.off("editProduct");
       socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("addMember");
       socketContext.socket?.off("deleteMember");
     };
   }, [socketContext?.socket, items, members]);
@@ -433,44 +424,98 @@ export default function List() {
           alignItems="center"
           margin="30px"
         >
-          <HeaderContainer>
-            <h1>{list?.listName}</h1>
-            <ButtonContainer>
-              <Button variant="contained" onClick={handleShowMembers}>
-                Membros
-              </Button>
-              {isListOwner && (
-                <Button variant="contained" onClick={handleOpenMemberForm}>
-                  + Adicionar membros
-                </Button>
-              )}
-            </ButtonContainer>
-          </HeaderContainer>
-          <ContentContainer>
-            <SimplePaper>
-              {items.length === 0 ? (
-                <p style={{ textAlign: "center" }}>A lista está vazia...</p>
-              ) : (
-                <CheckboxList
-                  items={items}
-                  onCheck={handleCheckProduct}
-                  onRemove={handleDeleteProduct}
-                  onEdit={handleOpenEditItemForm}
-                />
-              )}
-              <Button
+          <Grid container spacing={1} justifyContent="center">
+            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
+              <Typography
+                variant="h5"
                 sx={{
-                  margin: "0px auto 15px auto",
-                  display: "block",
+                  backgroundColor: "#FF9900",
+                  borderRadius: "10px 10px 0 0",
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                  padding: "5px 10px",
                 }}
-                variant="contained"
-                onClick={handleOpenItemForm}
               >
-                Adicionar item
-              </Button>
-            </SimplePaper>
-            {list ? <ChatBox listId={list._id} /> : null}
-          </ContentContainer>
+                {list?.listName}
+              </Typography>
+              <SimplePaper>
+                {items.length === 0 ? (
+                  <p style={{ textAlign: "center" }}>A lista está vazia...</p>
+                ) : (
+                  <CheckboxList
+                    items={items}
+                    onCheck={handleCheckProduct}
+                    onRemove={handleDeleteProduct}
+                    onEdit={handleOpenEditItemForm}
+                  />
+                )}
+                <Button
+                  sx={{
+                    margin: "0px auto 15px auto",
+                    display: "block",
+                    color: "#FFFFFF",
+                    fontWeight: "bold",
+                    textTransform: "capitalize",
+                  }}
+                  variant="contained"
+                  onClick={handleOpenItemForm}
+                >
+                  + Novo item
+                </Button>
+              </SimplePaper>
+            </Grid>
+            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  backgroundColor: "#FF9900",
+                  borderRadius: "10px 10px 0 0",
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    borderRadius: "10px 10px 0 0",
+                    color: "#FFFFFF",
+                    fontWeight: "bold",
+                    padding: "5px 10px",
+                  }}
+                >
+                  Mensagens
+                </Typography>
+
+                <ButtonContainer>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      borderRadius: "3px 3px 0 0",
+                      color: "#444444",
+                      fontWeight: "bold",
+                      padding: "5px 10px",
+                    }}
+                  >
+                    {members.length} membros
+                  </Typography>
+                  <IconButton
+                    onClick={handleShowMembers}
+                    sx={{ border: "none" }}
+                  >
+                    <PeopleIcon sx={{ color: "#444444" }}></PeopleIcon>
+                  </IconButton>
+                  {isListOwner && (
+                    <IconButton
+                      onClick={handleOpenMemberForm}
+                      sx={{ border: "none" }}
+                    >
+                      <PersonAddIcon sx={{ color: "#444444" }}></PersonAddIcon>
+                    </IconButton>
+                  )}
+                </ButtonContainer>
+              </Box>
+              {list ? <ChatBox listId={list._id} /> : null}
+            </Grid>
+          </Grid>
         </Box>
       </PageStructure>
       <ItemFormDialog

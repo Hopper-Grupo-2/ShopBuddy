@@ -19,6 +19,14 @@ usersRouter.get(
   handleValidation,
   UsersController.getUserById
 );
+
+// GET /api/users/search/:searchTerm - get products filtered by term
+usersRouter.get(
+  "/search/:searchTerm",
+  authenticate,
+  UsersController.searchUsersByTerm
+);
+
 // PATCH /api/users/:userId - update a user's information
 usersRouter.patch(
   "/:userId",

@@ -193,6 +193,15 @@ export default class UsersServices {
       throw error;
     }
   }
+
+  public static async searchUser(searchTerm: string): Promise<IUser[]> {
+    try {
+      const matchingUsers = await this.Repository.searchUsers(searchTerm);
+      return matchingUsers;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // public static async getAllLists(): Promise<IList[] | null> {
