@@ -35,11 +35,11 @@ const ChatSection = styled.div`
 const MessageBox = styled(Paper)<{ sender: string }>`
   max-width: 90%;
   margin: 10px;
-  padding: 20px;
+  padding: 10px;
   align-self: ${(props) =>
     props.sender === "user" ? "flex-end" : "flex-start"};
   background-color: ${(props) =>
-    props.sender === "user" ? "#FF9900" : "#f1f1f1"};
+    props.sender === "user" ? "#FF9900" : "#FFF1DB"};
   color: ${(props) => (props.sender === "user" ? "white" : "black")};
   word-wrap: break-word;
 `;
@@ -139,7 +139,9 @@ export default function ChatBox(props: ChatProps) {
             }
             elevation={3}
           >
-            <Typography variant="caption">{message.username}</Typography>
+            <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+              {message.username}
+            </Typography>
             <Typography variant="body1">{message.textContent}</Typography>
           </MessageBox>
         ))}
@@ -148,7 +150,7 @@ export default function ChatBox(props: ChatProps) {
       <MessageForm onSubmit={handleSubmit}>
         <TextField
           inputRef={currentMessageRef}
-          placeholder="Type your message..."
+          placeholder="Nova mensagem..."
           fullWidth
         />
 
