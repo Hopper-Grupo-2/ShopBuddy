@@ -43,6 +43,13 @@ interface FormDialogProps {
   initialValues?: Record<string, string>;
 }
 
+const itemDialogTitleStyle = {
+  backgroundColor: "#FF9900",
+  color: "#FFF",
+  fontWeight: "bold",
+  padding: "5px 10px",
+};
+
 const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const initialFormData: Record<string, string> =
     props.initialValues ??
@@ -184,7 +191,13 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
-      <DialogTitle>{props.title}</DialogTitle>
+      <DialogTitle
+        sx={{
+          ...itemDialogTitleStyle,
+        }}
+      >
+        {props.title}
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
           {props.fields.map((field) =>
@@ -278,8 +291,25 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button type="submit">Confirmar</Button>
+          <Button
+            variant="outlined"
+            onClick={props.handleClose}
+            sx={{
+              fontWeight: "bold",
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              color: "#FFF",
+              fontWeight: "bold",
+            }}
+          >
+            Confirmar
+          </Button>
         </DialogActions>
       </form>
     </Dialog>
