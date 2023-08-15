@@ -79,6 +79,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             tabIndex={-1}
             disableRipple
             inputProps={{ "aria-labelledby": props.labelId }}
+            color="secondary"
           />
         </ListItemIcon>
         {/* Aqui está um comentário para quem for fazer esse componente:
@@ -90,7 +91,9 @@ function CheckboxListItem(props: CheckboxListItemProps) {
           id={props.labelId}
           primary={`${props.item.name} ${props.item.quantity} ${
             props.item.unit
-          } R$${props.item.price.toFixed(2).replace(".", ",")} ${props.item.market}`}
+          } R$${props.item.price.toFixed(2).replace(".", ",")} ${
+            props.item.market
+          }`}
         />
       </ListItemButton>
     </ListItem>
@@ -111,16 +114,16 @@ export default function CheckboxList(props: CheckboxListProps) {
       case "price":
         return [...items].sort((a, b) => a.price - b.price);
       case "unit":
-      return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
+        return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
       case "market":
-      return [...items].sort((a, b) => {
-        const marketComparison = a.market.localeCompare(b.market);
-        if (marketComparison === 0) {
-          return a.name.localeCompare(b.name);
-        } else {
-          return marketComparison;
-        }
-      })
+        return [...items].sort((a, b) => {
+          const marketComparison = a.market.localeCompare(b.market);
+          if (marketComparison === 0) {
+            return a.name.localeCompare(b.name);
+          } else {
+            return marketComparison;
+          }
+        });
       default:
         return items;
     }
