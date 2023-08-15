@@ -12,6 +12,7 @@ import { Box, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchBar from "../../components/SearchBar";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import { SocketContext } from "../../contexts/SocketContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [onConfirm, setOnConfirm] = useState(() => () => {});
 
   const userContext = useContext(UserContext);
+  const socketContext = useContext(SocketContext);
 
   useEffect(() => {
     const fetchLists = async () => {
@@ -139,6 +141,23 @@ export default function Dashboard() {
       console.error(error.name, error.message);
     }
   };
+
+  useEffect(() => {
+    if (!socketContext?.socket) return;
+
+    socketContext.socket.on("addedToList", () => {
+      setFetchTrigger(!fetchTrigger);
+    });
+
+    socketContext.socket.on("deletedFromList", () => {
+      setFetchTrigger(!fetchTrigger);
+    });
+
+    return () => {
+      socketContext.socket?.off("addedToList");
+      socketContext.socket?.off("deletedFromList");
+    };
+  }, [socketContext?.socket]);
 
   const handleCloseDialog = () => {
     setOpenDialog(false);

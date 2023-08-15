@@ -388,8 +388,16 @@ export default function List() {
       checkItem(productId);
     });
 
+    socketContext.socket.on("editProduct", (products: IItem[]) => {
+      setItems(products);
+    });
+
     socketContext.socket.on("deleteProduct", (productId: string) => {
       removeItem(productId);
+    });
+
+    socketContext.socket.on("addMember", (members: Array<IUser>) => {
+      setMembers(members);
     });
 
     socketContext.socket.on("deleteMember", (members: Array<IUser>) => {
@@ -403,7 +411,9 @@ export default function List() {
     return () => {
       socketContext.socket?.off("addProduct");
       socketContext.socket?.off("checkProduct");
+      socketContext.socket?.off("editProduct");
       socketContext.socket?.off("deleteProduct");
+      socketContext.socket?.off("addMember");
       socketContext.socket?.off("deleteMember");
     };
   }, [socketContext?.socket, items, members]);

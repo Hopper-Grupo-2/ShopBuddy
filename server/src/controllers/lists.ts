@@ -44,10 +44,10 @@ export default class ListsController {
     next: NextFunction
   ): Promise<void> {
     const listId = req.params.listId;
-    const userId = req.user?._id?.toString() || ""
+    const userId = req.user?._id?.toString() || "";
 
     try {
-      const listById = await ListsServices.getListByListId(listId,userId);
+      const listById = await ListsServices.getListByListId(listId, userId);
       res.status(200).json({ error: null, data: listById });
     } catch (error) {
       next(error);
@@ -186,10 +186,37 @@ export default class ListsController {
         user?._id?.toString() ?? ""
       );
 
+      const websocket = Websocket.getIstance();
+
+      if (updatedList) {
+        const members: IUser[] = [];
+
+        for (const element of updatedList.members) {
+          const userId = element.userId.toString();
+          //console.log(userId);
+          const member = await UsersRepositories.getUserById(userId);
+
+          if (member !== null) members.push(member);
+        }
+
+        websocket.broadcastToList(
+          listId,
+          String(user._id),
+          "addMember",
+          members
+        );
+      }
+
       // this is dangerous, maybe we rework it?
       const newMember = await UsersRepositories.getUserByUsername(username);
 
       console.log(newMember);
+
+      websocket.broadcastToUser(
+        newMember?._id?.toString() ?? "",
+        "addedToList",
+        "Added to list" + listId
+      );
 
       NotificationsController.sendNewUserNotification(
         listId,
@@ -242,6 +269,12 @@ export default class ListsController {
       // (we will have to implement a different notification for the other users
       //  to notify that a member left the list, but that will be done later)
       if (memberId !== user._id?.toString()) {
+        websocket.broadcastToUser(
+          memberId,
+          "deletedFromList",
+          "Deleted From list" + listId
+        );
+
         NotificationsController.sendNewUserNotification(
           listId,
           memberId,
@@ -371,6 +404,14 @@ export default class ListsController {
         productId,
         user._id as string,
         newProductInfo
+      );
+
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToList(
+        listId,
+        user._id?.toString() ?? "",
+        "editProduct",
+        updatedList?.products
       );
 
       res.status(200).json({ error: null, data: updatedList });
