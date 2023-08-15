@@ -201,7 +201,7 @@ export default class ListsController {
 
         websocket.broadcastToList(
           listId,
-          user._id as string,
+          String(user._id),
           "addMember",
           members
         );
