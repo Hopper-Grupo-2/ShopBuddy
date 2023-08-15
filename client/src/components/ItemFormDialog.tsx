@@ -187,8 +187,11 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                         <Typography variant="body1" sx={{ mr: "16px" }}>
                           {option.name}
                         </Typography>
-                        <Typography variant="body1" color="textSecondary">
+                        <Typography variant="body1" color="textSecondary" sx={{ mr: "16px" }}>
                           {option.market}
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary">
+                          R$ {option.price.toFixed(2).toString()}
                         </Typography>
                       </Box>
                     </li>
