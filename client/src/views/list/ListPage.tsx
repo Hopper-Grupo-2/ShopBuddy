@@ -449,19 +449,59 @@ export default function List() {
                     onEdit={handleOpenEditItemForm}
                   />
                 )}
-                <Button
+                <Box
                   sx={{
-                    margin: "0px auto 15px auto",
-                    display: "block",
-                    color: "#FFFFFF",
-                    fontWeight: "bold",
-                    textTransform: "capitalize",
+                    padding: "15px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
                   }}
-                  variant="contained"
-                  onClick={handleOpenItemForm}
                 >
-                  + Novo item
-                </Button>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: "bold",
+                        lineHeight: "0.5rem",
+                        color: "#444444",
+                      }}
+                    >
+                      Total gasto:
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "2rem",
+                        color: "#444444",
+                      }}
+                    >
+                      <Typography
+                        display="inline"
+                        sx={{ fontWeight: "normal", fontSize: "2rem" }}
+                      >
+                        R${" "}
+                      </Typography>
+                      {Number(99).toFixed(2).replace(".", ",")}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      onClick={handleOpenItemForm}
+                      sx={{
+                        //margin: "0px auto 15px auto",
+                        //display: "block",
+                        color: "#FFFFFF",
+                        fontWeight: "bold",
+                        textTransform: "capitalize",
+                        padding: "5px",
+                      }}
+                    >
+                      + Novo item
+                    </Button>
+                  </Box>
+                </Box>
               </SimplePaper>
             </Grid>
             <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>

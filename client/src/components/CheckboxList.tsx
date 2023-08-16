@@ -10,7 +10,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import EditIcon from "@mui/icons-material/Edit";
 import IItem from "../interfaces/iItem";
 import { useState } from "react";
-import { ButtonGroup, Button } from "@mui/material";
+import { ButtonGroup, Button, Typography, Grid } from "@mui/material";
 
 interface CheckboxListProps {
   items: Array<IItem>;
@@ -89,11 +89,21 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             textDecoration: props.item.checked ? "line-through" : "none",
           }}
           id={props.labelId}
-          primary={`${props.item.name} ${props.item.quantity} ${
-            props.item.unit
-          } R$${props.item.price.toFixed(2).replace(".", ",")} ${
-            props.item.market
-          }`}
+          primary={
+            <Grid>
+              <Typography fontWeight="bold" sx={{ p: "0px", m: "0px" }}>
+                {props.item.name} {props.item.quantity} {props.item.unit} R$
+                {props.item.price.toFixed(2).replace(".", ",")}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                color="gray"
+                sx={{ p: "0px", m: "0px" }}
+              >
+                {props.item.market}
+              </Typography>
+            </Grid>
+          }
         />
       </ListItemButton>
     </ListItem>
@@ -138,26 +148,30 @@ export default function CheckboxList(props: CheckboxListProps) {
         <Button
           variant={sortOption === "name" ? "contained" : "outlined"}
           onClick={() => handleSort("name")}
+          sx={{ textTransform: "capitalize" }}
         >
           Nome
         </Button>
         <Button
+          variant={sortOption === "unit" ? "contained" : "outlined"}
+          onClick={() => handleSort("unit")}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Unidade
+        </Button>
+        <Button
           variant={sortOption === "price" ? "contained" : "outlined"}
           onClick={() => handleSort("price")}
+          sx={{ textTransform: "capitalize" }}
         >
           Preço
         </Button>
         <Button
           variant={sortOption === "market" ? "contained" : "outlined"}
           onClick={() => handleSort("market")}
+          sx={{ textTransform: "capitalize" }}
         >
           Mercado
-        </Button>
-        <Button
-          variant={sortOption === "unit" ? "contained" : "outlined"}
-          onClick={() => handleSort("unit")}
-        >
-          Unidade
         </Button>
       </ButtonGroup>
       <List
