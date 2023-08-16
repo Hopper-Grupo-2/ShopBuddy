@@ -9,11 +9,11 @@ import { SocketContext } from "../contexts/SocketContext";
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 450px;
+  ///width: 450px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: white;
-  margin-left: 20px;
+  //margin-left: 20px;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -22,6 +22,7 @@ const ChatContainer = styled.div`
 `;
 
 const ChatSection = styled.div`
+  //height: calc(70vh - 120px);
   height: calc(70vh - 120px);
   overflow-y: scroll;
   display: flex;

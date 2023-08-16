@@ -422,7 +422,7 @@ export default function List() {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          margin="30px"
+          margin="30px 20px"
         >
           <Grid container spacing={1} justifyContent="center">
             <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
@@ -449,19 +449,59 @@ export default function List() {
                     onEdit={handleOpenEditItemForm}
                   />
                 )}
-                <Button
+                <Box
                   sx={{
-                    margin: "0px auto 15px auto",
-                    display: "block",
-                    color: "#FFFFFF",
-                    fontWeight: "bold",
-                    textTransform: "capitalize",
+                    padding: "15px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
                   }}
-                  variant="contained"
-                  onClick={handleOpenItemForm}
                 >
-                  + Novo item
-                </Button>
+                  <Box>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: "bold",
+                        lineHeight: "0.5rem",
+                        color: "#444444",
+                      }}
+                    >
+                      Total gasto:
+                    </Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "2rem",
+                        color: "#444444",
+                      }}
+                    >
+                      <Typography
+                        display="inline"
+                        sx={{ fontWeight: "normal", fontSize: "2rem" }}
+                      >
+                        R${" "}
+                      </Typography>
+                      {Number(99).toFixed(2).replace(".", ",")}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      onClick={handleOpenItemForm}
+                      sx={{
+                        //margin: "0px auto 15px auto",
+                        //display: "block",
+                        color: "#FFFFFF",
+                        fontWeight: "bold",
+                        textTransform: "capitalize",
+                        padding: "5px",
+                      }}
+                    >
+                      + Novo item
+                    </Button>
+                  </Box>
+                </Box>
               </SimplePaper>
             </Grid>
             <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
@@ -485,7 +525,9 @@ export default function List() {
                   Mensagens
                 </Typography>
 
-                <ButtonContainer>
+                <ButtonContainer
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <Typography
                     variant="h6"
                     sx={{
@@ -493,9 +535,10 @@ export default function List() {
                       color: "#444444",
                       fontWeight: "bold",
                       padding: "5px 10px",
+                      textAlign: "right",
                     }}
                   >
-                    {members.length} membros
+                    {members.length}
                   </Typography>
                   <IconButton
                     onClick={handleShowMembers}
