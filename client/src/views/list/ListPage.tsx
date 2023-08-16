@@ -384,6 +384,10 @@ export default function List() {
       setMembers(members);
     });
 
+    socketContext.socket.on("deletedFromList", () => {
+      navigate("/");
+    });
+
     /* socketContext.socket.on("listNotification", (_) => {
       notificationsContext?.readListNotifications(params.listId ?? "");
     }) */
@@ -395,6 +399,7 @@ export default function List() {
       socketContext.socket?.off("deleteProduct");
       socketContext.socket?.off("addMember");
       socketContext.socket?.off("deleteMember");
+      socketContext.socket?.off("deletedFromList");
     };
   }, [socketContext?.socket, items, members]);
 
