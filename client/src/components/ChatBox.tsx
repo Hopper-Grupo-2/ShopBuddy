@@ -22,6 +22,7 @@ const ChatContainer = styled.div`
 `;
 
 const ChatSection = styled.div`
+  //height: calc(70vh - 120px);
   height: calc(70vh - 120px);
   overflow-y: scroll;
   display: flex;

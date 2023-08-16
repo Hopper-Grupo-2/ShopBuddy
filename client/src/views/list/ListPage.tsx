@@ -422,7 +422,7 @@ export default function List() {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          margin="30px"
+          margin="30px 20px"
         >
           <Grid container spacing={1} justifyContent="center">
             <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
@@ -525,7 +525,9 @@ export default function List() {
                   Mensagens
                 </Typography>
 
-                <ButtonContainer>
+                <ButtonContainer
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
                   <Typography
                     variant="h6"
                     sx={{
@@ -533,9 +535,10 @@ export default function List() {
                       color: "#444444",
                       fontWeight: "bold",
                       padding: "5px 10px",
+                      textAlign: "right",
                     }}
                   >
-                    {members.length} membros
+                    {members.length}
                   </Typography>
                   <IconButton
                     onClick={handleShowMembers}
