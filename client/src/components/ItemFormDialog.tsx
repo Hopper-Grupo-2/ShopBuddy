@@ -105,31 +105,42 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
-      if (!formData[field.id]) {
+      if (!formData[field.id] && field.id !== "market") {
         errors[field.id] = `${field.label} é obrigatório.`;
       }
 
-      if ((field.id === "name" || field.id === "market") && ((formData[field.id].length < 3 && formData[field.id].length > 0) || formData[field.id].length > 30)) {
+      if (
+        (field.id === "name" || field.id === "market") &&
+        ((formData[field.id].length < 3 && formData[field.id].length > 0) ||
+          formData[field.id].length > 30)
+      ) {
         errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
-      } 
+      }
 
-      if ((field.id === "quantity" || field.id === "price") && formData[field.id].length > 0) {
+      if (
+        (field.id === "quantity" || field.id === "price") &&
+        formData[field.id].length > 0
+      ) {
         if (!/^\d*(\.\d+)?$/.test(formData[field.id])) {
           errors[field.id] = `${field.label} deve ser um número válido.`;
-
         } else if (parseFloat(formData[field.id]) <= 0) {
-          errors[field.id] = `${field.label} deve ser um número positivo válido.`;
+          errors[
+            field.id
+          ] = `${field.label} deve ser um número positivo válido.`;
         }
       }
     });
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  }
+  };
 
   const preventExtraInput = (event: React.KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
-    if (event.key === ',' || (event.key === '.' && target.value.includes('.'))) {
+    if (
+      event.key === "," ||
+      (event.key === "." && target.value.includes("."))
+    ) {
       event.preventDefault();
     }
   };
@@ -229,7 +240,11 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                         <Typography variant="body1" sx={{ mr: "16px" }}>
                           {option.name}
                         </Typography>
-                        <Typography variant="body1" color="textSecondary" sx={{ mr: "16px" }}>
+                        <Typography
+                          variant="body1"
+                          color="textSecondary"
+                          sx={{ mr: "16px" }}
+                        >
                           {option.market}
                         </Typography>
                         <Typography variant="body1" color="textSecondary">
@@ -254,7 +269,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     variant="standard"
                     error={Boolean(formErrors[field.id])}
                     helperText={formErrors[field.id]}
-                    onKeyPress={preventExtraInput}
+                    onKeyDown={preventExtraInput}
                   />
                 )}
               />
@@ -272,7 +287,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                 onChange={handleChange}
                 error={Boolean(formErrors[field.id])}
                 helperText={formErrors[field.id]}
-                onKeyPress={preventExtraInput}
+                onKeyDown={preventExtraInput}
               />
             )
           )}
