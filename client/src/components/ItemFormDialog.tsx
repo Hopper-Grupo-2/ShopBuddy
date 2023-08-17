@@ -13,6 +13,7 @@ import {
   Autocomplete,
   Typography,
   Box,
+  Grid,
 } from "@mui/material";
 import IItem from "../interfaces/iItem";
 
@@ -211,67 +212,100 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          {props.fields.map((field) =>
-            field.id === "unit" ? (
-              <FormControl key={field.id} fullWidth variant="standard">
-                <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
-                <Select
-                  labelId={field.id + "-label"}
-                  id={field.id}
-                  name={field.id}
-                  value={formData[field.id] || ""}
-                  onChange={(event) =>
-                    handleSelectChange(event as SelectChangeEvent)
-                  }
-                >
-                  <MenuItem value="">Selecione a unidade de medida</MenuItem>
-                  {unitsOfMeasure.map((unit) => (
-                    <MenuItem key={unit.value} value={unit.value}>
-                      {unit.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : field.id === "name" ? (
-              <Autocomplete
-                {...autocompleteProps}
-                key={field.id + "autocomplete"}
-                id="autocomplete"
-                freeSolo
-                disableClearable
-                value={formData[field.id] || ""}
-                getOptionLabel={(option) =>
-                  typeof option === "string" ? option : option.name
-                }
-                isOptionEqualToValue={(option, value) =>
-                  option._id === value._id
-                }
-                renderOption={(props, option) => {
-                  return (
-                    <li {...props} key={option._id}>
-                      <Box display="flex" justifyContent="flex-start">
-                        <Typography variant="body1" sx={{ mr: "16px" }}>
-                          {option.name}
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="textSecondary"
-                          sx={{ mr: "16px" }}
-                        >
-                          {option.market}
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary">
-                          R$ {option.price.toFixed(2).toString()}
-                        </Typography>
-                      </Box>
-                    </li>
-                  );
-                }}
-                onInputChange={handleAutocompleteOptions}
-                onChange={handleSelectProduct}
-                renderInput={(params) => (
+          <Grid container spacing={2} alignItems="center">
+            {props.fields.map((field) => (
+              <Grid
+                item
+                xs={12}
+                sm={field.id === "name" ? 12 : 6}
+                key={field.id}
+              >
+                {" "}
+                {field.id === "unit" ? (
+                  <FormControl
+                    key={field.id}
+                    fullWidth
+                    variant="standard"
+                    sx={{ height: 45 }}
+                  >
+                    <InputLabel id={field.id + "-label"}>
+                      {field.label}
+                    </InputLabel>
+                    <Select
+                      labelId={field.id + "-label"}
+                      id={field.id}
+                      name={field.id}
+                      value={formData[field.id] || ""}
+                      onChange={(event) =>
+                        handleSelectChange(event as SelectChangeEvent)
+                      }
+                    >
+                      <MenuItem value="">
+                        Selecione a unidade de medida
+                      </MenuItem>
+                      {unitsOfMeasure.map((unit) => (
+                        <MenuItem key={unit.value} value={unit.value}>
+                          {unit.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : field.id === "name" ? (
+                  <Autocomplete
+                    {...autocompleteProps}
+                    key={field.id + "autocomplete"}
+                    id="autocomplete"
+                    freeSolo
+                    disableClearable
+                    value={formData[field.id] || ""}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option.name
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    renderOption={(props, option) => {
+                      return (
+                        <li {...props} key={option._id}>
+                          <Box display="flex" justifyContent="flex-start">
+                            <Typography variant="body1" sx={{ mr: "16px" }}>
+                              {option.name}
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              color="textSecondary"
+                              sx={{ mr: "16px" }}
+                            >
+                              {option.market}
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              R$ {option.price.toFixed(2).toString()}
+                            </Typography>
+                          </Box>
+                        </li>
+                      );
+                    }}
+                    onInputChange={handleAutocompleteOptions}
+                    onChange={handleSelectProduct}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        autoFocus
+                        margin="dense"
+                        key={field.id}
+                        id={field.id}
+                        label={field.label}
+                        type={field.type}
+                        fullWidth
+                        variant="standard"
+                        error={Boolean(formErrors[field.id])}
+                        helperText={formErrors[field.id]}
+                        onKeyPress={preventExtraInput}
+                      />
+                    )}
+                  />
+                ) : (
                   <TextField
-                    {...params}
                     autoFocus
                     margin="dense"
                     key={field.id}
@@ -280,30 +314,16 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     type={field.type}
                     fullWidth
                     variant="standard"
+                    value={formData[field.id] || ""}
+                    onChange={handleChange}
                     error={Boolean(formErrors[field.id])}
                     helperText={formErrors[field.id]}
                     onKeyPress={preventExtraInput}
                   />
                 )}
-              />
-            ) : (
-              <TextField
-                autoFocus
-                margin="dense"
-                key={field.id}
-                id={field.id}
-                label={field.label}
-                type={field.type}
-                fullWidth
-                variant="standard"
-                value={formData[field.id] || ""}
-                onChange={handleChange}
-                error={Boolean(formErrors[field.id])}
-                helperText={formErrors[field.id]}
-                onKeyPress={preventExtraInput}
-              />
-            )
-          )}
+              </Grid>
+            ))}
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button
