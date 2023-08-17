@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { TextField, IconButton, Typography, Paper } from "@mui/material";
+import { TextField, IconButton, Typography, Paper, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import styled from "@emotion/styled";
 import { UserContext } from "../contexts/UserContext";
 import IMessage from "../interfaces/iMessage";
 import { SocketContext } from "../contexts/SocketContext";
+import PendingIcon from "@mui/icons-material/Pending";
+import CheckIcon from "@mui/icons-material/Check";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -97,10 +99,41 @@ export default function ChatBox(props: ChatProps) {
     };
   }, []);
 
+  const [currentMessageId, setCurrentMessageId] = useState(0);
+  const createPendingMessage = (textContent: string) => {
+    const message: IMessage = {
+      _id: currentMessageId.toString(),
+      userId: userContext?.user?._id ?? "",
+      username: userContext?.user?.username ?? "",
+      listId: props.listId,
+      textContent: textContent,
+      createdAt: new Date().toISOString(),
+      pending: true,
+    };
+    setCurrentMessageId(currentMessageId + 1);
+    console.log("pending message: ", message);
+    return message;
+  };
+
+  const confirmMessage = (pendingId: string, newMessage: IMessage) => {
+    setMessages((prev) => {
+      const pendingMessageIndex = prev.findIndex(
+        (message) => message._id === pendingId
+      );
+      prev[pendingMessageIndex] = newMessage;
+      return [...prev];
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const currentMessage = currentMessageRef.current?.value;
-    if (!currentMessage || currentMessage.trim() === "") return;
+    const currentMessageText = currentMessageRef.current?.value;
+    if (!currentMessageText || currentMessageText.trim() === "") return;
+
+    const pendingMessage = createPendingMessage(currentMessageText);
+    setMessages((prev) => [...prev, pendingMessage]);
+
+    if (currentMessageRef.current) currentMessageRef.current.value = "";
 
     try {
       const response = await fetch(`/api/messages/${props.listId}`, {
@@ -109,14 +142,15 @@ export default function ChatBox(props: ChatProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          textContent: currentMessage,
+          textContent: currentMessageText,
         }),
       });
 
       const responseObj = await response.json();
       if (response.ok) {
         const newMessage = responseObj.data;
-        setMessages((prev) => [...prev, newMessage]);
+        console.log("new message: ", newMessage);
+        confirmMessage(pendingMessage._id, newMessage);
       } else {
         throw responseObj.error;
       }
@@ -124,7 +158,18 @@ export default function ChatBox(props: ChatProps) {
       console.error(error.name, error.message);
       alert("Failed to send message: " + error.message);
     }
-    if (currentMessageRef.current) currentMessageRef.current.value = "";
+  };
+
+  const toLocalTimeString = (isoString: string) => {
+    const date = new Date(isoString);
+    let hours: string | number = date.getHours();
+    let minutes: string | number = date.getMinutes();
+
+    // Ensure double digits
+    if (hours < 10) hours = "0" + hours;
+    if (minutes < 10) minutes = "0" + minutes;
+
+    return `${hours}:${minutes}`;
   };
 
   return (
@@ -143,7 +188,23 @@ export default function ChatBox(props: ChatProps) {
             <Typography variant="caption" sx={{ fontWeight: "bold" }}>
               {message.username}
             </Typography>
-            <Typography variant="body1">{message.textContent}</Typography>
+            <Box display="flex" alignItems="flex-end">
+              <Typography variant="body1">{message.textContent}</Typography>
+              <Box display="flex" alignItems="center">
+                <Typography
+                  variant="caption"
+                  sx={{ ml: "5px", fontSize: "0.7rem" }}
+                >
+                  {toLocalTimeString(message.createdAt)}
+                </Typography>
+                {message.userId === userContext?.user?._id &&
+                  (message.pending ? (
+                    <PendingIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
+                  ) : (
+                    <CheckIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
+                  ))}
+              </Box>
+            </Box>
           </MessageBox>
         ))}
       </ChatSection>
