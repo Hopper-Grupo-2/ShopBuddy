@@ -16,11 +16,6 @@ import {
 } from "@mui/material";
 import IItem from "../interfaces/iItem";
 
-//trying add block button
-
-import CircularProgress from "@mui/material/CircularProgress";
-//trying add block button
-
 // this has to be redone at a later date to
 // always be compatible with the backend
 const unitsOfMeasure = [
@@ -326,9 +321,3 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 };
 
 export { ItemFormDialog };
-/*
- <Button type="submit" disabled={loading}>
-            {loading ? <CircularProgress size={20} /> : "Confirmar"}
-          </Button>
-
-*/
