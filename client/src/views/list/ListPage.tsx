@@ -428,10 +428,12 @@ export default function List() {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          margin="30px 20px"
+          padding="30px 20px 0px 20px"
+          //sx={{ overflowY: "scroll" }}
+          //margin="30px 20px"
         >
-          <Grid container spacing={1} justifyContent="center">
-            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
+          <Grid container spacing={3} justifyContent="center">
+            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "350px" }}>
               <Typography
                 variant="h5"
                 sx={{
@@ -445,16 +447,13 @@ export default function List() {
                 {list?.listName}
               </Typography>
               <SimplePaper>
-                {items.length === 0 ? (
-                  <p style={{ textAlign: "center" }}>A lista está vazia...</p>
-                ) : (
-                  <CheckboxList
-                    items={items}
-                    onCheck={handleCheckProduct}
-                    onRemove={handleDeleteProduct}
-                    onEdit={handleOpenEditItemForm}
-                  />
-                )}
+                <CheckboxList
+                  items={items}
+                  onCheck={handleCheckProduct}
+                  onRemove={handleDeleteProduct}
+                  onEdit={handleOpenEditItemForm}
+                />
+
                 <Box
                   sx={{
                     padding: "15px",
@@ -517,7 +516,7 @@ export default function List() {
                 </Box>
               </SimplePaper>
             </Grid>
-            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "320px" }}>
+            <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "350px" }}>
               <Box
                 sx={{
                   display: "flex",
@@ -539,19 +538,21 @@ export default function List() {
                 </Typography>
 
                 <ButtonContainer
-                  style={{ display: "flex", justifyContent: "center" }}
+                  style={{ display: "flex", justifyContent: "flex-end" }}
                 >
                   <Typography
-                    variant="h6"
+                    variant="caption"
                     sx={{
                       borderRadius: "3px 3px 0 0",
                       color: "#444444",
                       fontWeight: "bold",
-                      padding: "5px 10px",
-                      textAlign: "right",
+                      padding: "5px 0px",
+                      display: "flex",
+                      //flexDirection: "column",
+                      alignItems: "center",
                     }}
                   >
-                    {members.length}
+                    {members.length} membro
                   </Typography>
                   <IconButton
                     onClick={handleShowMembers}
@@ -569,7 +570,9 @@ export default function List() {
                   )}
                 </ButtonContainer>
               </Box>
-              {list ? <ChatBox listId={list._id} /> : null}
+              <SimplePaper>
+                {list ? <ChatBox listId={list._id} /> : null}
+              </SimplePaper>
             </Grid>
           </Grid>
         </Box>

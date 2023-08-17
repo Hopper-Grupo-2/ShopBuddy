@@ -140,7 +140,13 @@ export default function Notifications() {
               }}
             >
               {notificationsContext?.notifications?.length === 0 ? (
-                <Typography variant="h6">
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
                   Você não possui nenhuma notificação nova.
                 </Typography>
               ) : (

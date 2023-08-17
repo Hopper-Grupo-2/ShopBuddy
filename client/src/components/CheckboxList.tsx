@@ -182,19 +182,36 @@ export default function CheckboxList(props: CheckboxListProps) {
           overflowY: "auto",
         }}
       >
-        {sortItems(props.items).map((item) => {
-          const labelId = `checkbox-list-label-${item._id}`;
-          return (
-            <CheckboxListItem
-              key={item._id}
-              item={item}
-              labelId={labelId}
-              onCheck={props.onCheck}
-              onRemove={props.onRemove}
-              onEdit={props.onEdit}
-            />
-          );
-        })}
+        {props.items.length === 0 ? (
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            A lista está vazia...
+          </Typography>
+        ) : (
+          sortItems(props.items).map((item) => {
+            const labelId = `checkbox-list-label-${item._id}`;
+            return (
+              <CheckboxListItem
+                key={item._id}
+                item={item}
+                labelId={labelId}
+                onCheck={props.onCheck}
+                onRemove={props.onRemove}
+                onEdit={props.onEdit}
+              />
+            );
+          })
+        )}
       </List>
     </>
   );
