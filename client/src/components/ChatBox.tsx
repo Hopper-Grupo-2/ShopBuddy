@@ -85,7 +85,6 @@ export default function ChatBox(props: ChatProps) {
       pending: true,
     };
     setCurrentMessageId(currentMessageId + 1);
-    console.log("pending message: ", message);
     return message;
   };
 
@@ -123,14 +122,12 @@ export default function ChatBox(props: ChatProps) {
       const responseObj = await response.json();
       if (response.ok) {
         const newMessage = responseObj.data;
-        console.log("new message: ", newMessage);
         confirmMessage(pendingMessage._id, newMessage);
       } else {
         throw responseObj.error;
       }
     } catch (error: any) {
       console.error(error.name, error.message);
-      alert("Failed to send message: " + error.message);
     }
   };
 
