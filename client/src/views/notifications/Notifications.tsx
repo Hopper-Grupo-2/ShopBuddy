@@ -134,8 +134,8 @@ export default function Notifications() {
             {/* Everything below here will be a dedicated component */}
             <List
               sx={{
-                maxHeight: "400px",
-                overflowY: "auto",
+                //maxHeight: "400px",
+                //overflowY: "auto",
                 padding: "10px 20px",
               }}
             >

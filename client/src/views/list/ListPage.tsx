@@ -20,6 +20,7 @@ import { MemberFormDialog } from "../../components/MemberFormDialog";
 import { Box, Grid, Typography } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 
 const ButtonContainer = styled.div`
@@ -500,10 +501,17 @@ export default function List() {
                         color: "#FFFFFF",
                         fontWeight: "bold",
                         textTransform: "capitalize",
-                        padding: "5px",
+                        padding: "5px 15px 5px 5px",
                       }}
                     >
-                      + Novo item
+                      <AddIcon
+                        sx={{
+                          fontWeight: "bold",
+                          mr: "10px",
+                          fontSize: "2rem",
+                        }}
+                      />
+                      Novo item
                     </Button>
                   </Box>
                 </Box>

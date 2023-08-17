@@ -84,14 +84,21 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     }));
   };
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    setLoading(true);
+
     if (validateForm()) {
       const success = await props.handleSubmit(formData);
       if (success) {
         props.handleClose();
       }
     }
+
+    setLoading(false);
   };
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -182,7 +189,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
     console.log(formData);
     setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
+      const newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
         console.log(key, product[key as keyof IItem]);
         //if (key in product)
@@ -294,7 +301,19 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button type="submit">Confirmar</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            sx={{
+              fontWeight: "bold",
+              color: "#FFFFFF",
+              textTransform: "capitalize",
+            }}
+            disabled={loading}
+          >
+            Confirmar
+          </Button>
         </DialogActions>
       </form>
     </Dialog>
