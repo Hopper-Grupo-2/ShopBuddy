@@ -91,15 +91,18 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       [name || ""]: value as string,
     }));
   };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     if (validateForm()) {
       const success = await props.handleSubmit(formData);
       if (success) {
         props.handleClose();
       }
     }
+    setLoading(false);
   };
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -113,7 +116,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
-      if (!formData[field.id]) {
+      if (!formData[field.id] && field.id !== "market") {
         errors[field.id] = `${field.label} é obrigatório.`;
       }
 
@@ -190,7 +193,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
     console.log(formData);
     setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
+      const newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
         console.log(key, product[key as keyof IItem]);
         //if (key in product)
@@ -300,7 +303,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                         variant="standard"
                         error={Boolean(formErrors[field.id])}
                         helperText={formErrors[field.id]}
-                        onKeyPress={preventExtraInput}
+                        onKeyDown={preventExtraInput}
                       />
                     )}
                   />
@@ -318,7 +321,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     onChange={handleChange}
                     error={Boolean(formErrors[field.id])}
                     helperText={formErrors[field.id]}
-                    onKeyPress={preventExtraInput}
+                    onKeyDown={preventExtraInput}
                   />
                 )}
               </Grid>
@@ -342,6 +345,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
               color: "#FFF",
               fontWeight: "bold",
             }}
+            disabled={loading}
           >
             Confirmar
           </Button>

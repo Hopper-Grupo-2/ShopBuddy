@@ -4,5 +4,6 @@ export default interface IMessage {
   userId: string;
   username: string;
   textContent: string;
-  createdAt: Date;
+  createdAt: string;
+  pending?: boolean;
 }

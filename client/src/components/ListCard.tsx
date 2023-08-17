@@ -44,50 +44,50 @@ export default function ListCard(props: CardProps) {
           color: "white",
         }}
       >
-        <Box
-          sx={{
-            padding: "10px 20px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-          }}
-        >
+        <CardActionArea onClick={props.action}>
           <Box
             sx={{
+              padding: "10px 20px",
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              height: "5rem",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
             }}
           >
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: "bold",
-              }}
-            >
-              {props.title}
-            </Typography>
-          </Box>
-          {props.isOwner && (
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                justifyContent: "flex-end",
+                height: "5rem",
               }}
             >
-              <ManageAccountsIcon
-                sx={{ color: "#444444", fontSize: "3.5rem" }}
-              />
-              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                Admin
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                }}
+              >
+                {props.title}
               </Typography>
             </Box>
-          )}
-        </Box>
-        <Card sx={{ borderRadius: "0px 0px 10px 10px" }}>
-          <CardActionArea onClick={props.action}>
+            {props.isOwner && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <ManageAccountsIcon
+                  sx={{ color: "#444444", fontSize: "3.5rem" }}
+                />
+                <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                  Admin
+                </Typography>
+              </Box>
+            )}
+          </Box>
+          <Card sx={{ borderRadius: "0px 0px 10px 10px" }}>
             <CardContent
               sx={{
                 display: "flex",
@@ -230,8 +230,8 @@ export default function ListCard(props: CardProps) {
                 </Box>
               </Box>
             </CardContent>
-          </CardActionArea>
-        </Card>
+          </Card>
+        </CardActionArea>
       </Box>
     </CssBaseline>
   );
