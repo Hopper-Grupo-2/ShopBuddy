@@ -8,33 +8,6 @@ import { SocketContext } from "../contexts/SocketContext";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckIcon from "@mui/icons-material/Check";
 
-const ChatContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  ///width: 450px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  //margin-left: 20px;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    margin-left: 0;
-  }
-`;
-
-const ChatSection = styled.div`
-  //height: calc(70vh - 120px);
-  height: calc(70vh - 120px);
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-
-  @media (max-width: 768px) {
-    height: calc(70vh - 60px);
-  }
-`;
-
 const MessageBox = styled(Paper)<{ sender: string }>`
   max-width: 90%;
   margin: 10px;
@@ -51,6 +24,7 @@ const MessageForm = styled.form`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 5px;
 `;
 
 interface ChatProps {
@@ -173,8 +147,24 @@ export default function ChatBox(props: ChatProps) {
   };
 
   return (
-    <ChatContainer>
-      <ChatSection ref={chatRef}>
+    <Box
+      sx={{
+        height: "calc(70vh + 14px)",
+        maxHeight: {
+          xs: "500px", // or you can omit 'xs' if you want the default to be 'auto'
+          md: "10000px",
+        },
+      }}
+    >
+      <Box
+        ref={chatRef}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "scroll",
+          height: "calc(100% - 60px)",
+        }}
+      >
         {messages.map((message) => (
           <MessageBox
             key={message._id}
@@ -207,7 +197,7 @@ export default function ChatBox(props: ChatProps) {
             </Box>
           </MessageBox>
         ))}
-      </ChatSection>
+      </Box>
 
       <MessageForm onSubmit={handleSubmit}>
         <TextField
@@ -220,6 +210,6 @@ export default function ChatBox(props: ChatProps) {
           <SendIcon />
         </IconButton>
       </MessageForm>
-    </ChatContainer>
+    </Box>
   );
 }

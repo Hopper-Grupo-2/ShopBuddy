@@ -31,6 +31,10 @@ export default function SimplePaper(props: PaperProps) {
             "& > :last-child": {
               mt: "auto",
             },
+            maxHeight: {
+              xs: "500px", // or you can omit 'xs' if you want the default to be 'auto'
+              md: "10000px",
+            },
           }}
         >
           {props.children}
