@@ -134,13 +134,19 @@ export default function Notifications() {
             {/* Everything below here will be a dedicated component */}
             <List
               sx={{
-                maxHeight: "400px",
-                overflowY: "auto",
+                //maxHeight: "400px",
+                //overflowY: "auto",
                 padding: "10px 20px",
               }}
             >
               {notificationsContext?.notifications?.length === 0 ? (
-                <Typography variant="h6">
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
                   Você não possui nenhuma notificação nova.
                 </Typography>
               ) : (
@@ -164,8 +170,6 @@ export default function Notifications() {
                             }
                       }
                       disablePadding
-                      //component={Link}
-                      //to={"/list/" + notification.listId}
                       secondaryAction={
                         <IconButton
                           edge="end"
@@ -234,7 +238,7 @@ function getNotificationMessage(typeOfNotification: NotificationTypes): string {
     case NotificationTypes.ADDED_TO_LIST:
       return "foi adicionado à lista";
     case NotificationTypes.REMOVED_FROM_LIST:
-      return "foi removido da lista";
+      return "removeu você da lista";
     case NotificationTypes.MESSAGE_FROM_LIST:
       return "enviou uma mensagem";
     case NotificationTypes.ADD_PRODUCT:

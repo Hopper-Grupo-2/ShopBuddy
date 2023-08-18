@@ -9,9 +9,10 @@ import AlertDialog from "./AlertDialog";
 export default function UserForm() {
   const context = useContext(UserContext);
   const navigate = useNavigate();
+  const dialogMessage = "";
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,10 +26,10 @@ export default function UserForm() {
       lastName: data.get("lastName"),
     };
 
-    const validation = validateCredentials(credentials);
-    if (validation !== null) {
-      setDialogMessage(validation);
-      setOpenDialog(true);
+    const errors = validateCredentials(credentials);
+    setFormErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
       return;
     }
 
@@ -45,26 +46,34 @@ export default function UserForm() {
     if (edited) navigate("/");
   };
 
-  const validateCredentials = (credentials: any) => {
-    if (credentials.email === null) {
-      return "Por favor, insira um e-mail";
+  const validateCredentials = (credentials: any): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
+    if (!credentials.email || !/^[^@]+@[^@]+\.[^@]+$/.test(credentials.email)) {
+      errors.email = "Por favor, insira um e-mail válido";
     }
-    if (credentials.oldPassword === null) {
-      return "Por favor, insira uma senha";
+
+    if (!credentials.username || credentials.username.length < 3 || credentials.username.length > 15) {
+      errors.username = "Nome de usuário deve ter entre 3 e 15 caracteres";
     }
-    if (credentials.newPassword === null) {
-      return "Por favor, insira uma senha";
+
+    if (!credentials.oldPassword || credentials.oldPassword < 3 || credentials.oldPassword.length > 16) {
+      errors.oldPassword = "A senha deve ter entre 3 e 16 caracteres";
     }
-    if (credentials.username === null) {
-      return "Por favor, insira um nome de usuário";
+
+    if (!credentials.newPassword || credentials.newPassword < 3 || credentials.newPassword.length > 16) {
+      errors.newPassword = "A nova senha deve ter entre 3 e 16 caracteres";
     }
-    if (credentials.firstName === null) {
-      return "Por favor, insira seu nome";
+
+    if (!credentials.firstName || !/^[A-Za-z]+$/i.test(credentials.firstName) || credentials.firstName < 3 || credentials.firstName.length > 15) {
+      errors.firstName = "O primeiro nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
-    if (credentials.lastName === null) {
-      return "Por favor, insira seu sobrenome";
+
+    if (!credentials.lastName  || !/^[A-Za-z]+$/i.test(credentials.lastName) || credentials.lastName < 3 || credentials.lastName.length > 15) {
+      errors.lastName = "O último nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
-    return null;
+
+    return errors;
   };
 
   const handleCloseDialog = () => {
@@ -88,6 +97,8 @@ export default function UserForm() {
         autoComplete="email"
         autoFocus
         defaultValue={context?.user?.email}
+        error={Boolean(formErrors.email)}
+        helperText={formErrors.email}
       />
       <TextField
         margin="normal"
@@ -98,6 +109,8 @@ export default function UserForm() {
         type="text"
         id="username"
         defaultValue={context?.user?.username}
+        error={Boolean(formErrors.username)}
+        helperText={formErrors.username}
       />
       <TextField
         margin="normal"
@@ -108,16 +121,20 @@ export default function UserForm() {
         type="password"
         id="oldPassword"
         autoComplete="current-password"
+        error={Boolean(formErrors.oldPassword)}
+        helperText={formErrors.oldPassword}
       />
       <TextField
         margin="normal"
         required
         fullWidth
         name="newPassword"
-        label="Nova senha (ou repita a atual)"
+        label="Nova senha"
         type="password"
         id="newPassword"
         autoComplete="new-password"
+        error={Boolean(formErrors.newPassword)}
+        helperText={formErrors.newPassword}
       />
       <TextField
         margin="normal"
@@ -128,6 +145,8 @@ export default function UserForm() {
         type="text"
         id="firstName"
         defaultValue={context?.user?.firstName}
+        error={Boolean(formErrors.firstName)}
+        helperText={formErrors.firstName}
       />
       <TextField
         margin="normal"
@@ -138,6 +157,8 @@ export default function UserForm() {
         type="text"
         id="lastName"
         defaultValue={context?.user?.lastName}
+        error={Boolean(formErrors.lastName)}
+        helperText={formErrors.lastName}
       />
       <Button
         type="submit"

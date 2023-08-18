@@ -7,8 +7,11 @@ import {
   TextField,
   Button,
   Typography,
+  Autocomplete,
+  Box,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
+import IUser from "../interfaces/iUser";
 interface FormField {
   id: string;
   label: string;
@@ -35,7 +38,6 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
   props: FormDialogProps
 ) => {
   const [inviteLink, setInviteLink] = useState("");
-  //const [inviteButtonColor, setInviteButtonColor] = React.useState("");
   const params = useParams();
 
   const initialFormData: Record<string, string> = props.fields.reduce(
@@ -45,11 +47,52 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
   const [formData, setFormData] =
     useState<Record<string, string>>(initialFormData);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const [users, setUsers] = useState<IUser[]>([]);
+
+  const autocompleteProps = {
+    options: users,
+  };
+
+  const handleAutocompleteOptions = async (_: any, newInputValue: string) => {
+    console.log(newInputValue);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [event.target.id]: event.target.value,
+      username: newInputValue,
     }));
+    const normalizedInputValue = newInputValue.replace(/\s+/g, "");
+    if (normalizedInputValue.length < 1) return;
+    try {
+      const response = await fetch(`/api/users/search/${normalizedInputValue}`);
+      const responseObj = await response.json();
+      if (response.ok) {
+        const matchingUsers: IUser[] = responseObj.data;
+        const newAutocompleteOptions = matchingUsers;
+        console.log(newAutocompleteOptions);
+        setUsers(matchingUsers);
+      } else {
+        throw responseObj.error;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSelectUser = (_: any, selectedUser: IUser | string | null) => {
+    const user = users.find((user) => user === selectedUser);
+
+    if (!user) return;
+
+    console.log(formData);
+    setFormData((prevFormData) => {
+      let newFormData = { ...prevFormData };
+      Object.keys(prevFormData).forEach((key) => {
+        console.log(key, user[key as keyof IUser]);
+        //if (key in user)
+        if (key !== "quantity")
+          newFormData[key] = String(user[key as keyof IUser] ?? "");
+      });
+      return newFormData;
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -72,7 +115,6 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
       if (response.ok) {
         const inviteUrl: string = inviteData.data.url;
         const host = window.location.host;
-        ////await navigator.clipboard.writeText(host + inviteUrl);
         setInviteLink(host + inviteUrl);
       } else {
         throw inviteData.error;
@@ -96,19 +138,64 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
         {props.title}
       </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogContent>
+        <DialogContent sx={{ minWidth: "350px" }}>
           {props.fields.map((field) => (
-            <TextField
-              autoFocus
-              margin="dense"
-              key={field.id}
-              id={field.id}
-              label={field.label}
-              type={field.type}
-              fullWidth
-              variant="standard"
+            <Autocomplete
+              {...autocompleteProps}
+              key={field.id + "autocomplete"}
+              id="autocomplete"
+              freeSolo
+              disableClearable
               value={formData[field.id] || ""}
-              onChange={handleChange}
+              getOptionLabel={(option) =>
+                typeof option === "string" ? option : option.username
+              }
+              filterOptions={(options, { inputValue }) => {
+                const normalizedInput = inputValue.replace(/\s+/g, "");
+                return options.filter((option) => {
+                  const concatenatedValue =
+                    option.username + option.firstName + option.lastName;
+                  const normalizedConcatenatedValue = concatenatedValue.replace(
+                    /\s+/g,
+                    ""
+                  );
+                  return normalizedConcatenatedValue.includes(normalizedInput);
+                });
+              }}
+              isOptionEqualToValue={(option, value) => option._id === value._id}
+              renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option._id}>
+                    <Box display="flex" justifyContent="flex-start">
+                      <Typography variant="body1" sx={{ mr: "16px" }}>
+                        {option.username}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        color="textSecondary"
+                        sx={{ mr: "16px" }}
+                      >
+                        {option.firstName} {option.lastName}
+                      </Typography>
+                    </Box>
+                  </li>
+                );
+              }}
+              onInputChange={handleAutocompleteOptions}
+              onChange={handleSelectUser}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  autoFocus
+                  margin="dense"
+                  key={field.id}
+                  id={field.id}
+                  label={field.label}
+                  type={field.type}
+                  fullWidth
+                  variant="standard"
+                />
+              )}
             />
           ))}
           <DialogActions sx={{ paddingRight: "0px" }}>

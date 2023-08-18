@@ -209,6 +209,20 @@ export default class UsersController {
     }
   }
 
+  public static async searchUsersByTerm(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const searchTerm: string = req.params.searchTerm;
+      const matchingUsers = await UsersServices.searchUser(searchTerm);
+      res.status(200).json({ error: null, data: matchingUsers });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   //
   //
 }

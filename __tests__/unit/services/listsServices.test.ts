@@ -23,7 +23,8 @@ describe("Lists Services", () => {
                             "unit": "g",
                             "price": 121,
                             "checked": false,
-                            "_id": "64c01a558c586b987b4a081a"
+                            "_id": "64c01a558c586b987b4a081a",
+                            "market": "Mercado"
                         }
                     ],
                     owner: "64baecd19a6976beff14b5db",
@@ -45,7 +46,8 @@ describe("Lists Services", () => {
                             "unit": "Kg",
                             "price": 200,
                             "checked": false,
-                            "_id": "64c0a1558c586b987b4a018a"
+                            "_id": "64c0a1558c586b987b4a018a",
+                            "market": "Mercado"
                         }
                     ],
                     owner: "64baecd19a6976beff14b5db",
@@ -91,7 +93,8 @@ describe("Lists Services", () => {
                             "unit": "Kg",
                             "price": 200,
                             "checked": false,
-                            "_id": "64c0a1558c586b987b4a018a"
+                            "_id": "64c0a1558c586b987b4a018a",
+                            "market": "Mercado"
                         }
                     ],
                     owner: "64baecd19a6976beff14b5db",
@@ -158,7 +161,8 @@ describe("Lists Services", () => {
                             "unit": "Kg",
                             "price": 200,
                             "checked": false,
-                            "_id": "64c0a1558c586b987b4a018a"
+                            "_id": "64c0a1558c586b987b4a018a",
+                            "market": "Mercado"
                         }
                     ],
                     owner: "64baecd19a6976beff14b5db",
@@ -230,7 +234,8 @@ describe("Lists Services", () => {
                         "unit": "Kg",
                         "price": 200,
                         "checked": false,
-                        "_id": "64c0a1558c586b987b4a018a"
+                        "_id": "64c0a1558c586b987b4a018a",
+                        "market": "Mercado"
                     }
                 ],
                 owner: userId,

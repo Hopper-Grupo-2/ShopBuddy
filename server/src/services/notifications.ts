@@ -33,9 +33,8 @@ export default class NotificationsServices {
             const sender = await UsersServices.getUserById(
               notification.senderId.toString()
             );
-            const list = await ListsServices.getListByListId(
-              notification.listId.toString(),
-              userId
+            const list = await ListsRepositories.getListById(
+              notification.listId.toString()
             );
             notification.senderName = sender.username;
             notification.listName = list?.listName;

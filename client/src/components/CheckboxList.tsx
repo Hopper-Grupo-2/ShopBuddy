@@ -10,6 +10,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import EditIcon from "@mui/icons-material/Edit";
 import IItem from "../interfaces/iItem";
 import { useState } from "react";
+import { ButtonGroup, Button, Typography, Grid } from "@mui/material";
 
 interface CheckboxListProps {
   items: Array<IItem>;
@@ -78,6 +79,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             tabIndex={-1}
             disableRipple
             inputProps={{ "aria-labelledby": props.labelId }}
+            color="secondary"
           />
         </ListItemIcon>
         {/* Aqui está um comentário para quem for fazer esse componente:
@@ -87,9 +89,21 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             textDecoration: props.item.checked ? "line-through" : "none",
           }}
           id={props.labelId}
-          primary={`${props.item.name} ${props.item.quantity} ${
-            props.item.unit
-          } R$${props.item.price.toFixed(2).replace(".", ",")}`}
+          primary={
+            <Grid>
+              <Typography fontWeight="bold" sx={{ p: "0px", m: "0px" }}>
+                {props.item.name} {props.item.quantity} {props.item.unit} R$
+                {props.item.price.toFixed(2).replace(".", ",")}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                color="gray"
+                sx={{ p: "0px", m: "0px" }}
+              >
+                {props.item.market}
+              </Typography>
+            </Grid>
+          }
         />
       </ListItemButton>
     </ListItem>
@@ -97,28 +111,108 @@ function CheckboxListItem(props: CheckboxListItemProps) {
 }
 
 export default function CheckboxList(props: CheckboxListProps) {
+  const [sortOption, setSortOption] = useState("name");
+
+  const handleSort = (option: string) => {
+    setSortOption(option);
+  };
+
+  const sortItems = (items: Array<IItem>) => {
+    switch (sortOption) {
+      case "name":
+        return [...items].sort((a, b) => a.name.localeCompare(b.name));
+      case "price":
+        return [...items].sort((a, b) => a.price - b.price);
+      case "unit":
+        return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
+      case "market":
+        return [...items].sort((a, b) => {
+          const marketComparison = a.market.localeCompare(b.market);
+          if (marketComparison === 0) {
+            return a.name.localeCompare(b.name);
+          } else {
+            return marketComparison;
+          }
+        });
+      default:
+        return items;
+    }
+  };
   return (
-    <List
-      sx={{
-        width: "100%",
-        height: "calc(70vh - 120px)",
-        bgcolor: "background.paper",
-        overflowY: "auto",
-      }}
-    >
-      {props.items.map((item) => {
-        const labelId = `checkbox-list-label-${item._id}`;
-        return (
-          <CheckboxListItem
-            key={item._id}
-            item={item}
-            labelId={labelId}
-            onCheck={props.onCheck}
-            onRemove={props.onRemove}
-            onEdit={props.onEdit}
-          />
-        );
-      })}
-    </List>
+    <>
+      <ButtonGroup
+        color="primary"
+        aria-label="outlined primary button group"
+        sx={{ marginBottom: "10px" }}
+      >
+        <Button
+          variant={sortOption === "name" ? "contained" : "outlined"}
+          onClick={() => handleSort("name")}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Nome
+        </Button>
+        <Button
+          variant={sortOption === "unit" ? "contained" : "outlined"}
+          onClick={() => handleSort("unit")}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Unidade
+        </Button>
+        <Button
+          variant={sortOption === "price" ? "contained" : "outlined"}
+          onClick={() => handleSort("price")}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Preço
+        </Button>
+        <Button
+          variant={sortOption === "market" ? "contained" : "outlined"}
+          onClick={() => handleSort("market")}
+          sx={{ textTransform: "capitalize" }}
+        >
+          Mercado
+        </Button>
+      </ButtonGroup>
+      <List
+        sx={{
+          width: "100%",
+          height: "calc(70vh - 120px)",
+          bgcolor: "background.paper",
+          overflowY: "auto",
+        }}
+      >
+        {props.items.length === 0 ? (
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            A lista está vazia...
+          </Typography>
+        ) : (
+          sortItems(props.items).map((item) => {
+            const labelId = `checkbox-list-label-${item._id}`;
+            return (
+              <CheckboxListItem
+                key={item._id}
+                item={item}
+                labelId={labelId}
+                onCheck={props.onCheck}
+                onRemove={props.onRemove}
+                onEdit={props.onEdit}
+              />
+            );
+          })
+        )}
+      </List>
+    </>
   );
 }
