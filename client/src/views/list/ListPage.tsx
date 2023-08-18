@@ -421,6 +421,21 @@ export default function List() {
     setOpenDialog(false);
   };
 
+  function getTotal() {
+    return items.reduce((acc, product) => {
+      if (
+        product.unit === "Kg" ||
+        product.unit === "L" ||
+        product.unit === "Ml" ||
+        product.unit === "und"
+      ) {
+        return acc + product.price * product.quantity;
+      } else {
+        return acc + product.price;
+      }
+    }, 0);
+  }
+
   return (
     <>
       <PageStructure>
@@ -429,8 +444,6 @@ export default function List() {
           flexDirection="column"
           alignItems="center"
           padding="30px 20px 0px 20px"
-          //sx={{ overflowY: "scroll" }}
-          //margin="30px 20px"
         >
           <Grid container spacing={3} justifyContent="center">
             <Grid item sm={12} md={12} lg={6} xl={6} sx={{ minWidth: "350px" }}>
@@ -487,7 +500,7 @@ export default function List() {
                       >
                         R${" "}
                       </Typography>
-                      {Number(99).toFixed(2).replace(".", ",")}
+                      {getTotal().toFixed(2).replace(".", ",")}
                     </Typography>
                   </Box>
                   <Box>
@@ -552,7 +565,7 @@ export default function List() {
                       alignItems: "center",
                     }}
                   >
-                    {members.length} membro
+                    {members.length} {members.length > 1 ? "membros" : "membro"}
                   </Typography>
                   <IconButton
                     onClick={handleShowMembers}
