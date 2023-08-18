@@ -9,7 +9,7 @@ export default function loggerInfoClient(
   //const clientIP = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const clientIP = req.headers["x-real-ip"] || req.socket.remoteAddress;
   const requestInfo = `${req.method} ${req.originalUrl}`;
-  Logger.info(`Client IP: ${clientIP}, Request: ${requestInfo}`);
+  Logger.http(`Client IP: ${clientIP}, Request: ${requestInfo}`);
 
   next();
 }

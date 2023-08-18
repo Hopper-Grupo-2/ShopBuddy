@@ -41,10 +41,8 @@ async function createSocketClient(
 
   clientSocket.on("message", (data: string) => {
     messages.push(data);
-    console.log("OLHA MESSAGES->", messages, data);
     // troquei de === por >= com medo de algum loop infinito
     if (messages.length === closeAfter) {
-      console.log("Fechou alguem!", data);
       clientSocket.close();
     }
   });
