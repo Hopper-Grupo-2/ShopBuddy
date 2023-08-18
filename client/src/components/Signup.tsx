@@ -70,6 +70,10 @@ export default function SignUp() {
       errors.password = "A senha deve ter entre 3 e 16 caracteres";
     }
 
+    if ( /^[A-Za-z]+$/.test(credentials.password) ) {
+      errors.password = "A senha deve conter pelo menos um número";
+    }
+
     if (
       !credentials.username ||
       credentials.username.length < 3 ||
