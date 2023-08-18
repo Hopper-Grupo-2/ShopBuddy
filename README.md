@@ -14,3 +14,4 @@ Para inicializar o projeto, basta criar os arquivos .env, baseado no .env-exampl
 -   Redis adicionado para caching
 -   Redis into all containers
 -   Lembrete: atualizar o README.md
+-   details
