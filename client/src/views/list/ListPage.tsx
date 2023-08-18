@@ -591,7 +591,7 @@ export default function List() {
         </Box>
       </PageStructure>
       <ItemFormDialog
-        title="Adicionar novo item"
+        title="Novo item"
         fields={[
           { id: "name", label: "Nome do item", type: "text" },
           { id: "unit", label: "Unidade de medida", type: "select" },
