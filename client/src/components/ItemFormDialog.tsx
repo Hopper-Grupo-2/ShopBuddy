@@ -16,6 +16,7 @@ import {
   Grid,
 } from "@mui/material";
 import IItem from "../interfaces/iItem";
+import { FormHelperText } from '@mui/material';
 
 // this has to be redone at a later date to
 // always be compatible with the backend
@@ -117,7 +118,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
       if (!formData[field.id] && field.id !== "market") {
-        errors[field.id] = `${field.label} é obrigatório.`;
+        errors[field.id] = `Esse campo é obrigatório.`;
       }
 
       if (
@@ -230,6 +231,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     fullWidth
                     variant="standard"
                     sx={{ height: 45 }}
+                    error={Boolean(formErrors[field.id])}
                   >
                     <InputLabel id={field.id + "-label"}>
                       {field.label}
@@ -252,6 +254,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                         </MenuItem>
                       ))}
                     </Select>
+                    <FormHelperText>{formErrors[field.id]}</FormHelperText> 
                   </FormControl>
                 ) : field.id === "name" ? (
                   <Autocomplete

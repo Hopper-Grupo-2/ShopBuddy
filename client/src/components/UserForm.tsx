@@ -57,12 +57,16 @@ export default function UserForm() {
       errors.username = "Nome de usuário deve ter entre 3 e 15 caracteres";
     }
 
-    if (!credentials.oldPassword || credentials.oldPassword < 3 || credentials.oldPassword.length > 16) {
-      errors.oldPassword = "A senha deve ter entre 3 e 16 caracteres";
+    if (!credentials.oldPassword) {
+      errors.oldPassword = "Por favor, insira sua senha";
     }
 
     if (!credentials.newPassword || credentials.newPassword < 3 || credentials.newPassword.length > 16) {
       errors.newPassword = "A nova senha deve ter entre 3 e 16 caracteres";
+    }
+
+    if ( /^[A-Za-z]+$/.test(credentials.newPassword) ) {
+      errors.newPassword = "A nova senha deve conter pelo menos um número";
     }
 
     if (!credentials.firstName || !/^[A-Za-z]+$/i.test(credentials.firstName) || credentials.firstName < 3 || credentials.firstName.length > 15) {
