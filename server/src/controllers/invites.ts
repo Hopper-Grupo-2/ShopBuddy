@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import NotificationsController from "./notifications";
 import { NotificationTypes } from "../interfaces/notification";
 import InvitesServices from "../services/invites";
+import Websocket from "../websocket";
 
 export default class InvitesController {
   public static async postInviteLink(
@@ -40,6 +41,14 @@ export default class InvitesController {
 
       const listId = invite.listId.toString() ?? "";
       const senderId = invite.userId.toString() ?? "";
+
+      const websocket = Websocket.getIstance();
+      websocket.broadcastToList(
+        listId,
+        user?._id?.toString() ?? "",
+        "addMember",
+        updatedList?.members
+      );
 
       NotificationsController.sendNewUserNotification(
         listId,

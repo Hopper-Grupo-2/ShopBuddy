@@ -13,19 +13,20 @@ import {
   Autocomplete,
   Typography,
   Box,
+  Grid,
 } from "@mui/material";
 import IItem from "../interfaces/iItem";
 
 // this has to be redone at a later date to
 // always be compatible with the backend
 const unitsOfMeasure = [
-  { value: "Kg", label: "Quilograma (Kg)" },
-  { value: "Ml", label: "Mililitro (Ml)" },
-  { value: "gramas", label: "Grama (g)" },
+  { value: "kg", label: "Quilograma (kg)" },
+  { value: "ml", label: "Mililitro (ml)" },
+  { value: "g", label: "Grama (g)" },
   { value: "L", label: "Litro (L)" },
   { value: "m", label: "Metro (m)" },
   { value: "cm", label: "Centímetro (cm)" },
-  { value: "und", label: "Unidade (und)" },
+  { value: "un", label: "Unidade (un)" },
 ];
 
 interface FormField {
@@ -42,6 +43,13 @@ interface FormDialogProps {
   handleSubmit: (formData: Record<string, string>) => Promise<boolean>;
   initialValues?: Record<string, string>;
 }
+
+const itemDialogTitleStyle = {
+  backgroundColor: "#FF9900",
+  color: "#FFF",
+  fontWeight: "bold",
+  padding: "5px 10px",
+};
 
 const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const initialFormData: Record<string, string> =
@@ -83,15 +91,18 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       [name || ""]: value as string,
     }));
   };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     if (validateForm()) {
       const success = await props.handleSubmit(formData);
       if (success) {
         props.handleClose();
       }
     }
+    setLoading(false);
   };
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -105,31 +116,42 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
-      if (!formData[field.id]) {
+      if (!formData[field.id] && field.id !== "market") {
         errors[field.id] = `${field.label} é obrigatório.`;
       }
 
-      if ((field.id === "name" || field.id === "market") && ((formData[field.id].length < 3 && formData[field.id].length > 0) || formData[field.id].length > 30)) {
+      if (
+        (field.id === "name" || field.id === "market") &&
+        ((formData[field.id].length < 3 && formData[field.id].length > 0) ||
+          formData[field.id].length > 30)
+      ) {
         errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
-      } 
+      }
 
-      if ((field.id === "quantity" || field.id === "price") && formData[field.id].length > 0) {
+      if (
+        (field.id === "quantity" || field.id === "price") &&
+        formData[field.id].length > 0
+      ) {
         if (!/^\d*(\.\d+)?$/.test(formData[field.id])) {
           errors[field.id] = `${field.label} deve ser um número válido.`;
-
         } else if (parseFloat(formData[field.id]) <= 0) {
-          errors[field.id] = `${field.label} deve ser um número positivo válido.`;
+          errors[
+            field.id
+          ] = `${field.label} deve ser um número positivo válido.`;
         }
       }
     });
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  }
+  };
 
   const preventExtraInput = (event: React.KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
-    if (event.key === ',' || (event.key === '.' && target.value.includes('.'))) {
+    if (
+      event.key === "," ||
+      (event.key === "." && target.value.includes("."))
+    ) {
       event.preventDefault();
     }
   };
@@ -171,7 +193,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
     console.log(formData);
     setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
+      const newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
         console.log(key, product[key as keyof IItem]);
         //if (key in product)
@@ -184,66 +206,109 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
-      <DialogTitle>{props.title}</DialogTitle>
+      <DialogTitle
+        sx={{
+          ...itemDialogTitleStyle,
+        }}
+      >
+        {props.title}
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
         <DialogContent>
-          {props.fields.map((field) =>
-            field.id === "unit" ? (
-              <FormControl key={field.id} fullWidth variant="standard">
-                <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
-                <Select
-                  labelId={field.id + "-label"}
-                  id={field.id}
-                  name={field.id}
-                  value={formData[field.id] || ""}
-                  onChange={(event) =>
-                    handleSelectChange(event as SelectChangeEvent)
-                  }
-                >
-                  <MenuItem value="">Selecione a unidade de medida</MenuItem>
-                  {unitsOfMeasure.map((unit) => (
-                    <MenuItem key={unit.value} value={unit.value}>
-                      {unit.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : field.id === "name" ? (
-              <Autocomplete
-                {...autocompleteProps}
-                key={field.id + "autocomplete"}
-                id="autocomplete"
-                freeSolo
-                disableClearable
-                value={formData[field.id] || ""}
-                getOptionLabel={(option) =>
-                  typeof option === "string" ? option : option.name
-                }
-                isOptionEqualToValue={(option, value) =>
-                  option._id === value._id
-                }
-                renderOption={(props, option) => {
-                  return (
-                    <li {...props} key={option._id}>
-                      <Box display="flex" justifyContent="flex-start">
-                        <Typography variant="body1" sx={{ mr: "16px" }}>
-                          {option.name}
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary" sx={{ mr: "16px" }}>
-                          {option.market}
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary">
-                          R$ {option.price.toFixed(2).toString()}
-                        </Typography>
-                      </Box>
-                    </li>
-                  );
-                }}
-                onInputChange={handleAutocompleteOptions}
-                onChange={handleSelectProduct}
-                renderInput={(params) => (
+          <Grid container spacing={2} alignItems="center">
+            {props.fields.map((field) => (
+              <Grid
+                item
+                xs={12}
+                sm={field.id === "name" ? 12 : 6}
+                key={field.id}
+              >
+                {" "}
+                {field.id === "unit" ? (
+                  <FormControl
+                    key={field.id}
+                    fullWidth
+                    variant="standard"
+                    sx={{ height: 45 }}
+                  >
+                    <InputLabel id={field.id + "-label"}>
+                      {field.label}
+                    </InputLabel>
+                    <Select
+                      labelId={field.id + "-label"}
+                      id={field.id}
+                      name={field.id}
+                      value={formData[field.id] || ""}
+                      onChange={(event) =>
+                        handleSelectChange(event as SelectChangeEvent)
+                      }
+                    >
+                      <MenuItem value="">
+                        Selecione a unidade de medida
+                      </MenuItem>
+                      {unitsOfMeasure.map((unit) => (
+                        <MenuItem key={unit.value} value={unit.value}>
+                          {unit.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : field.id === "name" ? (
+                  <Autocomplete
+                    {...autocompleteProps}
+                    key={field.id + "autocomplete"}
+                    id="autocomplete"
+                    freeSolo
+                    disableClearable
+                    value={formData[field.id] || ""}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option.name
+                    }
+                    isOptionEqualToValue={(option, value) =>
+                      option._id === value._id
+                    }
+                    renderOption={(props, option) => {
+                      return (
+                        <li {...props} key={option._id}>
+                          <Box display="flex" justifyContent="flex-start">
+                            <Typography variant="body1" sx={{ mr: "16px" }}>
+                              {option.name}
+                            </Typography>
+                            <Typography
+                              variant="body1"
+                              color="textSecondary"
+                              sx={{ mr: "16px" }}
+                            >
+                              {option.market}
+                            </Typography>
+                            <Typography variant="body1" color="textSecondary">
+                              R$ {option.price.toFixed(2).toString()}
+                            </Typography>
+                          </Box>
+                        </li>
+                      );
+                    }}
+                    onInputChange={handleAutocompleteOptions}
+                    onChange={handleSelectProduct}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        autoFocus
+                        margin="dense"
+                        key={field.id}
+                        id={field.id}
+                        label={field.label}
+                        type={field.type}
+                        fullWidth
+                        variant="standard"
+                        error={Boolean(formErrors[field.id])}
+                        helperText={formErrors[field.id]}
+                        onKeyDown={preventExtraInput}
+                      />
+                    )}
+                  />
+                ) : (
                   <TextField
-                    {...params}
                     autoFocus
                     margin="dense"
                     key={field.id}
@@ -252,34 +317,38 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                     type={field.type}
                     fullWidth
                     variant="standard"
+                    value={formData[field.id] || ""}
+                    onChange={handleChange}
                     error={Boolean(formErrors[field.id])}
                     helperText={formErrors[field.id]}
-                    onKeyPress={preventExtraInput}
+                    onKeyDown={preventExtraInput}
                   />
                 )}
-              />
-            ) : (
-              <TextField
-                autoFocus
-                margin="dense"
-                key={field.id}
-                id={field.id}
-                label={field.label}
-                type={field.type}
-                fullWidth
-                variant="standard"
-                value={formData[field.id] || ""}
-                onChange={handleChange}
-                error={Boolean(formErrors[field.id])}
-                helperText={formErrors[field.id]}
-                onKeyPress={preventExtraInput}
-              />
-            )
-          )}
+              </Grid>
+            ))}
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleClose}>Cancelar</Button>
-          <Button type="submit">Confirmar</Button>
+          <Button
+            variant="outlined"
+            onClick={props.handleClose}
+            sx={{
+              fontWeight: "bold",
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              color: "#FFF",
+              fontWeight: "bold",
+            }}
+            disabled={loading}
+          >
+            Confirmar
+          </Button>
         </DialogActions>
       </form>
     </Dialog>
