@@ -20,13 +20,13 @@ import IItem from "../interfaces/iItem";
 // this has to be redone at a later date to
 // always be compatible with the backend
 const unitsOfMeasure = [
-  { value: "Kg", label: "Quilograma (Kg)" },
-  { value: "Ml", label: "Mililitro (Ml)" },
-  { value: "gramas", label: "Grama (g)" },
+  { value: "kg", label: "Quilograma (kg)" },
+  { value: "ml", label: "Mililitro (ml)" },
+  { value: "g", label: "Grama (g)" },
   { value: "L", label: "Litro (L)" },
   { value: "m", label: "Metro (m)" },
   { value: "cm", label: "Centímetro (cm)" },
-  { value: "und", label: "Unidade (und)" },
+  { value: "un", label: "Unidade (un)" },
 ];
 
 interface FormField {

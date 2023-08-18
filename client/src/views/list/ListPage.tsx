@@ -424,10 +424,10 @@ export default function List() {
   function getTotal() {
     return items.reduce((acc, product) => {
       if (
-        product.unit === "Kg" ||
+        product.unit === "kg" ||
         product.unit === "L" ||
-        product.unit === "Ml" ||
-        product.unit === "und"
+        product.unit === "ml" ||
+        product.unit === "un"
       ) {
         return acc + product.price * product.quantity;
       } else {
