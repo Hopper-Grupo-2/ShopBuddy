@@ -13,6 +13,7 @@ import { notificationsRouter } from "./routers/notifications";
 import { invitesRouter } from "./routers/invites";
 import { cacheRouter } from "./routers/cache";
 
+import loggerInfoClient from "./middlewares/logger-info-client";
 export default class App {
   public app: express.Application;
   public server: http.Server;
@@ -31,6 +32,7 @@ export default class App {
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use("/", express.static("./client/dist"));
+    this.app.use(loggerInfoClient);
   }
 
   private router(): void {
