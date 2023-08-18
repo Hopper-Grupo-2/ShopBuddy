@@ -135,7 +135,7 @@ export default function ListCard(props: CardProps) {
                       color: "#444444",
                     }}
                   >
-                    Total gasto:
+                    Orçamento:
                   </Typography>
                   <Typography
                     variant="subtitle2"
