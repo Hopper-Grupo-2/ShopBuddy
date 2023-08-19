@@ -30,7 +30,7 @@ JavaScript
 
 ## Inicializando
 - Clone este repositório:
-*git clone https://github.com/seunomeusuario/shopbuddy.git*
+*git clone [https://github.com/Hopper-Grupo-2/ShopBuddy.git]*
 
 - Acesse o diretório do projeto:
 *cd shopbuddy*
@@ -54,8 +54,6 @@ JavaScript
 
 #### Acesse a aplicação:
 Acesse http://localhost:5173/
-Execute a aplicação:
-
 
 ## Contribuição
 Contribuições são sempre bem-vindas! Se tiver sugestões ou quiser melhorar alguma funcionalidade, sinta-se à vontade para criar um fork e abrir um Pull Request.
