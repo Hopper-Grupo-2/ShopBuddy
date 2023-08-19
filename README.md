@@ -7,6 +7,8 @@ Organize suas compras de forma colaborativa com amigos e familiares usando o Sho
 - Tecnologias Usadas
 - Começando
 - Contribuição
+- Contribuidores
+- Link do Projeto
 
 ## Sobre o ShopBuddy
 O ShopBuddy é uma ferramenta colaborativa para compras onde você pode criar listas de compras compartilhadas. Convide amigos e familiares usando um link gerado aleatoriamente e monte sua lista de compras de forma organizada, com todos conversansdo e editando a mesma lista!
@@ -33,6 +35,8 @@ JavaScript
 - Acesse o diretório do projeto:
 *cd shopbuddy*
 
+- Crie um arquivo .env com base no .env-example e o preenchenod de acordo
+
 #### Para o BackEnd
 - Instale as dependências:
 *npm install*
@@ -56,4 +60,12 @@ JavaScript
 ## Contribuição
 Contribuições são sempre bem-vindas! Se tiver sugestões ou quiser melhorar alguma funcionalidade, sinta-se à vontade para criar um fork e abrir um Pull Request.
 
-Link do Projeto: https://github.com/Hopper-Grupo-2/ShopBuddy
+## Contribuidores:
+- Davi Severino [https://www.linkedin.com/in/davi-severino-738146268/]
+- Felipe Fernandes []
+- João Victor []
+- Jonatas Gomes []
+- Letonio Silva []
+
+## Link do Projeto: 
+[https://github.com/Hopper-Grupo-2/ShopBuddy]
