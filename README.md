@@ -7,8 +7,6 @@ Organize suas compras de forma colaborativa com amigos e familiares usando o Sho
 - Tecnologias Usadas
 - Começando
 - Contribuição
-- Licença
-- Contato
 
 ## Sobre o ShopBuddy
 O ShopBuddy é uma ferramenta colaborativa para compras onde você pode criar listas de compras compartilhadas. Convide amigos e familiares usando um link gerado aleatoriamente e monte sua lista de compras de forma organizada, com todos conversansdo e editando a mesma lista!
@@ -53,7 +51,7 @@ JavaScript
 *yarn dev*
 
 #### Acesse a aplicação:
-Acesse http://localhost:5173/
+- Acesse http://localhost:5173/
 
 ## Contribuição
 Contribuições são sempre bem-vindas! Se tiver sugestões ou quiser melhorar alguma funcionalidade, sinta-se à vontade para criar um fork e abrir um Pull Request.
