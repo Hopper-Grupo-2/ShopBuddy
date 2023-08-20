@@ -11,6 +11,30 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoints para autenticar um usuário";
+      #swagger.parameters["Login"] = { 
+          in: 'body',
+          description: 'email e password do usuário',
+          schema: { $ref: "#/definitions/Login"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "Incorrect e-mail and/or password"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Erro de Validação", 
+          schema: { "error": { $ref: "#/definitions/LoginValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userCredentials = {
         email: req.body.email,
@@ -39,6 +63,30 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoints para registrar um novo usuário";
+      #swagger.parameters["Register"] = { 
+          in: 'body',
+          description: 'email e password do usuário',
+          schema: { $ref: "#/definitions/Register"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "This e-mail is already in use"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Erro de Validação", 
+          schema: { "error": { $ref: "#/definitions/RegisterValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const user: IUser = req.body;
 
@@ -83,6 +131,27 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*
+            #swagger.tags = ["User"];
+            #swagger.description = "Endpoints para recuperar um usuário";
+
+             #swagger.parameters['userId'] = {
+                in: 'path',
+                description: 'User ID.',
+                required: true,
+                type: 'string'
+            }
+           
+            #swagger.responses[200] = { schema: { data: {$ref: "#/definitions/User" }, status: 200 } }
+            #swagger.responses[404] = {
+                description: "Usuário não encontrado", 
+                schema: { errors: ["Usuário não encontrado"], status: 404 } 
+            }
+            #swagger.responses[422] = { description:"Erro de Validação", schema: {$ref: "#/definitions/IdValidator"} }
+            #swagger.responses[500] ={schema: { $ref: "#/definitions/Error500" }}
+
+        */
+
     try {
       const userId: string = req.params.userId;
 
