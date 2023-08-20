@@ -29,12 +29,12 @@ const doc = {
   securityDefinitions: {
     sessionAuth: {
       type: "apiKey",
-      in: "cookie", // Specify that the authentication is in a cookie
-      name: "session", // The name of the cookie
+      in: "cookie", // specify that the authentication is in a cookie
+      name: "session", // the name of the cookie
     },
   },
   security: [
-    { sessionAuth: [] }, // Enable this security definition for all endpoints
+    { sessionAuth: [] }, // enable this security definition for all endpoints
   ],
   */
   consumes: ["application/json"],

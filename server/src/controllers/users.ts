@@ -355,6 +355,21 @@ export default class UsersController {
   }
 
   public static async logout(req: Request, res: Response, next: NextFunction) {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to logout";
+
+      #swagger.responses[200] = { schema: { "message": "User ${username} logged out successfully" } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const user = req.user;
 
