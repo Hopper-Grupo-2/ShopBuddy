@@ -14,12 +14,12 @@
       "description": "Endpoints to manage users"
     },
     {
-      "name": "Post",
-      "description": "Endpoints to manage posts/feed"
+      "name": "List",
+      "description": "Endpoints to manage lists/products"
     },
     {
-      "name": "Group",
-      "description": "Endpoints to manage group/chats"
+      "name": "Message",
+      "description": "Endpoints to manage messages/chat"
     }
   ],
   "schemes": [
@@ -303,10 +303,77 @@
     },
     "/api/users/": {
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para listar todos os usuários",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "null"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User2"
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Make login first"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/Error500"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
@@ -316,7 +383,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoints para recuperar um usuário",
+        "description": "Endpoint para recuperar um usuário",
         "parameters": [
           {
             "name": "userId",
@@ -332,12 +399,40 @@
             "schema": {
               "type": "object",
               "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "null"
+                },
                 "data": {
                   "$ref": "#/definitions/User"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "token is missing or invalid"
+                    }
+                  }
                 },
-                "status": {
-                  "type": "number",
-                  "example": 200
+                "data": {
+                  "type": "string",
+                  "example": "null"
                 }
               },
               "xml": {
@@ -346,22 +441,26 @@
             }
           },
           "404": {
-            "description": "Usuário não encontrado",
+            "description": "Não encontrado",
             "schema": {
               "type": "object",
               "properties": {
-                "errors": {
-                  "type": "array",
-                  "example": [
-                    "Usuário não encontrado"
-                  ],
-                  "items": {
-                    "type": "string"
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "NotFoundError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "There is no user with the given id"
+                    }
                   }
                 },
-                "status": {
-                  "type": "number",
-                  "example": 404
+                "data": {
+                  "type": "string",
+                  "example": "null"
                 }
               },
               "xml": {
@@ -372,78 +471,389 @@
           "422": {
             "description": "Erro de Validação",
             "schema": {
-              "$ref": "#/definitions/IdValidator"
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/UserByIdValidator"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
             }
           },
           "500": {
+            "description": "Erro interno do servidor",
             "schema": {
-              "$ref": "#/definitions/Error500"
-            },
-            "description": "Erro Interno do Servidor"
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/Error500"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       },
       "patch": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para atualizar os dados de um usuário",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "updateUser",
+            "in": "body",
+            "description": "dados para atualizar o usuário",
+            "schema": {
+              "$ref": "#/definitions/UpdateUser"
+            }
           },
           {
             "name": "errors",
             "in": "query",
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "oldPassword": {
-                  "example": "any"
-                },
-                "newPassword": {
-                  "example": "any"
-                },
-                "firstName": {
-                  "example": "any"
-                },
-                "lastName": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "null"
+                },
+                "data": {
+                  "$ref": "#/definitions/User"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "token is missing or invalid"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "403": {
+            "description": "Proíbido",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "ForbiddenError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User 64c65cb75765cdcc8475091e does not have access"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "NotFoundError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "There is no user with the given id"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de dados",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Conflict"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "This e-mail is already in use"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "422": {
+            "description": "Erro de Validação",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/UpdateUserValidator"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/Error500"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint para excluir um usuário",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "description": "User ID."
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "null"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "User with id ${userId} deleted successfully!"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "401": {
+            "description": "Autenticação inválida",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "token is missing or invalid"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "403": {
+            "description": "Proíbido",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "ForbiddenError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User ${userId} does not have access"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "404": {
+            "description": "Não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "NotFoundError"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "There is no user with the given id"
+                    }
+                  }
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "422": {
+            "description": "Erro de Validação",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/RemoveUserValidator"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/definitions/Error500"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "null"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
@@ -481,12 +891,12 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoints para registrar um novo usuário",
+        "description": "Endpoint para registrar um novo usuário",
         "parameters": [
           {
             "name": "Register",
             "in": "body",
-            "description": "email e password do usuário",
+            "description": "dados para registrar o usuário",
             "schema": {
               "$ref": "#/definitions/Register"
             }
@@ -583,7 +993,7 @@
         "tags": [
           "User"
         ],
-        "description": "Endpoints para autenticar um usuário",
+        "description": "Endpoint para autenticar um usuário",
         "parameters": [
           {
             "name": "Login",
@@ -877,6 +1287,43 @@
         }
       }
     },
+    "User2": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "64c69aa800481e5a3547dd3d"
+        },
+        "username": {
+          "type": "string",
+          "example": "maria"
+        },
+        "email": {
+          "type": "string",
+          "example": "maria@alpha.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "$2b$10$IZTtQtrMyy9mKTUhrym7TuhPrp6thovDwvJv3hrj6w.5e4kRxqVpO"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "maria"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "silva"
+        },
+        "createdAt": {
+          "type": "string",
+          "example": "2023-07-30T17:15:20.000Z"
+        },
+        "updatedAt": {
+          "type": "string",
+          "example": "2023-07-30T17:15:20.000Z"
+        }
+      }
+    },
     "Login": {
       "type": "object",
       "properties": {
@@ -984,311 +1431,115 @@
         }
       }
     },
-    "AddUser": {
+    "UserByIdValidator": {
       "type": "object",
       "properties": {
-        "nickname": {
-          "type": "string",
-          "example": "zoro_oliveira"
-        },
         "name": {
           "type": "string",
-          "example": "Zoro Oliveira"
+          "example": "UnprocessableEntity"
         },
-        "password": {
-          "type": "string",
-          "example": "123456"
-        },
-        "team": {
-          "type": "string",
-          "example": "São Paulo"
+        "message": {
+          "type": "array",
+          "example": [
+            "The userId must be a valid ObjectId."
+          ],
+          "items": {
+            "type": "string"
+          }
         }
-      },
-      "required": [
-        "nickname",
-        "name",
-        "password",
-        "team"
-      ]
+      }
     },
     "UpdateUser": {
       "type": "object",
       "properties": {
-        "nickname": {
+        "username": {
           "type": "string",
-          "example": "zoro_oliveira"
+          "example": "lets"
         },
-        "name": {
+        "email": {
           "type": "string",
-          "example": "Zoro Oliveira"
+          "example": "lets@alpha.com"
         },
-        "team": {
+        "oldPassword": {
           "type": "string",
-          "example": "São Paulo"
+          "example": "1234"
+        },
+        "newPassword": {
+          "type": "string",
+          "example": "1234"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "letonio"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "fulano"
         }
       },
       "required": [
-        "nickname",
-        "name",
-        "team"
+        "username",
+        "email",
+        "oldPassword",
+        "newPassword",
+        "firstName",
+        "lastName"
       ]
     },
-    "Post": {
+    "UpdateUserValidator": {
       "type": "object",
       "properties": {
-        "_id": {
+        "name": {
           "type": "string",
-          "example": "6410b677f77571f9f323740d"
+          "example": "UnprocessableEntity"
         },
-        "pathImage": {
-          "type": "string",
-          "example": "/img/6410b677f77571f9f323740d.png"
-        },
-        "content": {
-          "type": "string",
-          "example": "Esse Ano seremos campeão!!!"
-        },
-        "author": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "640f6af6ad964b6d45a13c35"
-            },
-            "nickname": {
-              "type": "string",
-              "example": "zoro_oliveira"
-            },
-            "name": {
-              "type": "string",
-              "example": "Zoro Oliveira"
-            },
-            "team": {
-              "type": "string",
-              "example": "são paulo"
-            }
-          }
-        },
-        "likes": {
-          "type": "array",
-          "example": [
-            "640ab68a27fea004b4b9ce05"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "comments": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "content": {
-                "type": "string",
-                "example": "Perdemos de novo. Rumo a lanterna"
-              },
-              "author": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "string",
-                    "example": "640f6af6ad964b6d45a13c35"
-                  },
-                  "nickname": {
-                    "type": "string",
-                    "example": "zoro_oliveira"
-                  },
-                  "name": {
-                    "type": "string",
-                    "example": "Zoro Oliveira"
-                  }
-                }
-              },
-              "_id": {
-                "type": "string",
-                "example": "6410bf1dace5da35c401601c"
-              },
-              "createdAt": {
-                "type": "string",
-                "example": "2023-03-14T18:38:21.739Z"
-              },
-              "updatedAt": {
-                "type": "string",
-                "example": "2023-03-14T18:38:21.739Z"
-              }
-            }
-          }
-        }
-      }
-    },
-    "AddPost": {
-      "type": "object",
-      "properties": {
-        "content": {
-          "type": "string",
-          "example": "Esse Ano seremos campeão!!!"
-        },
-        "author": {
-          "type": "string",
-          "example": "640f6af6ad964b6d45a13c35"
-        }
-      }
-    },
-    "AddComment": {
-      "type": "object",
-      "properties": {
-        "content": {
-          "type": "string",
-          "example": "Perdemos de novo. Rumo à lanterna =("
-        },
-        "author": {
-          "type": "string",
-          "example": "640f6af6ad964b6d45a13c35"
-        }
-      }
-    },
-    "Group": {
-      "type": "object",
-      "properties": {
-        "_id": {
-          "type": "string",
-          "example": "6410b677f77571f9f323740d"
-        },
-        "pathImage": {
-          "type": "string",
-          "example": "/img/6410b677f77571f9f323740d.png"
-        },
-        "title": {
-          "type": "string",
-          "example": "Tricolor Paulista"
-        },
-        "admin": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "example": "640f6af6ad964b6d45a13c35"
-            },
-            "nickname": {
-              "type": "string",
-              "example": "zoro_oliveira"
-            },
-            "name": {
-              "type": "string",
-              "example": "Zoro Oliveira"
-            },
-            "team": {
-              "type": "string",
-              "example": "são paulo"
-            }
-          }
-        },
-        "members": {
-          "type": "array",
-          "example": [
-            "640ab68a27fea004b4b9ce05"
-          ],
-          "items": {
-            "type": "string"
-          }
-        },
-        "chat": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Quando será o próximo jogo?"
-              },
-              "author": {
-                "type": "object",
-                "properties": {
-                  "_id": {
-                    "type": "string",
-                    "example": "640f6af6ad964b6d45a13c35"
-                  },
-                  "nickname": {
-                    "type": "string",
-                    "example": "zoro_oliveira"
-                  },
-                  "name": {
-                    "type": "string",
-                    "example": "Zoro Oliveira"
-                  }
-                }
-              },
-              "_id": {
-                "type": "string",
-                "example": "6410bf1dace5da35c401601c"
-              },
-              "createdAt": {
-                "type": "string",
-                "example": "2023-03-14T18:38:21.739Z"
-              },
-              "updatedAt": {
-                "type": "string",
-                "example": "2023-03-14T18:38:21.739Z"
-              }
-            }
-          }
-        }
-      }
-    },
-    "AddGroup": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "example": "Tricolor Paulista"
-        },
-        "admin": {
-          "type": "string",
-          "example": "640f6af6ad964b6d45a13c35"
-        },
-        "members": {
-          "type": "array",
-          "example": [
-            "640ab68a27fea004b4b9ce05"
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "AddMessage": {
-      "type": "object",
-      "properties": {
         "message": {
-          "type": "string",
-          "example": "Quando será o próximo jogo?"
-        },
-        "author": {
-          "type": "string",
-          "example": "640f6af6ad964b6d45a13c35"
-        }
-      }
-    },
-    "IResult": {
-      "type": "object",
-      "properties": {
-        "errors": {
           "type": "array",
           "example": [
-            "aconteceu um erro"
+            "The userId must be a valid ObjectId.",
+            "username is mandatory.",
+            "username must be between 3 and 15 characters.",
+            "username must contain only letters and digits.",
+            "username must be a string.",
+            "email is mandatory.",
+            "email must be between 3 and 50 characters.",
+            "Invalid email format.",
+            "oldPassword is mandatory.",
+            "oldPassword must be at least 3-16 characters long.",
+            "oldPassword must contain at least one digit.",
+            "newPassword is mandatory.",
+            "newPassword must be at least 3-16 characters long.",
+            "newPassword must contain at least one digit.",
+            "firstName is mandatory.",
+            "firstName must be between 3 and 15 characters.",
+            "firstName must contain only letters and digits.",
+            "firstName must be a string.",
+            "lastName is mandatory.",
+            "lastName must be between 3 and 15 characters.",
+            "lastName must contain only letters and digits.",
+            "lastName must be a string."
           ],
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "RemoveUserValidator": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "UnprocessableEntity"
         },
-        "data": {
-          "type": "object",
-          "properties": {}
-        },
-        "status": {
-          "type": "number",
-          "example": 200
+        "message": {
+          "type": "array",
+          "example": [
+            "The userId must be a valid ObjectId."
+          ],
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -1302,104 +1553,6 @@
         "message": {
           "type": "string",
           "example": "original error message is..."
-        }
-      }
-    },
-    "UserAddValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[nickname]: O apelido deve ter entre 5 e 25 caracteres",
-            "[nickname]: O apelido deve começar com letra pode conter números e não pode terminar com caracteres especiais.",
-            "[name]: O nome deve ter entre 5 e 30 caracteres.",
-            "[name]: O nome deve conter apenas letras.",
-            "[password]: A senha deve ter entre 3 e 15 caracteres.",
-            "[team]: O time é obrigatório."
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "UserUpdateValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[id]: O id deve ser um ObjectId válido.",
-            "[nickname]: O apelido deve ter entre 5 e 25 caracteres",
-            "[nickname]: O apelido deve começar com letra pode conter números e não pode terminar com caracteres especiais.",
-            "[name]: O nome deve ter entre 5 e 30 caracteres.",
-            "[name]: O nome deve conter apenas letras.",
-            "[team]: O time é obrigatório."
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "IdValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[id]: O id deve ser um ObjectId válido."
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "PostValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[author]: O código do autor deve ser um ObjectId válido.",
-            "[content]: O conteúdo deve ter no máximo 2500 caracteres."
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "MessageValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[author]: O código do autor deve ser um ObjectId válido.",
-            "[message]: O conteúdo deve ter no máximo 100 caracteres."
-          ],
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "GroupValidator": {
-      "type": "object",
-      "properties": {
-        "errors": {
-          "type": "array",
-          "example": [
-            "[admin]: O código do administrador deve ser um ObjectId válido.",
-            "[title]: O nome do grupo deve ter entre 5 e 50 caracteres.",
-            "[members]: Os códigos dos membros devem ser ObjectIds válidos."
-          ],
-          "items": {
-            "type": "string"
-          }
         }
       }
     }

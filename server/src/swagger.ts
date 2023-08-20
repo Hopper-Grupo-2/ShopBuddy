@@ -39,12 +39,12 @@ const doc = {
       description: "Endpoints to manage users",
     },
     {
-      name: "Post",
-      description: "Endpoints to manage posts/feed",
+      name: "List",
+      description: "Endpoints to manage lists/products",
     },
     {
-      name: "Group",
-      description: "Endpoints to manage group/chats",
+      name: "Message",
+      description: "Endpoints to manage messages/chat",
     },
   ],
   definitions: {
@@ -57,6 +57,16 @@ const doc = {
       lastName: "lets",
       createdAt: "2023-07-30T12:51:03.000Z",
       updatedAt: "2023-08-01T00:02:06.068Z",
+    },
+    User2: {
+      _id: "64c69aa800481e5a3547dd3d",
+      username: "maria",
+      email: "maria@alpha.com",
+      password: "$2b$10$IZTtQtrMyy9mKTUhrym7TuhPrp6thovDwvJv3hrj6w.5e4kRxqVpO",
+      firstName: "maria",
+      lastName: "silva",
+      createdAt: "2023-07-30T17:15:20.000Z",
+      updatedAt: "2023-07-30T17:15:20.000Z",
     },
     Login: {
       $email: "lets@alpha.com",
@@ -103,134 +113,55 @@ const doc = {
         "lastName must be a string.",
       ],
     },
-    AddUser: {
-      $nickname: "zoro_oliveira",
-      $name: "Zoro Oliveira",
-      $password: "123456",
-      $team: "São Paulo",
+    UserByIdValidator: {
+      name: "UnprocessableEntity",
+      message: ["The userId must be a valid ObjectId."],
     },
     UpdateUser: {
-      $nickname: "zoro_oliveira",
-      $name: "Zoro Oliveira",
-      $team: "São Paulo",
+      $username: "lets",
+      $email: "lets@alpha.com",
+      $oldPassword: "1234",
+      $newPassword: "1234",
+      $firstName: "letonio",
+      $lastName: "fulano",
     },
-    Post: {
-      _id: "6410b677f77571f9f323740d",
-      pathImage: "/img/6410b677f77571f9f323740d.png",
-      content: "Esse Ano seremos campeão!!!",
-      author: {
-        _id: "640f6af6ad964b6d45a13c35",
-        nickname: "zoro_oliveira",
-        name: "Zoro Oliveira",
-        team: "são paulo",
-      },
-      likes: ["640ab68a27fea004b4b9ce05"],
-      comments: [
-        {
-          content: "Perdemos de novo. Rumo a lanterna",
-          author: {
-            _id: "640f6af6ad964b6d45a13c35",
-            nickname: "zoro_oliveira",
-            name: "Zoro Oliveira",
-          },
-          _id: "6410bf1dace5da35c401601c",
-          createdAt: "2023-03-14T18:38:21.739Z",
-          updatedAt: "2023-03-14T18:38:21.739Z",
-        },
+    UpdateUserValidator: {
+      name: "UnprocessableEntity",
+      message: [
+        "The userId must be a valid ObjectId.",
+        "username is mandatory.",
+        "username must be between 3 and 15 characters.",
+        "username must contain only letters and digits.",
+        "username must be a string.",
+        "email is mandatory.",
+        "email must be between 3 and 50 characters.",
+        "Invalid email format.",
+        "oldPassword is mandatory.",
+        "oldPassword must be at least 3-16 characters long.",
+        "oldPassword must contain at least one digit.",
+        "newPassword is mandatory.",
+        "newPassword must be at least 3-16 characters long.",
+        "newPassword must contain at least one digit.",
+        "firstName is mandatory.",
+        "firstName must be between 3 and 15 characters.",
+        "firstName must contain only letters and digits.",
+        "firstName must be a string.",
+        "lastName is mandatory.",
+        "lastName must be between 3 and 15 characters.",
+        "lastName must contain only letters and digits.",
+        "lastName must be a string.",
       ],
     },
-    AddPost: {
-      content: "Esse Ano seremos campeão!!!",
-      author: "640f6af6ad964b6d45a13c35",
+
+    RemoveUserValidator: {
+      name: "UnprocessableEntity",
+      message: ["The userId must be a valid ObjectId."],
     },
-    AddComment: {
-      content: "Perdemos de novo. Rumo à lanterna =(",
-      author: "640f6af6ad964b6d45a13c35",
-    },
-    Group: {
-      _id: "6410b677f77571f9f323740d",
-      pathImage: "/img/6410b677f77571f9f323740d.png",
-      title: "Tricolor Paulista",
-      admin: {
-        _id: "640f6af6ad964b6d45a13c35",
-        nickname: "zoro_oliveira",
-        name: "Zoro Oliveira",
-        team: "são paulo",
-      },
-      members: ["640ab68a27fea004b4b9ce05"],
-      chat: [
-        {
-          message: "Quando será o próximo jogo?",
-          author: {
-            _id: "640f6af6ad964b6d45a13c35",
-            nickname: "zoro_oliveira",
-            name: "Zoro Oliveira",
-          },
-          _id: "6410bf1dace5da35c401601c",
-          createdAt: "2023-03-14T18:38:21.739Z",
-          updatedAt: "2023-03-14T18:38:21.739Z",
-        },
-      ],
-    },
-    AddGroup: {
-      title: "Tricolor Paulista",
-      admin: "640f6af6ad964b6d45a13c35",
-      members: ["640ab68a27fea004b4b9ce05"],
-    },
-    AddMessage: {
-      message: "Quando será o próximo jogo?",
-      author: "640f6af6ad964b6d45a13c35",
-    },
-    IResult: {
-      errors: ["aconteceu um erro"],
-      data: {},
-      status: 200,
-    },
+
+    //last definition
     Error500: {
       name: "InternalServerError",
       message: "original error message is...",
-    },
-    UserAddValidator: {
-      errors: [
-        "[nickname]: O apelido deve ter entre 5 e 25 caracteres",
-        "[nickname]: O apelido deve começar com letra pode conter números e não pode terminar com caracteres especiais.",
-        "[name]: O nome deve ter entre 5 e 30 caracteres.",
-        "[name]: O nome deve conter apenas letras.",
-        "[password]: A senha deve ter entre 3 e 15 caracteres.",
-        "[team]: O time é obrigatório.",
-      ],
-    },
-    UserUpdateValidator: {
-      errors: [
-        "[id]: O id deve ser um ObjectId válido.",
-        "[nickname]: O apelido deve ter entre 5 e 25 caracteres",
-        "[nickname]: O apelido deve começar com letra pode conter números e não pode terminar com caracteres especiais.",
-        "[name]: O nome deve ter entre 5 e 30 caracteres.",
-        "[name]: O nome deve conter apenas letras.",
-        "[team]: O time é obrigatório.",
-      ],
-    },
-    IdValidator: {
-      errors: ["[id]: O id deve ser um ObjectId válido."],
-    },
-    PostValidator: {
-      errors: [
-        "[author]: O código do autor deve ser um ObjectId válido.",
-        "[content]: O conteúdo deve ter no máximo 2500 caracteres.",
-      ],
-    },
-    MessageValidator: {
-      errors: [
-        "[author]: O código do autor deve ser um ObjectId válido.",
-        "[message]: O conteúdo deve ter no máximo 100 caracteres.",
-      ],
-    },
-    GroupValidator: {
-      errors: [
-        "[admin]: O código do administrador deve ser um ObjectId válido.",
-        "[title]: O nome do grupo deve ter entre 5 e 50 caracteres.",
-        "[members]: Os códigos dos membros devem ser ObjectIds válidos.",
-      ],
     },
   },
 };

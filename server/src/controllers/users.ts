@@ -13,7 +13,7 @@ export default class UsersController {
   ): Promise<void> {
     /*           
       #swagger.tags = ["User"];
-      #swagger.description = "Endpoints para autenticar um usuário";
+      #swagger.description = "Endpoint para autenticar um usuário";
       #swagger.parameters["Login"] = { 
           in: 'body',
           description: 'email e password do usuário',
@@ -65,10 +65,10 @@ export default class UsersController {
   ): Promise<void> {
     /*           
       #swagger.tags = ["User"];
-      #swagger.description = "Endpoints para registrar um novo usuário";
+      #swagger.description = "Endpoint para registrar um novo usuário";
       #swagger.parameters["Register"] = { 
           in: 'body',
-          description: 'email e password do usuário',
+          description: 'dados para registrar o usuário',
           schema: { $ref: "#/definitions/Register"}
       }
 
@@ -107,6 +107,21 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint para listar todos os usuários";
+      
+
+      #swagger.responses[200] = { schema: { error: 'null', data: [{$ref: "#/definitions/User" }, {$ref: "#/definitions/User2" }] } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "Make login first"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
     try {
       const usersFromCache: IUser[] | null =
         await RedisCaching.getCacheFromKeyValueTypeByKeyname<IUser>("users");
@@ -132,25 +147,36 @@ export default class UsersController {
     next: NextFunction
   ): Promise<void> {
     /*
-            #swagger.tags = ["User"];
-            #swagger.description = "Endpoints para recuperar um usuário";
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint para recuperar um usuário";
 
-             #swagger.parameters['userId'] = {
-                in: 'path',
-                description: 'User ID.',
-                required: true,
-                type: 'string'
-            }
-           
-            #swagger.responses[200] = { schema: { data: {$ref: "#/definitions/User" }, status: 200 } }
-            #swagger.responses[404] = {
-                description: "Usuário não encontrado", 
-                schema: { errors: ["Usuário não encontrado"], status: 404 } 
-            }
-            #swagger.responses[422] = { description:"Erro de Validação", schema: {$ref: "#/definitions/IdValidator"} }
-            #swagger.responses[500] ={schema: { $ref: "#/definitions/Error500" }}
+      #swagger.parameters['userId'] = {
+          in: 'path',
+          description: 'User ID.',
+          required: true,
+          type: 'string'
+      }
+      
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Não encontrado", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Erro de Validação", 
+          schema: { "error": { $ref: "#/definitions/UserByIdValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }  
 
-        */
+    */
 
     try {
       const userId: string = req.params.userId;
@@ -167,6 +193,43 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint para atualizar os dados de um usuário";
+      #swagger.parameters["updateUser"] = { 
+          in: 'body',
+          description: 'dados para atualizar o usuário',
+          schema: { $ref: "#/definitions/UpdateUser"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[403] = #swagger.responses[403] = {
+          description: "Proíbido", 
+          schema: { "error": { name: "ForbiddenError", "message": "User 64c65cb75765cdcc8475091e does not have access"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Não encontrado", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[409] = #swagger.responses[409] = {
+          description: "Conflito de dados", 
+          schema: { "error": { name: "Conflict", "message": "This e-mail is already in use"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Erro de Validação", 
+          schema: { "error": { $ref: "#/definitions/UpdateUserValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userId: string = req.params.userId;
 
@@ -214,6 +277,40 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint para excluir um usuário";
+      #swagger.parameters['userId'] = {
+          in: 'path',
+          description: 'User ID.',
+          required: true,
+          type: 'string'
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: "User with id ${userId} deleted successfully!" } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Autenticação inválida", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[403] = #swagger.responses[403] = {
+          description: "Proíbido", 
+          schema: { "error": { name: "ForbiddenError", "message": "User ${userId} does not have access"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Não encontrado", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Erro de Validação", 
+          schema: { "error": { $ref: "#/definitions/RemoveUserValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Erro interno do servidor", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userId: string = req.params.userId;
 
