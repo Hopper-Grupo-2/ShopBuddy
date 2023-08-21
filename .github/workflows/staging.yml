@@ -40,14 +40,13 @@ jobs:
             - name: Create .env file
               run: |
                   echo "PORT=${{ vars.MY_PORT_STAGING }}" >> .env
-                  echo "MONGO_INITDB_ROOT_USERNAME=${{ vars.MONGO_INITDB_ROOT_USERNAME }}" >> .env
-                  echo "MONGO_INITDB_ROOT_PASSWORD=${{ vars.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
-                  echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
-                  echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
-                  echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "JWTSCRET=MYSECRET" >> .env
+                  echo "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+                  echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+                  echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
+                  echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+                  echo "MONGO_DB=${{ secrets.MONGO_DB }}" >> .env
+                  echo "JWTSECRET=${{ secrets.JWTSECRET }}" >> .env
                   echo "NODE_ENV=staging" >> .env
-                  cat .env
                   
             - name: Testing app with Jest inside the container
               run: |
@@ -77,29 +76,17 @@ jobs:
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
             - uses: actions/checkout@v3
-            # Runs a single command using the runners shell
-            #- name: Use Node.js ${{ matrix.node-version }}
-            #  uses: actions/setup-node@v1
-            #  with:
-            #      node-version: ${{ matrix.node-version }}
-
-            #- run: npm install
-
-            #- name: Install client dependencies
-            #  working-directory: ./client
-            #  run: yarn install
 
             - name: Create .env file
               run: |
                   echo "PORT=${{ vars.MY_PORT_STAGING }}" >> .env
-                  echo "MONGO_INITDB_ROOT_USERNAME=${{ vars.MONGO_INITDB_ROOT_USERNAME }}" >> .env
-                  echo "MONGO_INITDB_ROOT_PASSWORD=${{ vars.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
-                  echo "MONGO_USER=${{ vars.MONGO_USER }}" >> .env
-                  echo "MONGO_PASSWORD=${{ vars.MONGO_PASSWORD }}" >> .env
-                  echo "MONGO_DB=${{ vars.MONGO_DB }}" >> .env
-                  echo "JWTSECRET=${{ vars.JWTSECRET }}" >> .env
+                  echo "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+                  echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+                  echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
+                  echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+                  echo "MONGO_DB=${{ secrets.MONGO_DB }}" >> .env
+                  echo "JWTSECRET=${{ secrets.JWTSECRET }}" >> .env
                   echo "NODE_ENV=staging" >> .env
-                  cat .env
 
             - run: docker-compose down
             
