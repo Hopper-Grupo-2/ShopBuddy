@@ -27,12 +27,21 @@ export default function InvitePage() {
         }
       } catch (error: any) {
         console.error(error.name, error.message);
-        error.name === "Gone"
-          ? setDialogMessage("Ops, esse convite não existe ou expirou.")
-          : setDialogMessage(
+        switch (error.name) {
+          case "Gone":
+            setDialogMessage("Ops, esse convite não existe ou expirou.");
+            break;
+          case "Conflict":
+            const match = error.message.match(/list with Id ([a-fA-F0-9]{24})/);
+            const listId = match && match[1];
+            navigate(`/list/${listId}`);
+            break;
+          default:
+            setDialogMessage(
               "Ops, algo deu errado! Tente novamente mais tarde."
             );
-
+            break;
+        }
         setOpenDialog(true);
       }
     }
