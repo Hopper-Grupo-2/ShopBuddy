@@ -117,7 +117,11 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
-      if (!formData[field.id] && field.id !== "market") {
+      if (
+        !formData[field.id] &&
+        field.id !== "market" &&
+        field.id !== "price"
+      ) {
         errors[field.id] = `Esse campo é obrigatório.`;
       }
 
