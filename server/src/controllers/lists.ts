@@ -194,7 +194,6 @@ export default class ListsController {
 
         for (const element of updatedList.members) {
           const userId = element.userId.toString();
-          //console.log(userId);
           const member = await UsersRepositories.getUserById(userId);
 
           if (member !== null) members.push(member);
