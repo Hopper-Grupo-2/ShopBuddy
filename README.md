@@ -35,7 +35,7 @@ JavaScript
 - Acesse o diretório do projeto:
 *cd shopbuddy*
 
-- Crie um arquivo .env com base no .env-example e o preenchenod de acordo
+- Crie um arquivo .env com base no .env-example e o preenchendo de acordo
 
 #### Para o BackEnd
 - Instale as dependências:
@@ -57,6 +57,8 @@ JavaScript
 #### Acesse a aplicação:
 - Acesse http://localhost:5173/
 
+#### Acesse a documentação (swagger)
+- Acesse http://localhost:4021/docs
 ## Contribuição
 Contribuições são sempre bem-vindas! Se tiver sugestões ou quiser melhorar alguma funcionalidade, sinta-se à vontade para criar um fork e abrir um Pull Request.
 
@@ -65,7 +67,7 @@ Contribuições são sempre bem-vindas! Se tiver sugestões ou quiser melhorar a
 - Felipe Fernandes []
 - João Victor []
 - Jonatas Gomes []
-- Letonio Silva []
+- Letonio Silva [https://www.linkedin.com/in/letonio-silva-ab8a53227/]
 
 ## Link do Projeto: 
 [https://github.com/Hopper-Grupo-2/ShopBuddy]
