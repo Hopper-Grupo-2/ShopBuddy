@@ -3,6 +3,7 @@ import ErrorHandler from "../errors";
 import IMessage from "../interfaces/message";
 import UsersRepositories from "./users";
 
+import Logger from "../log/logger";
 export default class MessagesRepositories {
   private static Model = Models.getInstance().messageModel;
 
@@ -35,7 +36,7 @@ export default class MessagesRepositories {
       // should return all messages from the list (do it later)
       return createdMessage;
     } catch (error) {
-      console.error(this.name, "createMessage error: ", error);
+      Logger.error(`${this.name} createMessage error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error creating new message"
@@ -64,7 +65,7 @@ export default class MessagesRepositories {
 
       return allMessages;
     } catch (error) {
-      console.error(this.name, "findAllMessages error: ", error);
+      Logger.error(`${this.name} findAllMessages error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error getting all messages"

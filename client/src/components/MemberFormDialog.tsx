@@ -54,7 +54,6 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
   };
 
   const handleAutocompleteOptions = async (_: any, newInputValue: string) => {
-    console.log(newInputValue);
     setFormData((prevFormData) => ({
       ...prevFormData,
       username: newInputValue,
@@ -66,8 +65,7 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
       const responseObj = await response.json();
       if (response.ok) {
         const matchingUsers: IUser[] = responseObj.data;
-        const newAutocompleteOptions = matchingUsers;
-        console.log(newAutocompleteOptions);
+
         setUsers(matchingUsers);
       } else {
         throw responseObj.error;
@@ -82,11 +80,9 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
 
     if (!user) return;
 
-    console.log(formData);
     setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
+      const newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
-        console.log(key, user[key as keyof IUser]);
         //if (key in user)
         if (key !== "quantity")
           newFormData[key] = String(user[key as keyof IUser] ?? "");

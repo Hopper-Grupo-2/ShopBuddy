@@ -8,6 +8,7 @@ import IList from "../interfaces/list";
 import UsersServices from "./users";
 import ListsServices from "./lists";
 
+import Logger from "../log/logger";
 export default class NotificationsServices {
   private static Repository = NotificationsRepositories;
 
@@ -41,7 +42,7 @@ export default class NotificationsServices {
           })
         );
       } catch (error) {
-        console.error(error);
+        Logger.error(error);
       }
 
       return latestNotifications;

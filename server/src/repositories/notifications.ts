@@ -4,6 +4,7 @@ import INotification, { NotificationTypes } from "../interfaces/notification";
 import ListsRepositories from "./lists";
 import UsersRepositories from "./users";
 
+import Logger from "../log/logger";
 export default class NotificationsRepositories {
   private static Model = Models.getInstance().notificationModel;
 
@@ -14,7 +15,7 @@ export default class NotificationsRepositories {
       const notification = await this.Model.findOne({ _id: notificationId });
       return notification;
     } catch (error) {
-      console.error(this.name, "getLatestNotifications error: ", error);
+      Logger.error(`${this.name} getLatestNotifications error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error getting the notification"
@@ -51,7 +52,7 @@ export default class NotificationsRepositories {
       }
       return latestNotifications;
     } catch (error) {
-      console.error(this.name, "getLatestNotifications error: ", error);
+      Logger.error(`${this.name} getLatestNotifications error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error getting the latest notifications"
@@ -92,7 +93,7 @@ export default class NotificationsRepositories {
 
       return createdListNotification;
     } catch (error) {
-      console.error(this.name, "createListNotification error: ", error);
+      Logger.error(`${this.name} createListNotification error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error creating notification"
@@ -110,7 +111,7 @@ export default class NotificationsRepositories {
       );
       return response.acknowledged;
     } catch (error) {
-      console.error(this.name, "updateNotification error: ", error);
+      Logger.error(`${this.name} updateNotification error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error updating notification"
@@ -129,7 +130,7 @@ export default class NotificationsRepositories {
       );
       return response.acknowledged;
     } catch (error) {
-      console.error(this.name, "readListNotifications error: ", error);
+      Logger.error(`${this.name} readListNotifications error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error updating list notifications"
@@ -148,7 +149,7 @@ export default class NotificationsRepositories {
       });
       return response.acknowledged;
     } catch (error) {
-      console.error(this.name, "deleteUserListNotifications error: ", error);
+      Logger.error(`${this.name} deleteUserListNotifications error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error deleting the user's list notifications"
@@ -165,7 +166,7 @@ export default class NotificationsRepositories {
       });
       return response.acknowledged;
     } catch (error) {
-      console.error(this.name, "deleteUserNotifications error: ", error);
+      Logger.error(`${this.name} deleteUserNotifications error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error deleting the user's notifications"
@@ -180,7 +181,7 @@ export default class NotificationsRepositories {
       const response = await this.Model.deleteOne({ _id: notificationId });
       return response.acknowledged;
     } catch (error) {
-      console.error(this.name, "deleteNotification error: ", error);
+      Logger.error(`${this.name} deleteNotification error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error deleting the notification"

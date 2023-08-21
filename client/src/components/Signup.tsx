@@ -25,10 +25,7 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
     const credentials = {
       email: data.get("email"),
       password: data.get("password"),
@@ -70,7 +67,7 @@ export default function SignUp() {
       errors.password = "A senha deve ter entre 3 e 16 caracteres";
     }
 
-    if ( /^[A-Za-z]+$/.test(credentials.password) ) {
+    if (/^[A-Za-z]+$/.test(credentials.password)) {
       errors.password = "A senha deve conter pelo menos um número";
     }
 

@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import IConnection from "./interfaces/connection";
-
+import Logger from "./log/logger";
 export default class Websocket {
   private static instance: Websocket;
   private io: Server | null = null;
@@ -22,7 +22,6 @@ export default class Websocket {
   public initialize(): void {
     if (!this.io) return;
     this.io.on("connection", (socket: Socket) => {
-      console.log("Client reached the server");
       this.handleEvents(socket);
     });
   }
@@ -33,9 +32,8 @@ export default class Websocket {
         this.setConnection(socket, userId);
         this.broadcastToUser(userId, "loginSuccess", userId);
         //socket.emit("loginSuccess", userId);
-        console.log("Client logged in");
       } catch (error) {
-        console.error("Error setting connection: " + error);
+        Logger.error("Error setting connection: " + error);
       }
     });
 
@@ -44,9 +42,9 @@ export default class Websocket {
         this.joinListRoom(socket, listId, userId);
         this.broadcastToUser(userId, "enterSuccess", { userId, listId });
         //socket.emit("enterSuccess", { userId, listId });
-        console.log("Client joined list " + listId);
+        Logger.info("Client joined list " + listId);
       } catch (error) {
-        console.error("Error joining list room: " + error);
+        Logger.error(`Error joining list room: ${error}`);
       }
     });
 
@@ -55,15 +53,15 @@ export default class Websocket {
         this.leaveListRoom(userId);
         this.broadcastToUser(userId, "exitSuccess", { userId, listId });
         //socket.emit("exitSuccess", { userId, listId });
-        console.log("Client left list " + listId);
+        Logger.info("Client left list " + listId);
       } catch (error) {
-        console.error("Error leaving list room: " + error);
+        Logger.error("Error leaving list room: " + error);
       }
     });
 
     socket.on("disconnect", () => {
       this.removeConnection(socket);
-      console.log("Client disconnected");
+      Logger.info("Client disconnected");
     });
   }
 
@@ -79,13 +77,13 @@ export default class Websocket {
 
   private leaveListRoom(userId: string) {
     const index = this.connections.findIndex((conn) => conn.userId === userId);
-    console.log(
+    Logger.info(
       "before",
       this.connections[index].userId,
       this.connections[index].listId
     );
     if (index !== -1) this.connections[index].listId = null;
-    console.log(
+    Logger.info(
       "after",
       this.connections[index].userId,
       this.connections[index].listId
@@ -117,7 +115,6 @@ export default class Websocket {
     //const socketsInRoom = this.io.sockets.adapter.rooms.get(listId);
     this.connections.forEach((conn: IConnection) => {
       if (conn.listId === listId && conn.userId !== senderUserId) {
-        console.log("websocket: sending a list message...");
         conn.connection.emit(eventName, data);
       }
     });
@@ -132,7 +129,6 @@ export default class Websocket {
     if (!this.io) return;
     this.connections.forEach((conn: IConnection) => {
       if (conn.userId === userId) {
-        console.log("websocket: sending a user message...");
         conn.connection.emit(eventName, data);
       }
     });
