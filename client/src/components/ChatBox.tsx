@@ -64,7 +64,6 @@ export default function ChatBox(props: ChatProps) {
     if (!socketContext?.socket) return;
 
     socketContext.socket.on("chatMessage", (message: IMessage) => {
-      console.log("received a message!");
       setMessages((prev) => [...prev, message]);
     });
 

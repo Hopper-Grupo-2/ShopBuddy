@@ -8,7 +8,7 @@ import IList from "../../interfaces/iList";
 import { UserContext } from "../../contexts/UserContext";
 import AlertDialog from "../../components/AlertDialog";
 import ListCard from "../../components/ListCard";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchBar from "../../components/SearchBar";
 import ConfirmDialog from "../../components/ConfirmDialog";
@@ -192,71 +192,109 @@ export default function Dashboard() {
             Nova lista
           </Button>
         </Box>
-        <Grid container spacing={4} justifyContent="center">
-          {lists
-            .slice()
-            .reverse()
-            .map((list) => {
-              if (
-                list.listName.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-                return (
-                  <Grid
-                    item
-                    sm={12}
-                    md={6}
-                    lg={4}
-                    xl={3}
-                    key={list._id}
-                    sx={{ minWidth: "375px" }}
-                  >
-                    <ListCard
+        {lists.length === 0 ? (
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              textAlign: "center",
+            }}
+          >
+            Você ainda não possui nenhuma lista.
+          </Typography>
+        ) : (
+          <Grid container spacing={4} justifyContent="center">
+            {lists
+              .slice()
+              .reverse()
+              .map((list) => {
+                if (
+                  !list.listName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return (
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: "bold",
+                        height: "100%",
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        textAlign: "center",
+                        mt: "30px",
+                      }}
+                    >
+                      Nenhum resultado para "{searchTerm}"
+                    </Typography>
+                  );
+                } else {
+                  return (
+                    <Grid
+                      item
+                      sm={12}
+                      md={6}
+                      lg={4}
+                      xl={3}
                       key={list._id}
-                      title={list.listName}
-                      date={new Date(list.createdAt)}
-                      total={list.products.reduce((acc, product) => {
-                        if (
-                          product.unit === "kg" ||
-                          product.unit === "L" ||
-                          product.unit === "ml" ||
-                          product.unit === "un" ||
+                      sx={{ minWidth: "375px" }}
+                    >
+                      <ListCard
+                        key={list._id}
+                        title={list.listName}
+                        date={new Date(list.createdAt)}
+                        total={list.products.reduce((acc, product) => {
+                          if (
+                            product.unit === "kg" ||
+                            product.unit === "L" ||
+                            product.unit === "ml" ||
+                            product.unit === "un" ||
                           product.unit === "m" ||
                           product.unit === "cm"
-                        ) {
-                          return acc + product.price * product.quantity;
-                        } else {
-                          return acc + product.price;
-                        }
-                      }, 0)}
-                      products={list.products}
-                      memberCount={list.members.length}
-                      action={() => {
-                        navigate("/list/" + list._id);
-                      }}
-                      deleteAction={() => {
-                        setDialogMessage(
-                          `Deseja realmente apagar a lista ${list.listName}?`
-                        );
-                        setOnConfirm(() => () => {
-                          deleteList(list._id);
-                        });
-                        setOpenConfirmDialog(true);
-                      }}
-                      exitAction={() => {
-                        setDialogMessage(
-                          `Deseja realmente sair da lista ${list.listName}?`
-                        );
-                        setOnConfirm(() => () => {
-                          exitList(list._id, userContext?.user?._id);
-                        });
-                        setOpenConfirmDialog(true);
-                      }}
-                      isOwner={list.owner === userContext?.user?._id}
-                    />
-                  </Grid>
-                );
-            })}
-        </Grid>
+                          ) {
+                            return acc + product.price * product.quantity;
+                          } else {
+                            return acc + product.price;
+                          }
+                        }, 0)}
+                        products={list.products}
+                        memberCount={list.members.length}
+                        action={() => {
+                          navigate("/list/" + list._id);
+                        }}
+                        deleteAction={() => {
+                          setDialogMessage(
+                            `Deseja realmente apagar a lista ${list.listName}?`
+                          );
+                          setOnConfirm(() => () => {
+                            deleteList(list._id);
+                          });
+                          setOpenConfirmDialog(true);
+                        }}
+                        exitAction={() => {
+                          setDialogMessage(
+                            `Deseja realmente sair da lista ${list.listName}?`
+                          );
+                          setOnConfirm(() => () => {
+                            exitList(list._id, userContext?.user?._id);
+                          });
+                          setOpenConfirmDialog(true);
+                        }}
+                        isOwner={list.owner === userContext?.user?._id}
+                      />
+                    </Grid>
+                  );
+                }
+              })}
+          </Grid>
+        )}
       </PageStructure>
       <FormDialog
         title="Adicionar nova lista"
