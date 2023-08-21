@@ -30,7 +30,7 @@ JavaScript
 
 ## Inicializando
 - Clone este repositório:
-*git clone [https://github.com/Hopper-Grupo-2/ShopBuddy.git]*
+*git clone https://github.com/Hopper-Grupo-2/ShopBuddy.git*
 
 - Acesse o diretório do projeto:
 *cd shopbuddy*
