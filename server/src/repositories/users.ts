@@ -2,6 +2,7 @@ import Models from "../database/models";
 import ErrorHandler from "../errors";
 import IUser from "../interfaces/user";
 
+import Logger from "../log/logger";
 export default class UsersRepositories {
   private static Model = Models.getInstance().userModel;
 
@@ -23,7 +24,7 @@ export default class UsersRepositories {
       };
       return user;
     } catch (error) {
-      console.error(this.name, "getUserById error: ", error);
+      Logger.error(`${this.name} getUserById error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -49,7 +50,7 @@ export default class UsersRepositories {
       };
       return user;
     } catch (error) {
-      console.error(this.name, "getUserByEmail error: ", error);
+      Logger.error(`${this.name} getUserByEmail error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -77,7 +78,7 @@ export default class UsersRepositories {
       };
       return user;
     } catch (error) {
-      console.error(this.name, "getUserByUsername error: ", error);
+      Logger.error(`${this.name} getUserByUsername error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -121,7 +122,7 @@ export default class UsersRepositories {
 
       return createdUser;
     } catch (error) {
-      console.error(this.name, "createNewUser error: ", error);
+      Logger.error(`${this.name} createNewUser error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -134,7 +135,7 @@ export default class UsersRepositories {
       const user = await UsersRepositories.getUserById(userId);
       return user?.username || null;
     } catch (error) {
-      console.error(this.name, "getUsernameById error: ", error);
+      Logger.error(`${this.name} getUsernameById error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error getting username by ID"
@@ -160,7 +161,7 @@ export default class UsersRepositories {
       });
       return allUsers;
     } catch (error) {
-      console.error(this.name, "getAllUsers error", error);
+      Logger.error(`${this.name} getAllUsers error ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -200,7 +201,7 @@ export default class UsersRepositories {
         "User was not updated"
       );
     } catch (error) {
-      //console.error(this.name, "updateUser error: ", error);
+      Logger.error(`${this.name} updateUser error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -224,7 +225,7 @@ export default class UsersRepositories {
       };
       return user;
     } catch (error) {
-      console.error(this.name, "deleteUser error: ", error);
+      Logger.error(`${this.name} deleteUser error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -253,7 +254,7 @@ export default class UsersRepositories {
 
       return matchingUsers;
     } catch (error) {
-      console.error(this.name, "searchUsers error: ", error);
+      Logger.error(`${this.name} searchUsers error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error searching for the term ${searchTerm}`

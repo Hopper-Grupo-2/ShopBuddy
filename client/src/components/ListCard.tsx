@@ -31,7 +31,6 @@ export default function ListCard(props: CardProps) {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
   }).format(props.date);
 
   return (
@@ -135,7 +134,7 @@ export default function ListCard(props: CardProps) {
                       color: "#444444",
                     }}
                   >
-                    Total gasto:
+                    Orçamento:
                   </Typography>
                   <Typography
                     variant="subtitle2"
