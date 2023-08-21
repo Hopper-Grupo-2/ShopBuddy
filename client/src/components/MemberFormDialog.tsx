@@ -111,7 +111,7 @@ const MemberFormDialog: React.FC<FormDialogProps> = (
       if (response.ok) {
         const inviteUrl: string = inviteData.data.url;
         const host = window.location.host;
-        setInviteLink(host + inviteUrl);
+        setInviteLink("http://" + host + inviteUrl);
       } else {
         throw inviteData.error;
       }
