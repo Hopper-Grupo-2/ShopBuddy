@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV || "dev";
 const port = process.env.PORT || "4021";
 const host = env === "dev" ? `localhost:${port}` : "45.77.199.234";
 
-const outputFile = "./server/config/swagger.json";
+const outputFile = "./docs/swagger.json";
 const endpointsFiles = [
   "./server/src/app.ts",
   "./server/src/validators/handle-validation.ts",

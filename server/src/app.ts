@@ -16,7 +16,8 @@ import { cacheRouter } from "./routers/cache";
 import loggerInfoClient from "./middlewares/logger-info-client";
 
 import swaggerUi from "swagger-ui-express";
-const swaggerDocument = require("../config/swagger.json");
+import swaggerDocument from "../../docs/swagger.json";
+
 const options = {
   customCss: ".swagger-ui .topbar { display: none }",
   customSiteTitle: "Shop Buddy API",
