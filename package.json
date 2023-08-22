@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "prestart": "npm run build && npm run swagger-autogen",
-        "start": "node dist/server.js",
+        "start": "node dist/server/server.js",
         "build": "tsc && cd client && yarn --cwd ./ build",
         "predev": "clear && npm run swagger-autogen",
         "dev": "nodemon -L ./server/server.ts",
