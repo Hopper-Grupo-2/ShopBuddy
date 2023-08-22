@@ -98,7 +98,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
                 <Typography
                   fontWeight="bold"
                   sx={{
-                    mr: "6px",
+                    mr: "8px",
                     textDecoration: props.item.checked
                       ? "line-through"
                       : "none",
@@ -109,7 +109,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
                 <Typography sx={{ mr: "2px" }}>
                   {props.item.quantity}
                 </Typography>
-                <Typography sx={{ fontSize: "0.8rem", mr: "6px" }}>
+                <Typography sx={{ fontSize: "0.8rem", mr: "8px" }}>
                   {props.item.unit}
                 </Typography>
                 {props.item.price > 0 && (
