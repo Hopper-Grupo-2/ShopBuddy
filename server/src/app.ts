@@ -61,7 +61,9 @@ export default class App {
 
   private fallback(): void {
     this.app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "../../client/dist", "index.html"));
+      res.sendFile(
+        path.resolve(__dirname, "../../../client/dist", "index.html")
+      );
     });
   }
 
