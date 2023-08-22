@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import RedisDatabase from "./redis";
-import Logger from "../../../../server/src/log/logger";
+import Logger from "../../log/logger";
 config();
 
 export default class RedisCaching {
