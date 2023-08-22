@@ -204,7 +204,6 @@ function getAllValidations(
           .isString()
           .isLength({ max: 50 })
           .withMessage(`${fieldTitle} must have less than 50 characters.`)
-          .matches(/^[a-zA-Zà-úÀ-Ú0-9 ]*$/)
           .withMessage(`${fieldTitle} must contain only letters and digits.`)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
