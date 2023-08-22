@@ -16,7 +16,7 @@ import { cacheRouter } from "./routers/cache";
 import loggerInfoClient from "./middlewares/logger-info-client";
 
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../../docs/swagger.json";
+import swaggerDocument from "../docs/swagger.json";
 
 const options = {
   customCss: ".swagger-ui .topbar { display: none }",
@@ -61,9 +61,7 @@ export default class App {
 
   private fallback(): void {
     this.app.get("*", (req, res) => {
-      res.sendFile(
-        path.resolve(__dirname, "../../../client/dist", "index.html")
-      );
+      res.sendFile(path.resolve(__dirname, "../../client/dist", "index.html"));
     });
   }
 
