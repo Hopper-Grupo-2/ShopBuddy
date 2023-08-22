@@ -22,6 +22,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -38,7 +39,7 @@ export default function List() {
   const [items, setItems] = useState<Array<IItem>>([]);
   const [openItemForm, setOpenItemForm] = useState(false);
   const [openEditItemForm, setOpenEditItemForm] = useState(false);
-  const [productId, setProductIdToEdit] = useState<string | null>(null);
+  const [currentProductId, setCurrentProductId] = useState<string | null>(null);
   const [openMemberForm, setOpenMemberForm] = useState(false);
   const [isListOwner, setIsListOwner] = useState(false);
   const [initialFormData, setInitialFormData] = useState<
@@ -49,12 +50,14 @@ export default function List() {
   const notificationsContext = useContext(NotificationsContext);
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
 
   // create use state to save members
   const [members, setMembers] = useState<Array<IUser>>([]);
   // members
   const [showMembers, setShowMembers] = useState(false);
+
   const navigate = useNavigate();
   const fetchMembers = async () => {
     const response = await fetch(`/api/lists/${params.listId}/members`, {
@@ -186,7 +189,7 @@ export default function List() {
   };
 
   const handleOpenEditItemForm = (itemId: string) => {
-    setProductIdToEdit(itemId);
+    setCurrentProductId(itemId);
 
     const productToEdit = items.find((item) => item._id === itemId);
 
@@ -271,7 +274,10 @@ export default function List() {
 
   const handleDeleteProduct = async (productId: string) => {
     //if (!confirm(`Do you want to remove the product ${productId}?`)) return;
-    try {
+    setCurrentProductId(productId);
+    setOpenConfirmDialog(true);
+
+    /*  try {
       const response = await fetch(
         `/api/lists/${list?._id}/products/${productId}`,
         {
@@ -292,7 +298,41 @@ export default function List() {
       console.error(error.name, error.message);
       setDialogMessage("Erro ao excluir o item. Tente novamente!");
       setOpenDialog(true);
+    } */
+  };
+
+  const handleConfirmDelete = async () => {
+    setOpenConfirmDialog(false);
+    if (currentProductId) {
+      try {
+        const response = await fetch(
+          `/api/lists/${list?._id}/products/${currentProductId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const responseObj = await response.json();
+        if (response.ok) {
+          removeItem(currentProductId);
+        } else {
+          throw responseObj.error;
+        }
+      } catch (error) {
+        console.error(error);
+        setDialogMessage("Erro ao excluir o item. Tente novamente!");
+        setOpenDialog(true);
+      }
+      setCurrentProductId(null);
     }
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenConfirmDialog(false);
+    setCurrentProductId(null);
   };
 
   const handleCheckProduct = async (productId: string) => {
@@ -324,7 +364,7 @@ export default function List() {
   const handleEditProduct = async (formData: Record<string, string>) => {
     try {
       const response = await fetch(
-        `/api/lists/${list?._id}/products/${productId}`,
+        `/api/lists/${list?._id}/products/${currentProductId}`,
         {
           method: "PATCH",
           headers: {
@@ -635,6 +675,12 @@ export default function List() {
         onClose={handleCloseDialog}
         contentText={dialogMessage}
         buttonText="Fechar"
+      />
+      <ConfirmDialog
+        open={openConfirmDialog}
+        onClose={handleCloseDeleteDialog}
+        onConfirm={handleConfirmDelete}
+        contentText="Deseja excluir o produto?"
       />
     </>
   );
