@@ -59,16 +59,11 @@ export default function SignUp() {
       errors.email = "Por favor, insira um e-mail válido";
     }
 
-    if (
-      !credentials.password ||
-      credentials.password < 3 ||
-      credentials.password.length > 16
-    ) {
+    if (!credentials.password || credentials.password < 3 || credentials.password.length > 16) {
       errors.password = "A senha deve ter entre 3 e 16 caracteres";
-    }
-
-    if (/^[A-Za-z]+$/.test(credentials.password)) {
-      errors.password = "A senha deve conter pelo menos um número";
+      
+    } else if (!/(?=.*[A-Za-z])(?=.*[0-9])/.test(credentials.password)) {
+      errors.password = "A nova senha deve conter pelo menos uma letra e um número";
     }
 
     if (
