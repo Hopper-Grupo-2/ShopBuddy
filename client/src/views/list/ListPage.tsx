@@ -425,7 +425,10 @@ export default function List() {
         product.unit === "kg" ||
         product.unit === "L" ||
         product.unit === "ml" ||
-        product.unit === "un"
+        product.unit === "un" ||
+        product.unit === "m" ||
+        product.unit === "cm"||
+        product.unit === "g"
       ) {
         return acc + product.price * product.quantity;
       } else {

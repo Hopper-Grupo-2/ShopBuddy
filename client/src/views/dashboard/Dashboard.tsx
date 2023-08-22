@@ -256,8 +256,9 @@ export default function Dashboard() {
                             product.unit === "L" ||
                             product.unit === "ml" ||
                             product.unit === "un" ||
-                          product.unit === "m" ||
-                          product.unit === "cm"
+                            product.unit === "m" ||
+                            product.unit === "cm"||
+                            product.unit === "g"
                           ) {
                             return acc + product.price * product.quantity;
                           } else {
