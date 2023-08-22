@@ -54,6 +54,7 @@ function CheckboxListItem(props: CheckboxListItemProps) {
             onClick={async () => {
               setIsDeleting(true);
               await props.onRemove(props.item._id);
+              setIsDeleting(false);
             }}
           >
             {isDeleting ? <PendingIcon /> : <DeleteIcon />}
