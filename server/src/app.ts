@@ -16,7 +16,7 @@ import { cacheRouter } from "./routers/cache";
 import loggerInfoClient from "./middlewares/logger-info-client";
 
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "../../docs/swagger.json";
+import swaggerDocument from "../docs/swagger.json";
 
 const options = {
   customCss: ".swagger-ui .topbar { display: none }",
