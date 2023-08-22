@@ -18,7 +18,7 @@ export default function SearchBar(props: SearchBarProps) {
     <TextField
       id="search"
       type="search"
-      label="Busque sua lista"
+      label="Busque uma de suas listas"
       value={searchTerm}
       onChange={handleChange}
       sx={{ minWidth: 350 }}
