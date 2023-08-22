@@ -204,8 +204,10 @@ function getAllValidations(
           .isString()
           .isLength({ max: 50 })
           .withMessage(`${fieldTitle} must have less than 50 characters.`)
+          .matches(/^[^\d]*$/)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
+            
 
       default:
         return check(fieldTitle).trim().notEmpty();
