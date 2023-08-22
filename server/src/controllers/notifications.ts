@@ -4,6 +4,7 @@ import ListsServices from "../services/lists";
 import NotificationsServices from "../services/notifications";
 import Websocket from "../websocket";
 
+import Logger from "../log/logger";
 export default class NotificationsController {
   public static async getListNotifications(
     req: Request,
@@ -44,7 +45,7 @@ export default class NotificationsController {
         notification
       );
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
     }
   }
 
@@ -60,7 +61,7 @@ export default class NotificationsController {
       const websocket = Websocket.getIstance();
       for (const member of members) {
         if (member._id?.toString() !== senderId) {
-          console.log("sending notification to user " + member._id);
+          Logger.debug("sending notification to user " + member._id);
           const notification =
             await NotificationsServices.createNewListNotification(
               listId,
@@ -79,7 +80,7 @@ export default class NotificationsController {
         }
       }
     } catch (error) {
-      console.error(error);
+      Logger.error(error);
     }
   }
 

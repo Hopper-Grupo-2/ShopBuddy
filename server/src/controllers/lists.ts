@@ -9,6 +9,7 @@ import NotificationsController from "./notifications";
 import UsersRepositories from "../repositories/users";
 import { NotificationTypes } from "../interfaces/notification";
 
+import Logger from "../log/logger";
 export default class ListsController {
   public static async getLists(
     req: Request,
@@ -193,7 +194,6 @@ export default class ListsController {
 
         for (const element of updatedList.members) {
           const userId = element.userId.toString();
-          //console.log(userId);
           const member = await UsersRepositories.getUserById(userId);
 
           if (member !== null) members.push(member);
@@ -210,7 +210,7 @@ export default class ListsController {
       // this is dangerous, maybe we rework it?
       const newMember = await UsersRepositories.getUserByUsername(username);
 
-      console.log(newMember);
+      Logger.debug(newMember);
 
       websocket.broadcastToUser(
         newMember?._id?.toString() ?? "",

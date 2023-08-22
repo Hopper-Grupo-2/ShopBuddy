@@ -6,6 +6,8 @@ import IProduct from "../interfaces/product";
 import IUser from "../interfaces/user";
 import UsersRepositories from "./users";
 import mongoose from "mongoose";
+
+import Logger from "../log/logger";
 export default class ListsRepositories {
   private static Model = Models.getInstance().listModel;
 
@@ -14,7 +16,7 @@ export default class ListsRepositories {
       const lists = await this.Model.find().exec();
       return lists || null;
     } catch (error) {
-      console.error(this.name, "getAllLists error:", error);
+      Logger.error(`${this.name} getAllLists error: ${error}`);
       throw error;
     }
   }
@@ -26,7 +28,7 @@ export default class ListsRepositories {
       const lists = await this.Model.find({ "members.userId": userId });
       return lists || null;
     } catch (error) {
-      console.error(this.name, "getListsByUserId error:", error);
+      Logger.error(`${this.name} getListsByUserId error: ${error}`);
       throw error;
     }
   }
@@ -38,7 +40,7 @@ export default class ListsRepositories {
       const lists = await this.Model.find({ _id: listId });
       return lists || null;
     } catch (error) {
-      console.error(this.name, "getListsByListId error:", error);
+      Logger.error(`${this.name} getListsByListId error: ${error}`);
       throw error;
     }
   }
@@ -61,7 +63,7 @@ export default class ListsRepositories {
 
       return list;
     } catch (error) {
-      console.error(this.name, "getListById error: ", error);
+      Logger.error(`this.name getListById error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -97,7 +99,7 @@ export default class ListsRepositories {
       };
       return createdList;
     } catch (error) {
-      console.error(this.name, "createNewList error: ", error);
+      Logger.error(`this.name createNewList error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error creating new list"
@@ -116,7 +118,7 @@ export default class ListsRepositories {
       });
       return response === null ? false : true;
     } catch (error) {
-      console.error(this.name, "isMember error: ", error);
+      Logger.error(`${this.name} isMember error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Error verifying if the user is a member from the list"
@@ -128,7 +130,7 @@ export default class ListsRepositories {
     try {
       await this.Model.deleteOne({ _id: listId });
     } catch (error) {
-      console.error(this.name, "deleteList error: ", error);
+      Logger.error(`${this.name} deleteList error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         "Internal server error"
@@ -150,7 +152,7 @@ export default class ListsRepositories {
         { $set: { owner: newOwnerId } }
       );
     } catch (error) {
-      console.error(this.name, "changeListOwner error: ", error);
+      Logger.error(`${this.name} changeListOwner error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Erro ao trocar o proprietário da lista com ID: ${listId}`
@@ -174,7 +176,7 @@ export default class ListsRepositories {
       const updatedList = await this.getListById(listId);
       return updatedList;
     } catch (error) {
-      console.error(this.name, "addNewProduct error: ", error);
+      Logger.error(`${this.name} addNewProduct error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error inserting product into list with id: ${listId}`
@@ -198,7 +200,7 @@ export default class ListsRepositories {
       const updatedList = await this.getListById(listId);
       return updatedList;
     } catch (error) {
-      console.error(this.name, "addNewMember error: ", error);
+      Logger.error(`${this.name} addNewMember error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error inserting member with id ${memberId} into list with id: ${listId}`
@@ -236,7 +238,7 @@ export default class ListsRepositories {
         throw "Error";
       }
     } catch (error) {
-      console.error(this.name, "deleteMemberFromList error: ", error);
+      Logger.error(`${this.name} deleteMemberFromList error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error deleting member with id ${memberId} from list with id: ${listId}`
@@ -260,7 +262,7 @@ export default class ListsRepositories {
       const updatedList = await this.getListById(listId);
       return updatedList;
     } catch (error) {
-      console.error(this.name, "deleteProductFromList error: ", error);
+      Logger.error(`${this.name} deleteProductFromList error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error deleting product with id ${productId} from list with id: ${listId}`
@@ -284,7 +286,7 @@ export default class ListsRepositories {
       const updatedList = await this.getListById(listId);
       return updatedList;
     } catch (error) {
-      console.error(this.name, "invertProductCheck error: ", error);
+      Logger.error(`${this.name} invertProductCheck error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error inverting "checked" field of the product with id ${productId} from list with id: ${listId}`
@@ -318,7 +320,7 @@ export default class ListsRepositories {
 
       return updatedList;
     } catch (error) {
-      console.error(this.name, "updateProductInfo error: ", error);
+      Logger.error(`${this.name} updateProductInfo error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error updating info of the product with id ${productId} from list with id: ${listId}`
@@ -357,7 +359,7 @@ export default class ListsRepositories {
 
       return matchingProducts;
     } catch (error) {
-      console.error(this.name, "searchProducts error: ", error);
+      Logger.error(`${this.name} searchProducts error: ${error}`);
       throw ErrorHandler.createError(
         "InternalServerError",
         `Error searching for the term ${searchTerm}`

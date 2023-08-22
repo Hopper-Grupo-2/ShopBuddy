@@ -21,7 +21,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     if (response.ok) {
       const notificationsData = await response.json();
-      console.log(notificationsData);
+
       setNotifications(notificationsData.data);
     }
   };

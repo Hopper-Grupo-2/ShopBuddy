@@ -11,6 +11,30 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to authenticate a user";
+      #swagger.parameters["Login"] = { 
+          in: 'body',
+          description: 'user email and password',
+          schema: { $ref: "#/definitions/Login"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "Incorrect e-mail and/or password"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Validation Error", 
+          schema: { "error": { $ref: "#/definitions/LoginValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userCredentials = {
         email: req.body.email,
@@ -39,6 +63,30 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to register a new user";
+      #swagger.parameters["Register"] = { 
+          in: 'body',
+          description: 'data to register the user',
+          schema: { $ref: "#/definitions/Register"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "This e-mail is already in use"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Validation Error", 
+          schema: { "error": { $ref: "#/definitions/RegisterValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const user: IUser = req.body;
 
@@ -59,6 +107,21 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to list all users";
+      
+
+      #swagger.responses[200] = { schema: { error: 'null', data: [{$ref: "#/definitions/User" }, {$ref: "#/definitions/User2" }] } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "Make login first"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
     try {
       const usersFromCache: IUser[] | null =
         await RedisCaching.getCacheFromKeyValueTypeByKeyname<IUser>("users");
@@ -83,6 +146,38 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to recover a user";
+
+      #swagger.parameters['userId'] = {
+          in: 'path',
+          description: 'User ID.',
+          required: true,
+          type: 'string'
+      }
+      
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Not found", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Validation Error", 
+          schema: { "error": { $ref: "#/definitions/UserByIdValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }  
+
+    */
+
     try {
       const userId: string = req.params.userId;
 
@@ -98,6 +193,43 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to update a user's data";
+      #swagger.parameters["updateUser"] = { 
+          in: 'body',
+          description: 'data to update the user',
+          schema: { $ref: "#/definitions/UpdateUser"}
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: {$ref: "#/definitions/User" } } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[403] = #swagger.responses[403] = {
+          description: "Forbidden", 
+          schema: { "error": { name: "ForbiddenError", "message": "User 64c65cb75765cdcc8475091e does not have access"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Not found", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[409] = #swagger.responses[409] = {
+          description: "Data conflict", 
+          schema: { "error": { name: "Conflict", "message": "This e-mail is already in use"}, "data": 'null' } 
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Validation Error", 
+          schema: { "error": { $ref: "#/definitions/UpdateUserValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userId: string = req.params.userId;
 
@@ -145,6 +277,40 @@ export default class UsersController {
     res: Response,
     next: NextFunction
   ): Promise<void> {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to delete a user";
+      #swagger.parameters['userId'] = {
+          in: 'path',
+          description: 'User ID.',
+          required: true,
+          type: 'string'
+      }
+
+      #swagger.responses[200] = { schema: { error: 'null', data: "User with id ${userId} deleted successfully!" } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[403] = #swagger.responses[403] = {
+          description: "Forbidden", 
+          schema: { "error": { name: "ForbiddenError", "message": "User ${userId} does not have access"}, "data": 'null' } 
+      }
+      #swagger.responses[404] = #swagger.responses[404] = {
+          description: "Not found", 
+          schema: { "error": { "name": "NotFoundError", "message": "There is no user with the given id" }, "data": 'null' }
+      
+      }
+      #swagger.responses[422] = #swagger.responses[422] = {
+          description: "Validation Error", 
+          schema: { "error": { $ref: "#/definitions/RemoveUserValidator"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const userId: string = req.params.userId;
 
@@ -189,6 +355,21 @@ export default class UsersController {
   }
 
   public static async logout(req: Request, res: Response, next: NextFunction) {
+    /*           
+      #swagger.tags = ["User"];
+      #swagger.description = "Endpoint to logout";
+
+      #swagger.responses[200] = { schema: { "message": "User ${username} logged out successfully" } }
+      #swagger.responses[401] = #swagger.responses[401] = {
+          description: "Invalid authentication", 
+          schema: { "error": { name: "UnauthorizedError", "message": "token is missing or invalid"}, "data": 'null' } 
+      }
+      #swagger.responses[500] = #swagger.responses[500] = {
+          description: "Internal server error", 
+          schema: { "error": { $ref: "#/definitions/Error500"}, "data": 'null' } 
+      }      
+    */
+
     try {
       const user = req.user;
 

@@ -1,35 +1,35 @@
 import { config } from "dotenv";
 import RedisDatabase from "./redis";
-
+import Logger from "../../log/logger";
 config();
 
 export default class RedisCaching {
   private constructor() {}
 
   public static async clearCacheByKeyName(keyName: string) {
-    console.log(`Cleaning cache: ${keyName}`);
+    Logger.debug(`Cleaning cache: ${keyName}`);
 
     try {
       const redis = await RedisDatabase.getInstance();
 
       await redis.del(keyName);
-      console.log("Clear completed!");
+      Logger.debug("Clear completed!");
     } catch (error) {
-      console.error("Error during clear cache:", error);
+      Logger.error(`Error during clear cache: ${error}`);
     }
   }
 
   public static async setCacheKeyValueType<T>(keyName: string, value: T[]) {
-    console.log(`Saving in redis cache: ${keyName}`);
+    Logger.debug(`Saving in redis cache: ${keyName}`);
     const TTL = 60 * 60 * 24; //time to live in seconds
 
     try {
       const redis = await RedisDatabase.getInstance();
 
       await redis.set(keyName, JSON.stringify(value), "EX", TTL);
-      console.log("Save completed!");
+      Logger.debug("Save completed!");
     } catch (error) {
-      console.error("Error about clear cache redis:", error);
+      Logger.error(`Error about clear cache redis: ${error}`);
     }
   }
 
@@ -42,14 +42,14 @@ export default class RedisCaching {
       const cachedResultString = await redis.get(keyName);
 
       if (cachedResultString) {
-        console.log(`Get data from cache: ${keyName}`);
+        Logger.debug(`Get data from cache: ${keyName}`);
         const cachedData: T[] = JSON.parse(cachedResultString);
         return cachedData;
       }
 
       return null;
     } catch (error) {
-      console.error("Error class RedisCaching:", error);
+      Logger.error(`Error class RedisCaching: ${error}`);
       return null;
     }
   }
@@ -57,16 +57,16 @@ export default class RedisCaching {
     keyNameList: string,
     value: T
   ) {
-    console.log(`Saving at End this List redis cache: ${keyNameList}`);
+    Logger.debug(`Saving at End this List redis cache: ${keyNameList}`);
     const TTL = 60 * 60 * 24; //time to live in seconds
 
     try {
       const redis = await RedisDatabase.getInstance();
 
       await redis.rpush(keyNameList, JSON.stringify(value));
-      console.log("Save completed!");
+      Logger.debug("Save completed!");
     } catch (error) {
-      console.error("Error about insert at end of List cache redis:", error);
+      Logger.error(`Error about insert at end of List cache redis: ${error}`);
     }
   }
 
@@ -74,7 +74,7 @@ export default class RedisCaching {
     keyNameList: string,
     values: T[]
   ) {
-    console.log(
+    Logger.debug(
       `Saving many elements at End this List redis cache: ${keyNameList}`
     );
     const TTL = 60 * 60 * 24; //time to live in seconds
@@ -86,17 +86,17 @@ export default class RedisCaching {
         await redis.rpush(keyNameList, JSON.stringify(values[i]));
       }
 
-      console.log("Save completed!");
+      Logger.debug("Save completed!");
     } catch (error) {
-      console.error(
-        "Error about insert many values end of List cache redis:",
-        error
+      Logger.error(
+        `Error about insert many values end of List cache redis:
+        ${error}`
       );
     }
   }
 
   public static async clearAllCache() {
-    console.log(`Cleaning All cache...`);
+    Logger.debug(`Cleaning All cache...`);
 
     try {
       const redis = await RedisDatabase.getInstance();
@@ -106,12 +106,12 @@ export default class RedisCaching {
       // Delele all keys
       if (allKeys.length > 0) {
         await redis.del(...allKeys);
-        console.log("Clear completed!");
+        Logger.debug("Clear completed!");
       } else {
-        console.log("No cache to clear.");
+        Logger.debug("No cache to clear.");
       }
     } catch (error) {
-      console.error("Error during clear cache:", error);
+      Logger.error(`Error during clear cache: ${error}`);
     }
   }
 
@@ -129,13 +129,13 @@ export default class RedisCaching {
       });
 
       if (allElementsArray.length > 0) {
-        console.log(`Get data from cache List type: ${keyName}`);
+        Logger.debug(`Get data from cache List type: ${keyName}`);
         return allElementsArray;
       } else {
         return null;
       }
     } catch (error) {
-      console.error("Error while getting list elements:", error);
+      Logger.error(`Error while getting list elements: ${error}`);
       return [];
     }
   }

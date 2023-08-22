@@ -93,8 +93,9 @@ function CheckboxListItem(props: CheckboxListItemProps) {
           primary={
             <Grid>
               <Typography fontWeight="bold" sx={{ p: "0px", m: "0px" }}>
-                {props.item.name} {props.item.quantity} {props.item.unit} R$
-                {props.item.price.toFixed(2).replace(".", ",")}
+                {props.item.name} {props.item.quantity} {props.item.unit}
+                {props.item.price > 0 &&
+                  ` R$ ${props.item.price.toFixed(2).replace(".", ",")}`}
               </Typography>
               <Typography
                 variant="subtitle2"

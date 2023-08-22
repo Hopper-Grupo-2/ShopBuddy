@@ -16,7 +16,8 @@
         "baseUrl": ".",
         "paths": {
             "*": ["node_modules/*", "src/*"]
-        }
+        },
+        "resolveJsonModule":true
     },
     "include": ["server/**/*", "server.ts"]
 }

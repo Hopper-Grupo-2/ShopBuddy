@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
+import Logger from "./src/log/logger";
 
 // server.js
 import App from "./src/app";
@@ -12,5 +13,5 @@ const HOST = process.env.HOST || "localhost";
 connectDB();
 
 app.server.listen(PORT, () => {
-    console.log(`Servidor rodando em http://${HOST}:${PORT}`);
+  Logger.info(`Servidor rodando em http://${HOST}:${PORT}`);
 });

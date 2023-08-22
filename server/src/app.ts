@@ -13,6 +13,16 @@ import { notificationsRouter } from "./routers/notifications";
 import { invitesRouter } from "./routers/invites";
 import { cacheRouter } from "./routers/cache";
 
+import loggerInfoClient from "./middlewares/logger-info-client";
+
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../../docs/swagger.json";
+
+const options = {
+  customCss: ".swagger-ui .topbar { display: none }",
+  customSiteTitle: "Shop Buddy API",
+  customfavIcon: "/assets/favicon.ico",
+};
 export default class App {
   public app: express.Application;
   public server: http.Server;
@@ -31,6 +41,7 @@ export default class App {
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use("/", express.static("./client/dist"));
+    this.app.use(loggerInfoClient);
   }
 
   private router(): void {
@@ -41,6 +52,11 @@ export default class App {
     this.app.use("/api/invites", invitesRouter);
     this.app.use("/api/cache", cacheRouter);
     this.app.use(handleAllErrors);
+    this.app.use(
+      "/docs",
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument, options)
+    );
   }
 
   private fallback(): void {

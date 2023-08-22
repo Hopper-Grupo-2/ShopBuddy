@@ -60,7 +60,6 @@ export default function List() {
 
   const navigate = useNavigate();
   const fetchMembers = async () => {
-    console.log("esse é o list id:", params.listId);
     const response = await fetch(`/api/lists/${params.listId}/members`, {
       method: "GET",
       credentials: "include", // Ensure credentials are sent
@@ -68,7 +67,7 @@ export default function List() {
 
     if (response.ok) {
       const membersData = await response.json();
-      console.log("members:", membersData);
+
       setMembers(membersData.data as IUser[]);
     }
   };
@@ -155,7 +154,7 @@ export default function List() {
       params.listId,
       userContext?.user?._id
     );
-    console.log("enter list was emitted");
+
     return () => {
       if (socketContext.socket)
         socketContext.socket.emit(
@@ -163,7 +162,6 @@ export default function List() {
           params.listId,
           userContext?.user?._id
         );
-      console.log("exit list was emitted");
     };
   }, [socketContext?.socket]);
 
@@ -447,7 +445,7 @@ export default function List() {
   function checkItem(itemId: string) {
     const currentItem = items.filter((item) => item._id === itemId)[0];
     const currentIndex = items.indexOf(currentItem);
-    console.log(items);
+
     items[currentIndex].checked = !items[currentIndex].checked;
     setItems([...items]);
   }
@@ -524,7 +522,7 @@ export default function List() {
                         color: "#444444",
                       }}
                     >
-                      Total gasto:
+                      Orçamento:
                     </Typography>
                     <Typography
                       variant="subtitle2"
