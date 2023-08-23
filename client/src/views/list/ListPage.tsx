@@ -467,7 +467,7 @@ export default function List() {
         product.unit === "ml" ||
         product.unit === "un" ||
         product.unit === "m" ||
-        product.unit === "cm"||
+        product.unit === "cm" ||
         product.unit === "g"
       ) {
         return acc + product.price * product.quantity;
@@ -634,9 +634,9 @@ export default function List() {
       <ItemFormDialog
         title="Novo item"
         fields={[
-          { id: "name", label: "Nome do item", type: "text" },
-          { id: "unit", label: "Unidade de medida", type: "select" },
-          { id: "quantity", label: "Quantidade", type: "text" },
+          { id: "name", label: "Nome do item *", type: "text" },
+          { id: "unit", label: "Unidade de medida *", type: "select" },
+          { id: "quantity", label: "Quantidade *", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}
@@ -662,9 +662,9 @@ export default function List() {
       <ItemFormDialog
         title="Editar item"
         fields={[
-          { id: "name", label: "Nome do item", type: "text" },
-          { id: "unit", label: "Unidade de medida", type: "text" },
-          { id: "quantity", label: "Quantidade", type: "text" },
+          { id: "name", label: "Nome do item *", type: "text" },
+          { id: "unit", label: "Unidade de medida *", type: "text" },
+          { id: "quantity", label: "Quantidade *", type: "text" },
           { id: "price", label: "Preço/unidade", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}

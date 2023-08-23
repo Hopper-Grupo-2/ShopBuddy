@@ -113,18 +113,16 @@ function getAllValidations(
           .withMessage(`${fieldTitle} must be a string.`);
 
       case "pass":
-        return (
-          check(fieldTitle)
-            .trim()
-            .notEmpty()
-            .withMessage(`${fieldTitle} is mandatory.`)
-            .isLength({ min: 3, max: 16 })
-            .withMessage(`${fieldTitle} must be at least 3-16 characters long.`)
-            //.matches(/[a-zA-Z]/)
-            //.withMessage("${fieldType} must contain at least one letter.")
-            .matches(/[0-9]/)
-            .withMessage(`${fieldTitle} must contain at least one digit.`)
-        );
+        return check(fieldTitle)
+          .trim()
+          .notEmpty()
+          .withMessage(`${fieldTitle} is mandatory.`)
+          .isLength({ min: 3, max: 16 })
+          .withMessage(`${fieldTitle} must be at least 3-16 characters long.`)
+          .matches(/[a-zA-Z]/)
+          .withMessage(`${fieldType} must contain at least one letter.`)
+          .matches(/[0-9]/)
+          .withMessage(`${fieldTitle} must contain at least one digit.`);
 
       case "email":
         return check(fieldTitle)
@@ -202,8 +200,8 @@ function getAllValidations(
           .trim()
           .escape()
           .isString()
-          .isLength({ max: 50 })
-          .withMessage(`${fieldTitle} must have less than 50 characters.`)
+          .isLength({ max: 30 })
+          .withMessage(`${fieldTitle} must have less than 30 characters.`)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
             
