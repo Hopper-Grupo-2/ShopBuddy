@@ -204,6 +204,7 @@ function getAllValidations(
           .withMessage(`${fieldTitle} must have less than 30 characters.`)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
+            
 
       default:
         return check(fieldTitle).trim().notEmpty();

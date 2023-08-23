@@ -130,7 +130,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
         ((formData[field.id].length < 3 && formData[field.id].length > 0) ||
           formData[field.id].length > 30)
       ) {
-        errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
+        errors[field.id] = `O ${field.label} deve ter entre 3 e 50 caracteres.`;
       }
 
       if (
