@@ -106,11 +106,13 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   };
 
   useEffect(() => {
-    if (formData.price !== formattedPrice) {
-      if (formData.price === "") {
-        setFormattedPrice("R$ 0,00");
-      } else {
-        setFormattedPrice(formatNumericAsCurrency(parseFloat(formData.price)));
+    const numericPrice = parseFloat(formData.price);
+    if (Number.isNaN(numericPrice)) {
+      setFormattedPrice("R$ 0,00");
+    } else {
+      const formatted = formatNumericAsCurrency(numericPrice);
+      if (formatted !== formattedPrice) {
+        setFormattedPrice(formatted);
       }
     }
   }, [formData.price]);
