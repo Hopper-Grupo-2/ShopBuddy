@@ -21,13 +21,13 @@ import { FormHelperText } from "@mui/material";
 // this has to be redone at a later date to
 // always be compatible with the backend
 const unitsOfMeasure = [
-  { value: "Kg", label: "Quilograma (Kg)" },
-  { value: "Ml", label: "Mililitro (Ml)" },
-  { value: "gramas", label: "Grama (g)" },
+  { value: "kg", label: "Quilograma (kg)" },
+  { value: "ml", label: "Mililitro (ml)" },
+  { value: "g", label: "Grama (g)" },
   { value: "L", label: "Litro (L)" },
   { value: "m", label: "Metro (m)" },
   { value: "cm", label: "Centímetro (cm)" },
-  { value: "und", label: "Unidade (und)" },
+  { value: "un", label: "Unidade (un)" },
 ];
 
 interface FormField {
@@ -64,39 +64,43 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawPrice = event.target.value;
-    console.log(rawPrice);
-    const formatted = formatPrice(rawPrice);
-    console.log(formatted);
+    const formatted = formatPriceDisplay(rawPrice);
     setFormattedPrice(formatted);
-    handleChange(event);
+
+    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
+    const numericValue = parseFloat(cleanedPrice) / 100;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      price: numericValue.toFixed(2),
+    }));
   };
 
-  const formatPrice = (rawPrice: string) => {
+  const formatPriceDisplay = (rawPrice: string) => {
     if (!rawPrice) {
       return "R$ 0,00";
     }
-    const parsedPrice = parseFloat(
-      rawPrice.replace(/[^\d.,]/g, "").replace(",", ".")
-    );
-    if (!isNaN(parsedPrice)) {
-      const formatted = parsedPrice.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      });
-      console.log(formatted);
-      return formatted;
-    }
-    return "R$ 0,00";
+    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
+    console.log(cleanedPrice);
+    const numericValue = parseFloat(cleanedPrice) / 100;
+    console.log(numericValue);
+    console.log(formatNumericAsCurrency(numericValue));
+    return formatNumericAsCurrency(numericValue);
+  };
+
+  const formatNumericAsCurrency = (numericValue: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(numericValue);
   };
 
   useEffect(() => {
     if (formData.price !== formattedPrice) {
-      setFormattedPrice(formatPrice(formData.price));
+      setFormattedPrice(formatPriceDisplay(formData.price));
     }
-
-    console.log(formattedPrice);
   }, [formData.price]);
 
   useEffect(() => {
@@ -156,8 +160,12 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     props.fields.forEach((field) => {
-      if (!formData[field.id] && field.id !== "market") {
-        errors[field.id] = `${field.label} é obrigatório.`;
+      if (
+        !formData[field.id] &&
+        field.id !== "market" &&
+        field.id !== "price"
+      ) {
+        errors[field.id] = `Esse campo é obrigatório.`;
       }
 
       if (
@@ -203,7 +211,6 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const handleAutocompleteOptions = async (_: any, newInputValue: string) => {
     setFormData((prevFormData) => ({ ...prevFormData, name: newInputValue }));
 
-    console.log(newInputValue);
     if (newInputValue.length < 1) return;
     try {
       const response = await fetch(
@@ -212,8 +219,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       const responseObj = await response.json();
       if (response.ok) {
         const products: IItem[] = responseObj.data;
-        const newAutocompleteOptions = products;
-        console.log(newAutocompleteOptions);
+
         setItems(products);
       } else {
         throw responseObj.error;
@@ -231,11 +237,9 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
     if (!product) return;
 
-    console.log(formData);
     setFormData((prevFormData) => {
       const newFormData = { ...prevFormData };
       Object.keys(prevFormData).forEach((key) => {
-        console.log(key, product[key as keyof IItem]);
         //if (key in product)
         if (key !== "quantity")
           newFormData[key] = String(product[key as keyof IItem] ?? "");
