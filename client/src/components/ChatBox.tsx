@@ -182,7 +182,9 @@ export default function ChatBox(props: ChatProps) {
                   {message.username}
                 </Typography>
                 <Box display="flex" alignItems="flex-end">
-                  <Typography variant="body1">{message.textContent}</Typography>
+                  <Typography variant="body1" sx={{ wordBreak: "break-word" }}>
+                    {message.textContent}
+                  </Typography>
                   <Box display="flex" alignItems="center">
                     <Typography
                       variant="caption"
@@ -206,6 +208,8 @@ export default function ChatBox(props: ChatProps) {
             <TextField
               inputRef={currentMessageRef}
               placeholder="Nova mensagem..."
+              inputProps={{ maxLength: 240 }}
+              autoComplete="off"
               fullWidth
             />
 
