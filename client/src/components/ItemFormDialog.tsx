@@ -65,7 +65,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawPrice = event.target.value;
 
-    if (!rawPrice) {
+    if (!rawPrice || Number.isNaN(parseFloat(rawPrice))) {
       setFormattedPrice("R$ 0,00");
       setFormData((prevFormData) => ({
         ...prevFormData,
