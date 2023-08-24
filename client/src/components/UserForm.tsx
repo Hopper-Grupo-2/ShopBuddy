@@ -61,12 +61,11 @@ export default function UserForm() {
       errors.oldPassword = "Por favor, insira sua senha";
     }
 
-    if (!credentials.newPassword || credentials.newPassword < 3 || credentials.newPassword.length > 16) {
+    if (!credentials.newPassword || credentials.newPassword.length < 3 || credentials.newPassword.length > 16) {
       errors.newPassword = "A nova senha deve ter entre 3 e 16 caracteres";
-    }
 
-    if ( /^[A-Za-z]+$/.test(credentials.newPassword) ) {
-      errors.newPassword = "A nova senha deve conter pelo menos um número";
+    } else if (!/(?=.*[A-Za-z])(?=.*[0-9])/.test(credentials.newPassword)) {
+      errors.newPassword = "A nova senha deve conter pelo menos uma letra e um número";
     }
 
     if (!credentials.firstName || !/^[A-Za-z]+$/i.test(credentials.firstName) || credentials.firstName < 3 || credentials.firstName.length > 15) {
