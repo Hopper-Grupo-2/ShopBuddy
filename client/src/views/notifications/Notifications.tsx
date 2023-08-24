@@ -209,6 +209,17 @@ export default function Notifications() {
                                 {notification.senderName}
                               </Typography>{" "}
                               {getNotificationMessage(notification.type)}
+                              {notification.type ===
+                                NotificationTypes.TOGGLE_PRODUCT && (
+                                <Typography
+                                  component="span"
+                                  variant="body2"
+                                  sx={{ fontWeight: "bold" }}
+                                >
+                                  {" "}
+                                  {notification.textContent}
+                                </Typography>
+                              )}
                             </Fragment>
                           }
                         />
@@ -241,7 +252,7 @@ function getNotificationMessage(typeOfNotification: NotificationTypes): string {
     case NotificationTypes.ADD_PRODUCT:
       return "adicionou um produto";
     case NotificationTypes.TOGGLE_PRODUCT:
-      return "modificou o status de um produto";
+      return "modificou o status do produto";
     case NotificationTypes.REMOVE_PRODUCT:
       return "removeu um produto";
     default:

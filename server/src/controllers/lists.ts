@@ -367,11 +367,15 @@ export default class ListsController {
         productId
       );
 
+      const updatedProduct = updatedList?.products.find(
+        (product) => product._id?.toString() === productId
+      );
+
       NotificationsController.sendNewListNotification(
         user._id?.toString() ?? "",
         listId,
         NotificationTypes.TOGGLE_PRODUCT,
-        "Product changed status at list" + listId
+        updatedProduct?.name ?? ""
       );
 
       res.status(200).json({ error: null, data: updatedList });

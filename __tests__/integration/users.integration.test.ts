@@ -43,7 +43,7 @@ describe("GET /api/users/:userId", () => {
   it("should return status 404 if doesnt exist a user with id informed", async () => {
     const userInfo: IUser = {
       username: "letstest",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -64,7 +64,7 @@ describe("GET /api/users/:userId", () => {
   it("should return status 200 and user  infos", async () => {
     const userInfo: IUser = {
       username: "letsuserold",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -88,8 +88,8 @@ describe("PATCH /api/users/:userId", () => {
     const response = await request.patch("/api/users/1").send({
       username: "user1updated",
       email: "user1updated@alpha.com",
-      oldPassword: "123",
-      newPassword: "1234",
+      oldPassword: "123a",
+      newPassword: "1234a",
       firstName: "user1",
       lastName: "updated",
     });
@@ -105,8 +105,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -117,7 +117,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 422 if userId is invalid", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -134,8 +134,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -155,7 +155,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 422 if new username is invalid", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -172,8 +172,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "invalid#$@@%username",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -193,7 +193,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 422 if new email is invalid", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -210,8 +210,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "emailinvalid.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -227,7 +227,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 422 if new firstName is invalid", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -244,8 +244,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "emailup@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1##@",
         lastName: "updated",
       });
@@ -265,7 +265,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 422 if new lastName is invalid", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -282,8 +282,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "emailup@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated#$#",
       });
@@ -303,7 +303,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 404 if doesnt exist a user with id informed", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: "123",
+      password: "123a",
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -320,8 +320,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -332,14 +332,14 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 403 if userId logged is different from userId in database", async () => {
     const userInfo1: IUser = {
       username: "numberone",
-      password: "123",
+      password: "123a",
       email: "number1@alpha.com",
       firstName: "number",
       lastName: "one",
     };
     const userInfo2: IUser = {
       username: "numbertwo",
-      password: "123",
+      password: "123a",
       email: "number2@alpha.com",
       firstName: "number",
       lastName: "two",
@@ -362,8 +362,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -375,14 +375,14 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 409 if new email is already used by another one user", async () => {
     const userInfo1: IUser = {
       username: "numberone",
-      password: "123",
+      password: "123a",
       email: "number1@alpha.com",
       firstName: "number",
       lastName: "one",
     };
     const userInfo2: IUser = {
       username: "numbertwo",
-      password: "123",
+      password: "123a",
       email: "number2@alpha.com",
       firstName: "number",
       lastName: "two",
@@ -405,8 +405,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "user1updated",
         email: "number2@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -418,14 +418,14 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 409 if new username is already used by another one user", async () => {
     const userInfo1: IUser = {
       username: "numberone",
-      password: "123",
+      password: "123a",
       email: "number1@alpha.com",
       firstName: "number",
       lastName: "one",
     };
     const userInfo2: IUser = {
       username: "numbertwo",
-      password: "123",
+      password: "123a",
       email: "number2@alpha.com",
       firstName: "number",
       lastName: "two",
@@ -448,8 +448,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "numbertwo",
         email: "user1updated@alpha.com",
-        oldPassword: "123",
-        newPassword: "1234",
+        oldPassword: "123a",
+        newPassword: "1234a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -461,14 +461,14 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 401 if old password is wrong", async () => {
     const userInfo1: IUser = {
       username: "numberone",
-      password: await bcrypt.hash("123", 10),
+      password: await bcrypt.hash("123a", 10),
       email: "number1@alpha.com",
       firstName: "number",
       lastName: "one",
     };
     const userInfo2: IUser = {
       username: "numbertwo",
-      password: await bcrypt.hash("123456", 10),
+      password: await bcrypt.hash("123456a", 10),
       email: "number2@alpha.com",
       firstName: "number",
       lastName: "two",
@@ -492,7 +492,7 @@ describe("PATCH /api/users/:userId", () => {
         username: "userupdated1",
         email: "user1updated@alpha.com",
         oldPassword: "1wrongpass",
-        newPassword: "4321",
+        newPassword: "4321a",
         firstName: "user1",
         lastName: "updated",
       });
@@ -506,7 +506,7 @@ describe("PATCH /api/users/:userId", () => {
   it("should return status 200, update user info and return updated user info", async () => {
     const userInfo: IUser = {
       username: "lets",
-      password: await bcrypt.hash("123", 10),
+      password: await bcrypt.hash("123a", 10),
       email: "letstest@alpha.com",
       firstName: "lets",
       lastName: "test",
@@ -522,8 +522,8 @@ describe("PATCH /api/users/:userId", () => {
       .send({
         username: "letsupdated",
         email: "letsupdated@alpha.com",
-        oldPassword: "123",
-        newPassword: "54321",
+        oldPassword: "123a",
+        newPassword: "54321a",
         firstName: "lets",
         lastName: "updated",
       });

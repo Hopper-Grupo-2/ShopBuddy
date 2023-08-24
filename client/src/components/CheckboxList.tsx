@@ -10,7 +10,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import EditIcon from "@mui/icons-material/Edit";
 import IItem from "../interfaces/iItem";
 import { useState } from "react";
-import { ButtonGroup, Button, Typography, Grid } from "@mui/material";
+import { ButtonGroup, Button, Typography, Grid, Box } from "@mui/material";
 
 interface CheckboxListProps {
   items: Array<IItem>;
@@ -86,17 +86,47 @@ function CheckboxListItem(props: CheckboxListItemProps) {
         {/* Aqui está um comentário para quem for fazer esse componente:
             O PREÇO DEVE SER ESCONDIDO CASO SEJA ZERO REAIS */}
         <ListItemText
-          sx={{
-            textDecoration: props.item.checked ? "line-through" : "none",
-          }}
           id={props.labelId}
           primary={
             <Grid>
-              <Typography fontWeight="bold" sx={{ p: "0px", m: "0px" }}>
-                {props.item.name} {props.item.quantity} {props.item.unit}
-                {props.item.price > 0 &&
-                  ` R$ ${props.item.price.toFixed(2).replace(".", ",")}`}
-              </Typography>
+              <Box
+                display="flex"
+                flexWrap="wrap"
+                alignItems="baseline"
+                sx={{ p: "0px", m: "0px" }}
+              >
+                <Typography
+                  fontWeight="bold"
+                  sx={{
+                    mr: "8px",
+                    textDecoration: props.item.checked
+                      ? "line-through"
+                      : "none",
+                  }}
+                >
+                  {props.item.name}
+                </Typography>
+                <Typography sx={{ mr: "2px" }}>
+                  {props.item.quantity}
+                </Typography>
+                <Typography sx={{ fontSize: "0.8rem", mr: "8px" }}>
+                  {props.item.unit}
+                </Typography>
+                {props.item.price > 0 && (
+                  <>
+                    <Typography sx={{ mr: "8px" }}>
+                      {`R$ ${props.item.price.toFixed(2).replace(".", ",")}`}
+                    </Typography>
+                    {props.item.quantity > 1 && (
+                      <Typography color="gray" sx={{ fontSize: "0.8rem" }}>
+                        {`(total: R$${(props.item.price * props.item.quantity)
+                          .toFixed(2)
+                          .replace(".", ",")})`}
+                      </Typography>
+                    )}
+                  </>
+                )}
+              </Box>
               <Typography
                 variant="subtitle2"
                 color="gray"
@@ -123,8 +153,12 @@ export default function CheckboxList(props: CheckboxListProps) {
     switch (sortOption) {
       case "name":
         return [...items].sort((a, b) => a.name.localeCompare(b.name));
-      case "price":
+      case "unitPrice":
         return [...items].sort((a, b) => a.price - b.price);
+      case "totalPrice":
+        return [...items].sort(
+          (a, b) => a.price * a.quantity - b.price * b.quantity
+        );
       case "unit":
         return [...items].sort((a, b) => a.unit.localeCompare(b.unit));
       case "market":
@@ -145,33 +179,48 @@ export default function CheckboxList(props: CheckboxListProps) {
       <ButtonGroup
         color="primary"
         aria-label="outlined primary button group"
-        sx={{ marginBottom: "10px" }}
+        sx={{
+          width: "100%",
+          marginBottom: "10px",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          flexGrow: 1,
+        }}
       >
+        {}
         <Button
           variant={sortOption === "name" ? "contained" : "outlined"}
           onClick={() => handleSort("name")}
-          sx={{ textTransform: "capitalize" }}
+          sx={{ flexGrow: 1, textTransform: "capitalize" }}
         >
           Nome
         </Button>
         <Button
           variant={sortOption === "unit" ? "contained" : "outlined"}
           onClick={() => handleSort("unit")}
-          sx={{ textTransform: "capitalize" }}
+          sx={{ flexGrow: 1, textTransform: "capitalize" }}
         >
           Unidade
         </Button>
         <Button
-          variant={sortOption === "price" ? "contained" : "outlined"}
-          onClick={() => handleSort("price")}
-          sx={{ textTransform: "capitalize" }}
+          variant={sortOption === "unitPrice" ? "contained" : "outlined"}
+          onClick={() => handleSort("unitPrice")}
+          sx={{ flexGrow: 1, textTransform: "capitalize" }}
         >
-          Preço
+          Preço unitário
+        </Button>
+        <Button
+          variant={sortOption === "totalPrice" ? "contained" : "outlined"}
+          onClick={() => handleSort("totalPrice")}
+          sx={{ flexGrow: 1, textTransform: "capitalize" }}
+        >
+          Preço total
         </Button>
         <Button
           variant={sortOption === "market" ? "contained" : "outlined"}
           onClick={() => handleSort("market")}
-          sx={{ textTransform: "capitalize" }}
+          sx={{ flexGrow: 1, textTransform: "capitalize" }}
         >
           Mercado
         </Button>
