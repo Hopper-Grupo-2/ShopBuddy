@@ -628,7 +628,7 @@ export default function List() {
                 </ButtonContainer>
               </Box>
               <SimplePaper>
-                {list ? <ChatBox listId={list._id} /> : null}
+                {params.listId ? <ChatBox listId={params.listId} /> : null}
               </SimplePaper>
             </Grid>
           </Grid>
