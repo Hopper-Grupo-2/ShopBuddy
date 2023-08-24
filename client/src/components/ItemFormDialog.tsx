@@ -64,28 +64,36 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawPrice = event.target.value;
-    const formatted = formatPriceDisplay(rawPrice);
-    setFormattedPrice(formatted);
 
-    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
-    const numericValue = parseFloat(cleanedPrice) / 100;
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      price: numericValue.toFixed(2),
-    }));
-  };
-
-  const formatPriceDisplay = (rawPrice: string) => {
     if (!rawPrice) {
-      return "R$ 0,00";
+      setFormattedPrice("R$ 0,00");
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: "0.00",
+      }));
+      return;
     }
+
     const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
-    console.log(cleanedPrice);
     const numericValue = parseFloat(cleanedPrice) / 100;
-    console.log(numericValue);
-    console.log(formatNumericAsCurrency(numericValue));
-    return formatNumericAsCurrency(numericValue);
+
+    const maxValue = 99999999999999.99;
+
+    if (numericValue > maxValue) {
+      setFormattedPrice(formatNumericAsCurrency(maxValue));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: maxValue.toFixed(2),
+      }));
+    } else {
+      const formatted = formatNumericAsCurrency(numericValue);
+      setFormattedPrice(formatted);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: numericValue.toFixed(2),
+      }));
+    }
   };
 
   const formatNumericAsCurrency = (numericValue: number) => {
@@ -99,7 +107,11 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   useEffect(() => {
     if (formData.price !== formattedPrice) {
-      setFormattedPrice(formatPriceDisplay(formData.price));
+      if (formData.price === "") {
+        setFormattedPrice("R$ 0,00");
+      } else {
+        setFormattedPrice(formatNumericAsCurrency(parseFloat(formData.price)));
+      }
     }
   }, [formData.price]);
 
@@ -121,6 +133,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       ...prevFormData,
       [event.target.id]: event.target.value,
     }));
+    console.log(formData);
   };
 
   type SelectChangeEvent = React.ChangeEvent<{
@@ -176,10 +189,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
         errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
       }
 
-      if (
-        (field.id === "quantity" || field.id === "price") &&
-        formData[field.id].length > 0
-      ) {
+      if (field.id === "quantity" && formData[field.id].length > 0) {
         if (!/^\d*(\.\d+)?$/.test(formData[field.id])) {
           errors[field.id] = `${field.label} deve ser um número válido.`;
         } else if (parseFloat(formData[field.id]) <= 0) {

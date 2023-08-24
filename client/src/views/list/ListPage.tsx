@@ -637,7 +637,7 @@ export default function List() {
           { id: "name", label: "Nome do item *", type: "text" },
           { id: "unit", label: "Unidade de medida *", type: "select" },
           { id: "quantity", label: "Quantidade *", type: "text" },
-          { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "price", label: "Preço unitário", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openItemForm}
@@ -665,7 +665,7 @@ export default function List() {
           { id: "name", label: "Nome do item *", type: "text" },
           { id: "unit", label: "Unidade de medida *", type: "text" },
           { id: "quantity", label: "Quantidade *", type: "text" },
-          { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "price", label: "Preço unitário", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openEditItemForm}
