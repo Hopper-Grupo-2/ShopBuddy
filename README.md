@@ -1,4 +1,5 @@
-![2c1734bc-235d-4f01-9ff6-416c4de62d6a](https://github.com/Hopper-Grupo-2/ShopBuddy/assets/113396946/98c6cb51-4058-4cf6-bfd6-bd7422653793)
+<img src="https://github.com/Hopper-Grupo-2/ShopBuddy/assets/113396946/98c6cb51-4058-4cf6-bfd6-bd7422653793" width="100"/>
+
 # ShopBuddy: Listas de Compras Compartilhadas
 Organize suas compras de forma colaborativa com amigos e familiares usando o ShopBuddy!
 
@@ -33,7 +34,7 @@ JavaScript
 - Clone este repositório:  
 `git clone https://github.com/Hopper-Grupo-2/ShopBuddy.git`
 
-- Acesse o diretório do projeto:
+- Acesse o diretório do projeto:  
 `cd shopbuddy`
 
 - Crie um arquivo .env com base no .env-example e o preenchendo de acordo
