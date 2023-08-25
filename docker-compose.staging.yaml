@@ -4,10 +4,6 @@ name: "shopbuddystaging"
 services:
     svcredis:
         image: bitnami/redis
-        expose:
-            - 6379
-        ports:
-            - 6372:6379
         environment:
             - TZ=America/Sao_Paulo
             - ALLOW_EMPTY_PASSWORD=yes
