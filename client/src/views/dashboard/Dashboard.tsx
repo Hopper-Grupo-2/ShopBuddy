@@ -228,28 +228,10 @@ export default function Dashboard() {
                   .reverse()
                   .map((list) => {
                     if (
-                      !list.listName
+                      list.listName
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase())
                     ) {
-                      return (
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: "bold",
-                            height: "100%",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            textAlign: "center",
-                            mt: "30px",
-                          }}
-                        >
-                          Nenhum resultado para "{searchTerm}"
-                        </Typography>
-                      );
-                    } else {
                       return (
                         <Grid
                           item
