@@ -64,8 +64,9 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
 
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawPrice = event.target.value;
+    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
 
-    if (!rawPrice || Number.isNaN(parseFloat(rawPrice))) {
+    if (!rawPrice || Number.isNaN(parseFloat(cleanedPrice))) {
       setFormattedPrice("R$ 0,00");
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -74,7 +75,6 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       return;
     }
 
-    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
     const numericValue = parseFloat(cleanedPrice) / 100;
 
     const maxValue = 99999999999999.99;

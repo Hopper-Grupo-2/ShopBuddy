@@ -28,7 +28,7 @@ export default function UserForm() {
 
     const errors = validateCredentials(credentials);
     setFormErrors(errors);
-    
+
     if (Object.keys(errors).length > 0) {
       return;
     }
@@ -53,27 +53,49 @@ export default function UserForm() {
       errors.email = "Por favor, insira um e-mail válido";
     }
 
-    if (!credentials.username || credentials.username.length < 3 || credentials.username.length > 15) {
+    if (
+      !credentials.username ||
+      credentials.username.length < 3 ||
+      credentials.username.length > 15
+    ) {
       errors.username = "Nome de usuário deve ter entre 3 e 15 caracteres";
+    } else if (!/^[a-zA-Z0-9]*$/.test(credentials.username)) {
+      errors.username = "Nome de usuário deve conter apenas letras e números.";
     }
 
     if (!credentials.oldPassword) {
       errors.oldPassword = "Por favor, insira sua senha";
     }
 
-    if (!credentials.newPassword || credentials.newPassword.length < 3 || credentials.newPassword.length > 16) {
+    if (
+      !credentials.newPassword ||
+      credentials.newPassword.length < 3 ||
+      credentials.newPassword.length > 16
+    ) {
       errors.newPassword = "A nova senha deve ter entre 3 e 16 caracteres";
-
     } else if (!/(?=.*[A-Za-z])(?=.*[0-9])/.test(credentials.newPassword)) {
-      errors.newPassword = "A nova senha deve conter pelo menos uma letra e um número";
+      errors.newPassword =
+        "A nova senha deve conter pelo menos uma letra e um número";
     }
 
-    if (!credentials.firstName || !/^[A-Za-z]+$/i.test(credentials.firstName) || credentials.firstName < 3 || credentials.firstName.length > 15) {
-      errors.firstName = "O primeiro nome deve conter apenas letras e ter entre 3 e 15 caracteres";
+    if (
+      !credentials.firstName ||
+      !/^[A-Za-z]+$/i.test(credentials.firstName) ||
+      credentials.firstName < 3 ||
+      credentials.firstName.length > 15
+    ) {
+      errors.firstName =
+        "O primeiro nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
 
-    if (!credentials.lastName  || !/^[A-Za-z]+$/i.test(credentials.lastName) || credentials.lastName < 3 || credentials.lastName.length > 15) {
-      errors.lastName = "O último nome deve conter apenas letras e ter entre 3 e 15 caracteres";
+    if (
+      !credentials.lastName ||
+      !/^[A-Za-z]+$/i.test(credentials.lastName) ||
+      credentials.lastName < 3 ||
+      credentials.lastName.length > 15
+    ) {
+      errors.lastName =
+        "O último nome deve conter apenas letras e ter entre 3 e 15 caracteres";
     }
 
     return errors;
