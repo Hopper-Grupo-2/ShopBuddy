@@ -126,7 +126,7 @@ export default function LogIn() {
               marginBottom: "10%",
             }}
           >
-            Seja Bem-vinde!
+            Seja Bem-vindo(a)!
           </Typography>
           <Box
             component="div"

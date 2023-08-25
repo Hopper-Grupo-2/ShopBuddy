@@ -7,6 +7,7 @@ import IMessage from "../interfaces/iMessage";
 import { SocketContext } from "../contexts/SocketContext";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckIcon from "@mui/icons-material/Check";
+import LoadingIndicator from "./LoadingIndicator";
 
 const MessageBox = styled(Paper)<{ sender: string }>`
   max-width: 90%;
@@ -35,6 +36,7 @@ export default function ChatBox(props: ChatProps) {
   const userContext = useContext(UserContext);
   const socketContext = useContext(SocketContext);
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const chatRef = useRef<HTMLDivElement | null>(null);
   const currentMessageRef = useRef<HTMLInputElement | null>(null);
 
@@ -48,6 +50,7 @@ export default function ChatBox(props: ChatProps) {
       if (response.ok) {
         const messages = await response.json();
         setMessages(messages.data);
+        setIsLoading(false);
       }
     };
 
@@ -152,60 +155,70 @@ export default function ChatBox(props: ChatProps) {
         },
       }}
     >
-      <Box
-        ref={chatRef}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "scroll",
-          height: "calc(100% - 60px)",
-        }}
-      >
-        {messages.map((message) => (
-          <MessageBox
-            key={message._id}
-            sender={
-              message.userId === userContext?.user?._id
-                ? "user"
-                : message.userId
-            }
-            elevation={3}
+      {isLoading ? (
+        <LoadingIndicator></LoadingIndicator>
+      ) : (
+        <>
+          <Box
+            ref={chatRef}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              overflowY: "scroll",
+              height: "calc(100% - 60px)",
+            }}
           >
-            <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-              {message.username}
-            </Typography>
-            <Box display="flex" alignItems="flex-end">
-              <Typography variant="body1">{message.textContent}</Typography>
-              <Box display="flex" alignItems="center">
-                <Typography
-                  variant="caption"
-                  sx={{ ml: "5px", fontSize: "0.7rem" }}
-                >
-                  {toLocalTimeString(message.createdAt)}
+            {messages.map((message) => (
+              <MessageBox
+                key={message._id}
+                sender={
+                  message.userId === userContext?.user?._id
+                    ? "user"
+                    : message.userId
+                }
+                elevation={3}
+              >
+                <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                  {message.username}
                 </Typography>
-                {message.userId === userContext?.user?._id &&
-                  (message.pending ? (
-                    <PendingIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
-                  ) : (
-                    <CheckIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
-                  ))}
-              </Box>
-            </Box>
-          </MessageBox>
-        ))}
-      </Box>
+                <Box display="flex" alignItems="flex-end">
+                  <Typography variant="body1" sx={{ wordBreak: "break-word" }}>
+                    {message.textContent}
+                  </Typography>
+                  <Box display="flex" alignItems="center">
+                    <Typography
+                      variant="caption"
+                      sx={{ ml: "5px", fontSize: "0.7rem" }}
+                    >
+                      {toLocalTimeString(message.createdAt)}
+                    </Typography>
+                    {message.userId === userContext?.user?._id &&
+                      (message.pending ? (
+                        <PendingIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
+                      ) : (
+                        <CheckIcon sx={{ ml: "1px", fontSize: "0.9rem" }} />
+                      ))}
+                  </Box>
+                </Box>
+              </MessageBox>
+            ))}
+          </Box>
 
-      <MessageForm onSubmit={handleSubmit}>
-        <TextField
-          inputRef={currentMessageRef}
-          placeholder="Nova mensagem..."
-          fullWidth
-        />
+          <MessageForm onSubmit={handleSubmit}>
+            <TextField
+              inputRef={currentMessageRef}
+              placeholder="Nova mensagem..."
+              inputProps={{ maxLength: 240 }}
+              autoComplete="off"
+              fullWidth
+            />
 
-        <IconButton type="submit" color="primary">
-          <SendIcon />
-        </IconButton>
-      </MessageForm>
+            <IconButton type="submit" color="primary">
+              <SendIcon />
+            </IconButton>
+          </MessageForm>
+        </>
+      )}
     </Box>
   );
 }
