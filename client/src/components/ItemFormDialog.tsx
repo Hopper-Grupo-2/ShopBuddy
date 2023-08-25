@@ -60,6 +60,63 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
   const [formData, setFormData] =
     useState<Record<string, string>>(initialFormData);
 
+  const [formattedPrice, setFormattedPrice] = useState<string>("R$ 0,00");
+
+  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rawPrice = event.target.value;
+
+    if (!rawPrice || Number.isNaN(parseFloat(rawPrice))) {
+      setFormattedPrice("R$ 0,00");
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: "0.00",
+      }));
+      return;
+    }
+
+    const cleanedPrice = rawPrice.replace(/[^\d]/g, "");
+    const numericValue = parseFloat(cleanedPrice) / 100;
+
+    const maxValue = 99999999999999.99;
+
+    if (numericValue > maxValue) {
+      setFormattedPrice(formatNumericAsCurrency(maxValue));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: maxValue.toFixed(2),
+      }));
+    } else {
+      const formatted = formatNumericAsCurrency(numericValue);
+      setFormattedPrice(formatted);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        price: numericValue.toFixed(2),
+      }));
+    }
+  };
+
+  const formatNumericAsCurrency = (numericValue: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(numericValue);
+  };
+
+  useEffect(() => {
+    const numericPrice = parseFloat(formData.price);
+    if (Number.isNaN(numericPrice)) {
+      setFormattedPrice("R$ 0,00");
+    } else {
+      const formatted = formatNumericAsCurrency(numericPrice);
+      if (formatted !== formattedPrice) {
+        setFormattedPrice(formatted);
+      }
+    }
+  }, [formData.price]);
+
   useEffect(() => {
     if (!props.initialValues) return;
     setFormData(props.initialValues);
@@ -78,6 +135,7 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
       ...prevFormData,
       [event.target.id]: event.target.value,
     }));
+    console.log(formData);
   };
 
   type SelectChangeEvent = React.ChangeEvent<{
@@ -130,13 +188,10 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
         ((formData[field.id].length < 3 && formData[field.id].length > 0) ||
           formData[field.id].length > 30)
       ) {
-        errors[field.id] = `O ${field.label} deve ter entre 3 e 50 caracteres.`;
+        errors[field.id] = `O ${field.label} deve ter entre 3 e 30 caracteres.`;
       }
 
-      if (
-        (field.id === "quantity" || field.id === "price") &&
-        formData[field.id].length > 0
-      ) {
+      if (field.id === "quantity" && formData[field.id].length > 0) {
         if (!/^\d*(\.\d+)?$/.test(formData[field.id])) {
           errors[field.id] = `${field.label} deve ser um número válido.`;
         } else if (parseFloat(formData[field.id]) <= 0) {
@@ -309,6 +364,22 @@ const ItemFormDialog: React.FC<FormDialogProps> = (props: FormDialogProps) => {
                         onKeyDown={preventExtraInput}
                       />
                     )}
+                  />
+                ) : field.id === "price" ? (
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    key={field.id}
+                    id={field.id}
+                    label={field.label}
+                    type={field.type}
+                    fullWidth
+                    variant="standard"
+                    value={formattedPrice}
+                    onChange={handlePriceChange}
+                    error={Boolean(formErrors[field.id])}
+                    helperText={formErrors[field.id]}
+                    onKeyDown={preventExtraInput}
                   />
                 ) : (
                   <TextField

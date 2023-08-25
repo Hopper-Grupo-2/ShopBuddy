@@ -11,12 +11,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import IItem from "../interfaces/iItem";
 import { useState } from "react";
 import { ButtonGroup, Button, Typography, Grid, Box } from "@mui/material";
+import LoadingIndicator from "./LoadingIndicator";
 
 interface CheckboxListProps {
   items: Array<IItem>;
   onCheck: (itemId: string) => Promise<void>;
   onRemove: (itemId: string) => Promise<void>;
   onEdit: (itemId: string) => void;
+  isLoading: boolean;
 }
 
 interface CheckboxListItemProps {
@@ -233,7 +235,9 @@ export default function CheckboxList(props: CheckboxListProps) {
           overflowY: "auto",
         }}
       >
-        {props.items.length === 0 ? (
+        {props.isLoading ? (
+          <LoadingIndicator></LoadingIndicator>
+        ) : props.items.length === 0 ? (
           <Typography
             variant="h6"
             sx={{

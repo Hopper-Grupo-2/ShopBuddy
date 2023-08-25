@@ -52,6 +52,7 @@ export default function List() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // create use state to save members
   const [members, setMembers] = useState<Array<IUser>>([]);
@@ -90,6 +91,7 @@ export default function List() {
         const listData = await response.json();
         setList(listData.data);
         setItems(listData.data.products);
+        setIsLoading(false);
       } else {
         navigate("/");
       }
@@ -498,7 +500,7 @@ export default function List() {
                   padding: "5px 10px",
                 }}
               >
-                {list?.listName}
+                {list?.listName ?? "Carregando..."}
               </Typography>
               <SimplePaper>
                 <CheckboxList
@@ -506,6 +508,7 @@ export default function List() {
                   onCheck={handleCheckProduct}
                   onRemove={handleDeleteProduct}
                   onEdit={handleOpenEditItemForm}
+                  isLoading={isLoading}
                 />
 
                 <Box
@@ -625,7 +628,7 @@ export default function List() {
                 </ButtonContainer>
               </Box>
               <SimplePaper>
-                {list ? <ChatBox listId={list._id} /> : null}
+                {params.listId ? <ChatBox listId={params.listId} /> : null}
               </SimplePaper>
             </Grid>
           </Grid>
@@ -637,7 +640,7 @@ export default function List() {
           { id: "name", label: "Nome do item *", type: "text" },
           { id: "unit", label: "Unidade de medida *", type: "select" },
           { id: "quantity", label: "Quantidade *", type: "text" },
-          { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "price", label: "Preço unitário", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openItemForm}
@@ -665,7 +668,7 @@ export default function List() {
           { id: "name", label: "Nome do item *", type: "text" },
           { id: "unit", label: "Unidade de medida *", type: "text" },
           { id: "quantity", label: "Quantidade *", type: "text" },
-          { id: "price", label: "Preço/unidade", type: "text" },
+          { id: "price", label: "Preço unitário", type: "text" },
           { id: "market", label: "Local da compra", type: "text" },
         ]}
         open={openEditItemForm}

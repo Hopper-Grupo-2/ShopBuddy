@@ -141,8 +141,8 @@ function getAllValidations(
           .isString()
           .notEmpty()
           .withMessage(`${fieldTitle} is mandatory.`)
-          .isLength({ min: 1, max: 240 })
-          .withMessage(`${fieldTitle} must be between 1 and 240 characters.`)
+          .isLength({ min: 1, max: 2000 })
+          .withMessage(`${fieldTitle} must be between 1 and 2000 characters.`)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
 
@@ -204,7 +204,6 @@ function getAllValidations(
           .withMessage(`${fieldTitle} must have less than 30 characters.`)
           .isString()
           .withMessage(`${fieldTitle} must be a string.`);
-            
 
       default:
         return check(fieldTitle).trim().notEmpty();
